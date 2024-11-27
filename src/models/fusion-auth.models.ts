@@ -11,8 +11,10 @@ export interface FusionAuthLoginBody {
 }
 
 export type FusionAuthLoginResponse =
-  | SuccessAuthLoginUser
+  | SuccessAuthLogin
   | SuccessAuthLoginChangePassword
+  | SuccessAuthLoginTwoFactor
+  | FusionAuthErrorResponse
   | ErrorAuthLoginPrevent;
 
 export interface FusionAuthLoginHeaders extends AxiosHeaders {
@@ -41,16 +43,27 @@ interface FusionAuthMetaDataDevice {
   type: FusionAuthDeviceType;
 }
 
-interface ErrorAuthLoginPrevent {
+export interface ErrorAuthLoginPrevent {
   actions: FusionAuthAction[];
 }
 
-interface SuccessAuthLoginChangePassword {
+export interface SuccessAuthLoginChangePassword {
   changePasswordId: string;
   changePasswordReason: ChangePasswordReason;
 }
 
-interface SuccessAuthLoginUser {
+export interface SuccessAuthLoginTwoFactor {
+  methods: TwoFactorMethods[];
+  twoFactorId: string;
+}
+
+export interface SuccessAuthLogin {
+  token: string;
+  tokenExpirationInstant: number;
+  user: SuccessAuthLoginUser;
+}
+
+export interface SuccessAuthLoginUser {
   active: boolean;
   birthDate: string;
   connectorId: string;
@@ -74,6 +87,20 @@ interface SuccessAuthLoginUser {
   verifiedInstant: number;
 }
 
+export interface FusionAuthErrorResponse {
+  generalErrors: ErrorDetail[];
+  fieldErrors: FieldErrors;
+}
+
+interface ErrorDetail {
+  code: string;
+  message: string;
+}
+
+interface FieldErrors {
+  [field: string]: ErrorDetail[];
+}
+
 interface Registration {
   applicationId: string;
   data: Record<string, unknown>;
@@ -90,8 +117,19 @@ interface Registration {
 }
 
 interface TwoFactor {
-  methods: Record<string, unknown>[];
+  methods: TwoFactorMethods[];
   recoveryCodes: string[];
+}
+
+interface TwoFactorMethods {
+  id: string;
+  method: string;
+  email?: string;
+  authenticator?: {
+    algorithm: string;
+    codeLength: string;
+    timeStep: string;
+  };
 }
 
 interface FusionAuthAction {

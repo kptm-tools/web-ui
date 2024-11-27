@@ -1,5 +1,8 @@
-import { boot } from 'quasar/wrappers';
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
+import {
+  AUTH_TOKEN_NAMES,
+  UNPROTECTED_PATHS,
+} from 'src/constants/fusion-auth.constants';
 
 declare module 'vue' {
   interface ComponentCustomProperties {
@@ -8,24 +11,26 @@ declare module 'vue' {
   }
 }
 
-// Be careful when using SSR for cross-request state pollution
-// due to creating a Singleton instance here;
-// If any client changes this (global) instance, it might be a
-// good idea to move this instance creation inside of the
-// "export default () => {}" function below (which runs individually
-// for each client)
 const fusionAuthApi = axios.create({ baseURL: process.env.FUSION_SERVER_URL });
 
-export default boot(({ app }) => {
-  // for use inside Vue files (Options API) through this.$axios and this.$api
+const isUnprotected = (url: string): boolean => {
+  return UNPROTECTED_PATHS.some((endpoint) => url.includes(endpoint));
+};
 
-  app.config.globalProperties.$axios = axios;
-  // ^ ^ ^ this will allow you to use this.$axios (for Vue Options API form)
-  //       so you won't necessarily have to import axios in each vue file
-
-  app.config.globalProperties.$api = fusionAuthApi;
-  // ^ ^ ^ this will allow you to use this.$api (for Vue Options API form)
-  //       so you can easily perform requests against your app's API
-});
+fusionAuthApi.interceptors.request.use(
+  (config: InternalAxiosRequestConfig) => {
+    if (!isUnprotected(config.url || '')) {
+      const token = sessionStorage.getItem(AUTH_TOKEN_NAMES.ACCESS_TOKEN);
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    } else {
+      console.warn('No token found for protected endpoint.');
+    }
+    console.log('Request:', config);
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
 export { fusionAuthApi };
