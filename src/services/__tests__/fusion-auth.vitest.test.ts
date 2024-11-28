@@ -47,8 +47,7 @@ describe('FusionAuth API Service', () => {
       // Assert
       expect(fusionAuthApi.post).toHaveBeenCalledWith('/api/login', body, {
         headers: {
-          Authorization:
-            'this_really_should_be_a_long_random_alphanumeric_value_but_this_still_works',
+          Authorization: process.env.FUSION_APP_TOKE,
         },
       });
       expect(response).toEqual(mockResponse);
@@ -75,7 +74,7 @@ describe('FusionAuth API Service', () => {
       // Arrange
       const body: FusionAuthLogout = {};
       const headers: FusionAuthLogoutHeaders = {
-        Authorization: 'mockToken',
+        Authorization: process.env.FUSION_APP_TOKEN,
       } as AxiosRequestHeaders;
       const mockResponse: AxiosResponse<void> = {
         data: undefined,

@@ -12,8 +12,7 @@ export function authenticateUser(
 ): Promise<AxiosResponse<FusionAuthLoginResponse>> {
   return fusionAuthApi.post<FusionAuthLoginResponse>('/api/login', body, {
     headers: {
-      Authorization:
-        'this_really_should_be_a_long_random_alphanumeric_value_but_this_still_works',
+      Authorization: process.env.FUSION_APP_TOKEN,
     },
   });
 }
