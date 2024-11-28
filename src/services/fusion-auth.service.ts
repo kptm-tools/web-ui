@@ -1,7 +1,6 @@
 import { fusionAuthApi } from 'src/boot/axios';
 import {
   FusionAuthLoginBody,
-  FusionAuthLoginHeaders,
   FusionAuthLoginResponse,
   FusionAuthLogout,
   FusionAuthLogoutHeaders,
@@ -9,11 +8,12 @@ import {
 import { AxiosResponse } from 'axios';
 
 export function authenticateUser(
-  body: FusionAuthLoginBody,
-  headers?: FusionAuthLoginHeaders
+  body: FusionAuthLoginBody
 ): Promise<AxiosResponse<FusionAuthLoginResponse>> {
   return fusionAuthApi.post<FusionAuthLoginResponse>('/api/login', body, {
-    headers,
+    headers: {
+      Authorization: process.env.FUSION_APP_TOKEN,
+    },
   });
 }
 
