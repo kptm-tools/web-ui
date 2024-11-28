@@ -4,7 +4,6 @@ import {
   ErrorAuthLoginPrevent,
   FusionAuthErrorResponse,
   FusionAuthLoginBody,
-  FusionAuthLoginHeaders,
   SuccessAuthLogin,
   SuccessAuthLoginChangePassword,
   SuccessAuthLoginTwoFactor,
@@ -33,9 +32,8 @@ export const useFusionAuthStore = defineStore('fusion-auth', {
   actions: {
     async loginUser(
       loginBody: FusionAuthLoginBody,
-      loginHeader?: FusionAuthLoginHeaders
     ): Promise<void> {
-      const response = await authenticateUser(loginBody, loginHeader);
+      const response = await authenticateUser(loginBody);
       if (AUTH_STATUS_CODES.LOGIN.SUCCESS_CODES.includes(response.status)) {
         const successResponse = response.data as SuccessAuthLogin;
         this.setUserInfo(successResponse);

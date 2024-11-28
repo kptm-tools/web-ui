@@ -7,7 +7,7 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 export default defineConfig({
   test: {
     environment: 'happy-dom',
-    setupFiles: 'test/vitest/setup-file.ts',
+    setupFiles: 'setup-file.ts',
 
     include: [
       // Matches vitest tests in any subfolder of 'src' or into 'test/vitest/__tests__'
@@ -23,9 +23,11 @@ export default defineConfig({
         'quasar.config.js',
         '.quasar/**',
         'src/boot/**',
+        'src/stores/index.ts',
         'src/App.vue',
         'src/constants',
         'src/router',
+        'src/**/*.vitest.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
       ],
     },
   },

@@ -3,7 +3,9 @@
   "compilerOptions": {
     "baseUrl": ".",
     "types": [
-      "vite/client"
+      "vite/client",
+      "vitest",
+      "vitest/globals"
     ]
   },
   "exclude": [

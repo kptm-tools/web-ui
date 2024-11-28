@@ -1,7 +1,7 @@
 import { AxiosHeaders } from 'axios';
 
 export interface FusionAuthLoginBody {
-  applicationId: string;
+  applicationId?: string;
   ipAddress?: string;
   loginId: string;
   metaData?: FusionAuthMetaData;
@@ -15,7 +15,8 @@ export type FusionAuthLoginResponse =
   | SuccessAuthLoginChangePassword
   | SuccessAuthLoginTwoFactor
   | FusionAuthErrorResponse
-  | ErrorAuthLoginPrevent;
+  | ErrorAuthLoginPrevent
+  | null;
 
 export interface FusionAuthLoginHeaders extends AxiosHeaders {
   'X-Forwarded-For'?: string;
