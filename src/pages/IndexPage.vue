@@ -23,8 +23,6 @@
           label="Your App Id"
         />
 
-        <q-input v-model="tenantId" filled label="Your Tenant Id" />
-
         <div>
           <q-btn color="primary" label="Submit" type="submit" />
         </div>
@@ -43,7 +41,6 @@ const fusionAuthStore = useFusionAuthStore();
 const userName: Ref<string> = ref('analyst@example.com');
 const password: Ref<string> = ref('password');
 const appId: Ref<string> = ref('31dd1baa-fc82-42ff-8e0b-5c522bb3d70c');
-const tenantId: Ref<string> = ref('');
 
 async function onSubmit() {
   const loginUserBody: FusionAuthLoginBody = {
