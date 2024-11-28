@@ -1,4 +1,4 @@
-import { authenticateUser } from 'src/services/FusionAuthService';
+import { authenticateUser } from 'src/services/fusion-auth.service';
 import { defineStore } from 'pinia';
 import {
   ErrorAuthLoginPrevent,
@@ -33,7 +33,7 @@ export const useFusionAuthStore = defineStore('fusion-auth', {
   actions: {
     async loginUser(
       loginBody: FusionAuthLoginBody,
-      loginHeader: FusionAuthLoginHeaders
+      loginHeader?: FusionAuthLoginHeaders
     ): Promise<void> {
       const response = await authenticateUser(loginBody, loginHeader);
       if (AUTH_STATUS_CODES.LOGIN.SUCCESS_CODES.includes(response.status)) {

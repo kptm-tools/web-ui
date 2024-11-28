@@ -12,8 +12,12 @@ export function authenticateUser(
   body: FusionAuthLoginBody,
   headers?: FusionAuthLoginHeaders
 ): Promise<AxiosResponse<FusionAuthLoginResponse>> {
+  console.log('header Service', headers);
   return fusionAuthApi.post<FusionAuthLoginResponse>('/api/login', body, {
-    headers,
+    headers: {
+      Authorization:
+        'this_really_should_be_a_long_random_alphanumeric_value_but_this_still_work',
+    },
   });
 }
 

@@ -1,47 +1,56 @@
 <template>
-  <div class="column-container">
-    <div class="content-container">
-      <div>
-        <h1>Welcome to Changebank</h1>
-        <p>Login or create a new account to get started</p>
-        <button
-          className="button-lg"
-          style="cursor: pointer"
-          @click="fusionAuth.login()"
-        >
-          Login
-        </button>
-        <br />
-        <button
-          className="button-redirect"
-          style="cursor: pointer"
-          @click="fusionAuth.register()"
-        >
-          Create a new account.
-        </button>
+  <div class="content-container">
+    <div class="q-px-md q-py-md q-mx-auto" style="max-width: 400px">
+      <q-form ref="loginForm" class="q-gutter-md" greedy @submit="onSubmit">
+        <q-input
+          v-model="userName"
+          :rules="[(val) => !!val || 'Field is required']"
+          filled
+          label="Your username"
+        />
 
-        <a
-          class="button-lg"
-          style="cursor: pointer"
-          @click="fusionAuth.logout()"
-          >Logout</a
-        >
+        <q-input
+          v-model="password"
+          :rules="[(val) => !!val || 'Field is required']"
+          filled
+          label="Your Password"
+        />
 
-        {{ userInfo }}
-      </div>
+        <q-input
+          v-model="appId"
+          :rules="[(val) => !!val || 'Field is required']"
+          filled
+          label="Your App Id"
+        />
+
+        <q-input v-model="tenantId" filled label="Your Tenant Id" />
+
+        <div>
+          <q-btn color="primary" label="Submit" type="submit" />
+        </div>
+      </q-form>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useFusionAuth, UserInfo } from '@fusionauth/vue-sdk';
-import { onMounted, Ref, ref } from 'vue';
+import { Ref, ref } from 'vue';
+import { useFusionAuthStore } from 'stores/auth-store';
+import { FusionAuthLoginBody } from 'src/models/fusion-auth.models';
 
-const fusionAuth = useFusionAuth();
+const fusionAuthStore = useFusionAuthStore();
 
-const userInfo: Ref<UserInfo | undefined> = ref(undefined);
+const userName: Ref<string> = ref('analyst@example.com');
+const password: Ref<string> = ref('password');
+const appId: Ref<string> = ref('31dd1baa-fc82-42ff-8e0b-5c522bb3d70c');
+const tenantId: Ref<string> = ref('');
 
-onMounted(async () => {
-  userInfo.value = await fusionAuth.getUserInfo();
-});
+async function onSubmit() {
+  const loginUserBody: FusionAuthLoginBody = {
+    loginId: userName.value,
+    password: password.value,
+    applicationId: appId.value,
+  };
+  await fusionAuthStore.loginUser(loginUserBody);
+}
 </script>

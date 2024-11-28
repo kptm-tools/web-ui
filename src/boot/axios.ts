@@ -27,7 +27,6 @@ fusionAuthApi.interceptors.request.use(
     } else {
       console.warn('No token found for protected endpoint.');
     }
-    console.log('Request:', config);
     return config;
   },
   (error) => Promise.reject(error)
