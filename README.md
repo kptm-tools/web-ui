@@ -32,7 +32,7 @@ yarn format
 npm run format
 ```
 
-### Build the app for production
+### Build the app for Production
 
 ```bash
 quasar build
