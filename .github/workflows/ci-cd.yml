@@ -6,7 +6,6 @@ on:
     branches:
       - dev
       - main
-      - devops/add-ci-cd
 
 env:
   IMAGE_NAME: web_ui
