@@ -6,11 +6,11 @@ import {
   FusionAuthLoginBody,
   SuccessAuthLogin,
   SuccessAuthLoginChangePassword,
-  SuccessAuthLoginTwoFactor,
+  SuccessAuthLoginTwoFactor
 } from 'src/models/fusion-auth.models';
 import {
   AUTH_STATUS_CODES,
-  AUTH_TOKEN_NAMES,
+  AUTH_TOKEN_NAMES
 } from 'src/constants/fusion-auth.constants';
 
 type AuthStore = {
@@ -20,19 +20,17 @@ type AuthStore = {
 export const useFusionAuthStore = defineStore('fusion-auth', {
   state: () =>
     ({
-      userInfo: undefined,
+      userInfo: undefined
     } as AuthStore),
 
   getters: {
     isAuthenticated(state): boolean {
       return !!state.userInfo;
-    },
+    }
   },
 
   actions: {
-    async loginUser(
-      loginBody: FusionAuthLoginBody,
-    ): Promise<void> {
+    async loginUser(loginBody: FusionAuthLoginBody): Promise<void> {
       const response = await authenticateUser(loginBody);
       if (AUTH_STATUS_CODES.LOGIN.SUCCESS_CODES.includes(response.status)) {
         const successResponse = response.data as SuccessAuthLogin;
@@ -68,6 +66,6 @@ export const useFusionAuthStore = defineStore('fusion-auth', {
           JSON.stringify(this.userInfo.tokenExpirationInstant)
         );
       }
-    },
-  },
+    }
+  }
 });

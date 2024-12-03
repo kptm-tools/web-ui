@@ -4,15 +4,15 @@ import { useFusionAuthStore } from '../auth-store';
 import { authenticateUser } from 'src/services/fusion-auth.service';
 import {
   AUTH_STATUS_CODES,
-  AUTH_TOKEN_NAMES,
+  AUTH_TOKEN_NAMES
 } from 'src/constants/fusion-auth.constants';
 import {
   FusionAuthLoginBody,
-  SuccessAuthLoginUser,
+  SuccessAuthLoginUser
 } from 'src/models/fusion-auth.models';
 
 vi.mock('src/services/fusion-auth.service', () => ({
-  authenticateUser: vi.fn() as Mock,
+  authenticateUser: vi.fn() as Mock
 }));
 
 describe('FusionAuth Store', () => {
@@ -30,13 +30,13 @@ describe('FusionAuth Store', () => {
     changePasswordMsg: 'Need to change password',
     twoFactorMsg: 'Need to validate two factor',
     loginPreventedMsg: 'Login was prevented',
-    loginMalformedMsg: 'Login was malformed',
+    loginMalformedMsg: 'Login was malformed'
   };
 
   function mockAuthResponse(statusCode: number, responseData: object) {
     (authenticateUser as Mock).mockResolvedValueOnce({
       status: statusCode,
-      data: responseData,
+      data: responseData
     });
     return vi.spyOn(console, 'log');
   }
@@ -50,7 +50,7 @@ describe('FusionAuth Store', () => {
     store.userInfo = {
       token: 'mock-token',
       tokenExpirationInstant: Date.now(),
-      user: {} as SuccessAuthLoginUser,
+      user: {} as SuccessAuthLoginUser
     }; // Simulate a logged-in user
     expect(store.isAuthenticated).toBe(true); // Check the getter value
   });
@@ -58,7 +58,7 @@ describe('FusionAuth Store', () => {
   it('should login successfully and set userInfo', async () => {
     const mockUser = {
       token: 'mock-token',
-      tokenExpirationInstant: Date.now() + 3600 * 1000,
+      tokenExpirationInstant: Date.now() + 3600 * 1000
     };
     mockAuthResponse(AUTH_STATUS_CODES.LOGIN.SUCCESS_CODES[0], mockUser);
     await store.loginUser(authLoginPayload);
@@ -80,7 +80,7 @@ describe('FusionAuth Store', () => {
     await store.loginUser(authLoginPayload);
 
     expect(consoleSpy).toHaveBeenCalledWith(logMessages.changePasswordMsg, {
-      message: 'Change your password',
+      message: 'Change your password'
     });
     expect(store.userInfo).toBeUndefined();
   });
@@ -93,7 +93,7 @@ describe('FusionAuth Store', () => {
     await store.loginUser(authLoginPayload);
 
     expect(consoleSpy).toHaveBeenCalledWith(logMessages.twoFactorMsg, {
-      message: 'Two-factor required',
+      message: 'Two-factor required'
     });
     expect(store.userInfo).toBeUndefined();
   });
@@ -106,7 +106,7 @@ describe('FusionAuth Store', () => {
     await store.loginUser(authLoginPayload);
 
     expect(consoleSpy).toHaveBeenCalledWith(logMessages.loginPreventedMsg, {
-      message: 'Login prevented',
+      message: 'Login prevented'
     });
     expect(store.userInfo).toBeUndefined();
   });
@@ -119,7 +119,7 @@ describe('FusionAuth Store', () => {
     await store.loginUser({} as FusionAuthLoginBody);
 
     expect(consoleSpy).toHaveBeenCalledWith(logMessages.loginMalformedMsg, {
-      message: 'Malformed login',
+      message: 'Malformed login'
     });
     expect(store.userInfo).toBeUndefined();
   });
@@ -135,7 +135,7 @@ describe('FusionAuth Store', () => {
     const mockUser = {
       token: 'mock-token',
       tokenExpirationInstant: Date.now() + 3600 * 1000,
-      user: {} as SuccessAuthLoginUser,
+      user: {} as SuccessAuthLoginUser
     };
 
     // Mock the sessionStorage methods to spy on them

@@ -2,6 +2,22 @@
 // so you can safely delete all default props below
 
 export default {
-  failed: 'Action failed',
-  success: 'Action was successful',
+  auth: {
+    login: {
+      form: {
+        username: {
+          label: 'Your username',
+          required: 'Username is required'
+        },
+        password: {
+          label: 'Your password',
+          required: 'Password is required'
+        },
+        applicationId: {
+          label: 'Your App Id',
+          required: 'App Id is required'
+        }
+      }
+    }
+  }
 };
