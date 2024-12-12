@@ -16,7 +16,10 @@ export default {
         applicationId: {
           label: 'Your App Id',
           required: 'App Id is required'
-        }
+        },
+        submit: 'Submit',
+        forgotPassword: 'Forgot your password?',
+        cancel: 'Cancel'
       }
     }
   }

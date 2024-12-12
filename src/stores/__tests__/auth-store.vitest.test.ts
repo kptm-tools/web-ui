@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
 import { useFusionAuthStore } from '../auth-store';
-import { authenticateUser } from 'src/services/fusion-auth.service';
+import { authenticateUser } from 'src/services/auth.service';
 import {
   AUTH_STATUS_CODES,
   AUTH_TOKEN_NAMES

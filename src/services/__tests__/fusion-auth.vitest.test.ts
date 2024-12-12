@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { authenticateUser, logoutUser } from '../fusion-auth.service'; // Adjust path as needed
+import { authenticateUser, logoutUser } from '../auth.service'; // Adjust path as needed
 import { fusionAuthApi } from 'boot/axios';
 import {
   FusionAuthLoginBody,

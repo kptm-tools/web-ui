@@ -5,8 +5,11 @@ import {
   createWebHashHistory,
   createWebHistory
 } from 'vue-router';
+import { useFusionAuthStore } from 'stores/auth-store';
 
 import routes from './routes';
+import { getUser } from 'src/services/user.service';
+import { decodeJwt } from 'src/utils/auth.utils';
 
 /*
  * If not building with SSR mode, you can
@@ -32,6 +35,40 @@ export default route(function (/* { store, ssrContext } */) {
     // quasar.conf.js -> build -> vueRouterMode
     // quasar.conf.js -> build -> publicPath
     history: createHistory(process.env.VUE_ROUTER_BASE)
+  });
+
+  const authStore = useFusionAuthStore();
+
+  Router.beforeEach(async (to, from, next) => {
+    if (to.name !== 'Login' && !authStore.isAuthenticated) {
+      return next({ name: 'Login' });
+    }
+
+    if (to.name === 'Login') {
+      const accessToken = sessionStorage.getItem('access_token') || '';
+      const tokenExpirationInstant =
+        Number(sessionStorage.getItem('token_expiration_instant')) || 0;
+
+      authStore.setTokenInfo(accessToken, tokenExpirationInstant);
+      if (authStore.isAuthenticated) {
+        try {
+          // Fetch user data and update the store
+          const response = await getUser(decodeJwt(accessToken).sub);
+          authStore.setUserInfo({
+            token: accessToken,
+            tokenExpirationInstant,
+            user: response.data
+          });
+          return next({ name: 'Home' });
+        } catch (error) {
+          console.error('Error fetching user data:', error);
+        }
+      }
+
+      return next();
+    }
+
+    next();
   });
 
   return Router;
