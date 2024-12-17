@@ -1,5 +1,7 @@
 import { fusionAuthApi } from 'src/boot/axios';
 import {
+  ChangePasswordBody,
+  ForgotPasswordBody,
   FusionAuthLoginBody,
   FusionAuthLoginResponse,
   FusionAuthLogout,
@@ -18,4 +20,16 @@ export function logoutUser(
   headers?: FusionAuthLogoutHeaders
 ): Promise<AxiosResponse<void>> {
   return fusionAuthApi.post<void>('/api/logout', body, { headers });
+}
+
+export function changePassword(
+  body: ChangePasswordBody
+): Promise<AxiosResponse> {
+  return fusionAuthApi.post('/api/change-password', body);
+}
+
+export function forgotPassword(
+  body: ForgotPasswordBody
+): Promise<AxiosResponse> {
+  return fusionAuthApi.post('/api/forgot-password', body);
 }

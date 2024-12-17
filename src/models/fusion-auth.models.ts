@@ -93,6 +93,31 @@ export interface FusionAuthErrorResponse {
   fieldErrors: FieldErrors;
 }
 
+export interface CreateUserBody {
+  firstname: string;
+  lastname: string;
+  email: string;
+  password: string;
+  applicationId: string;
+  roles: string[];
+}
+
+export interface VerifyEmailBody {
+  verification_id: string;
+}
+
+export interface ChangePasswordBody {
+  login_id: string;
+  password: string;
+  change_password_id: string;
+  application_id: string;
+}
+
+export interface ForgotPasswordBody {
+  loginId: string;
+  applicationId: string;
+}
+
 interface ErrorDetail {
   code: string;
   message: string;
