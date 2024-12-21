@@ -1,7 +1,7 @@
 import { AxiosHeaders } from 'axios';
 
 export interface FusionAuthLoginBody {
-  applicationId?: string;
+  application_id?: string;
   ipAddress?: string;
   loginId: string;
   metaData?: FusionAuthMetaData;
@@ -114,8 +114,8 @@ export interface ChangePasswordBody {
 }
 
 export interface ForgotPasswordBody {
-  loginId: string;
-  applicationId: string;
+  login_id: string;
+  application_id: string;
 }
 
 interface ErrorDetail {

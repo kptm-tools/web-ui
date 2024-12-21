@@ -22,7 +22,7 @@ describe('FusionAuth API Service', () => {
     it('should call the /api/login endpoint with the correct parameters', async () => {
       // Arrange
       const body: FusionAuthLoginBody = {
-        applicationId: 'appId',
+        application_id: 'appId',
         loginId: 'testuser',
         password: 'testpassword'
       };

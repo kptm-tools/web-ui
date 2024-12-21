@@ -52,7 +52,6 @@ export default route(function (/* { store, ssrContext } */) {
       authStore.setTokenInfo(accessToken, tokenExpirationInstant);
       if (authStore.isAuthenticated) {
         try {
-          // Fetch user data and update the store
           const response = await getUser(decodeJwt(accessToken).sub);
           authStore.setUserInfo({
             token: accessToken,

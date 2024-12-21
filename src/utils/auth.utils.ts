@@ -75,7 +75,7 @@ export function isTokenExpired(timeStamp: number): boolean {
   return now.getTime() > expirationInstantDate.getTime();
 }
 
-export function requiredRules(message: string) {
+export function requiredRules(message: string): ValidationRule[] {
   return [(val: ValidationRule) => !!val || message];
 }
 

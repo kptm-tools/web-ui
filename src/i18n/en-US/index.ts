@@ -9,6 +9,18 @@ export default {
           label: 'Your username',
           required: 'Username is required'
         },
+        firstname: {
+          label: 'Your firstname',
+          required: 'Firstname is required'
+        },
+        lastname: {
+          label: 'Your lastname',
+          required: 'Lastname is required'
+        },
+        email: {
+          label: 'Your email',
+          required: 'Email is required'
+        },
         password: {
           label: 'Your password',
           required: 'Password is required'
@@ -17,6 +29,13 @@ export default {
           label: 'Your App Id',
           required: 'App Id is required'
         },
+        changePasswordId: {
+          label: 'Your Change Password ID',
+          required: 'Change Password ID is required'
+        },
+        loginTitle: 'Log In',
+        recoverPasswordTitle: 'Recover Password',
+        changePasswordTitle: 'Change Password',
         submit: 'Submit',
         forgotPassword: 'Forgot your password?',
         cancel: 'Cancel'
