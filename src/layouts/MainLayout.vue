@@ -24,15 +24,15 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+  import { ref } from 'vue';
 
-defineOptions({
-  name: 'MainLayout',
-});
+  defineOptions({
+    name: 'MainLayout'
+  });
 
-const leftDrawerOpen = ref(false);
+  const leftDrawerOpen = ref(false);
 
-function toggleLeftDrawer() {
-  leftDrawerOpen.value = !leftDrawerOpen.value;
-}
+  function toggleLeftDrawer() {
+    leftDrawerOpen.value = !leftDrawerOpen.value;
+  }
 </script>

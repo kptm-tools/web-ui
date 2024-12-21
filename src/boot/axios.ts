@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 import {
   AUTH_TOKEN_NAMES,
-  UNPROTECTED_PATHS,
+  UNPROTECTED_PATHS
 } from 'src/constants/fusion-auth.constants';
 
 declare module 'vue' {
@@ -14,7 +14,7 @@ declare module 'vue' {
 const fusionAuthApi = axios.create({ baseURL: process.env.FUSION_SERVER_URL });
 
 const isUnprotected = (url: string): boolean => {
-  return UNPROTECTED_PATHS.some((endpoint) => url.includes(endpoint));
+  return UNPROTECTED_PATHS.some(endpoint => url.includes(endpoint));
 };
 
 fusionAuthApi.interceptors.request.use(
@@ -29,7 +29,7 @@ fusionAuthApi.interceptors.request.use(
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  error => Promise.reject(error)
 );
 
 export { fusionAuthApi };

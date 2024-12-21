@@ -1,53 +1,55 @@
 <template>
-  <div class="content-container">
-    <div class="q-px-md q-py-md q-mx-auto" style="max-width: 400px">
-      <q-form ref="loginForm" class="q-gutter-md" greedy @submit="onSubmit">
-        <q-input
-          v-model="userName"
-          :rules="[(val) => !!val || 'Field is required']"
-          filled
-          label="Your username"
-        />
-
-        <q-input
-          v-model="password"
-          :rules="[(val) => !!val || 'Field is required']"
-          filled
-          label="Your Password"
-        />
-
-        <q-input
-          v-model="appId"
-          :rules="[(val) => !!val || 'Field is required']"
-          filled
-          label="Your App Id"
-        />
-
-        <div>
-          <q-btn color="primary" label="Submit" type="submit" />
-        </div>
-      </q-form>
+  <div class="content-container q-pa-md">
+    <div class="text-center q-mb-md">
+      <q-btn color="primary" @click="logout">Logout</q-btn>
     </div>
+
+    <table
+      v-if="userInformation"
+      border="1"
+      cellpadding="8"
+      style="max-width: 800px; margin: 0 auto; overflow: hidden"
+    >
+      <thead>
+        <tr>
+          <th>Field</th>
+          <th>Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(value, key) in userInformation" :key="key">
+          <td>{{ key }}</td>
+          <td>
+            <pre v-if="typeof value === 'object'">{{
+              JSON.stringify(value, null, 2)
+            }}</pre>
+            <span
+              v-else
+              style="
+                max-width: 200px;
+                white-space: pre-wrap;
+                word-break: break-word;
+              "
+              >{{ value }}</span
+            >
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
 <script setup lang="ts">
-import { Ref, ref } from 'vue';
-import { useFusionAuthStore } from 'stores/auth-store';
-import { FusionAuthLoginBody } from 'src/models/fusion-auth.models';
+  import { useFusionAuthStore } from 'stores/auth-store';
+  import { computed } from 'vue';
+  import { useRouter } from 'vue-router';
 
-const fusionAuthStore = useFusionAuthStore();
+  const fusionAuthStore = useFusionAuthStore();
+  const userInformation = computed(() => fusionAuthStore.getUserInfo);
+  const router = useRouter();
 
-const userName: Ref<string> = ref('analyst@example.com');
-const password: Ref<string> = ref('password');
-const appId: Ref<string> = ref('31dd1baa-fc82-42ff-8e0b-5c522bb3d70c');
-
-async function onSubmit() {
-  const loginUserBody: FusionAuthLoginBody = {
-    loginId: userName.value,
-    password: password.value,
-    applicationId: appId.value,
-  };
-  await fusionAuthStore.loginUser(loginUserBody);
-}
+  async function logout(): Promise<void> {
+    await fusionAuthStore.logoutUser();
+    await router.push('/login');
+  }
 </script>

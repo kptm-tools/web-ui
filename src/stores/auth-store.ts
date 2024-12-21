@@ -1,73 +1,88 @@
-import { authenticateUser } from 'src/services/fusion-auth.service';
+import {
+  authenticateUser,
+  forgotPassword,
+  changePassword
+} from 'src/services/auth.service';
 import { defineStore } from 'pinia';
 import {
-  ErrorAuthLoginPrevent,
-  FusionAuthErrorResponse,
+  ChangePasswordBody,
+  ForgotPasswordBody,
   FusionAuthLoginBody,
-  SuccessAuthLogin,
-  SuccessAuthLoginChangePassword,
-  SuccessAuthLoginTwoFactor,
+  SuccessAuthLogin
 } from 'src/models/fusion-auth.models';
 import {
-  AUTH_STATUS_CODES,
-  AUTH_TOKEN_NAMES,
-} from 'src/constants/fusion-auth.constants';
+  clearSessionStorageUserInfo,
+  errorLoginResponseHandler,
+  isTokenExpired,
+  setSessionStorageUserInfo,
+  successLoginResponseHandler
+} from 'src/utils/auth.utils';
 
 type AuthStore = {
   userInfo: SuccessAuthLogin | undefined;
+  token: string;
+  tokenExpirationInstant: number;
 };
 
 export const useFusionAuthStore = defineStore('fusion-auth', {
   state: () =>
     ({
       userInfo: undefined,
+      token: '',
+      tokenExpirationInstant: 0
     } as AuthStore),
 
   getters: {
     isAuthenticated(state): boolean {
-      return !!state.userInfo;
+      const isExpired = isTokenExpired(Number(state.tokenExpirationInstant));
+      return !isExpired;
     },
+    getUserInfo(state): SuccessAuthLogin | undefined {
+      return state.userInfo;
+    }
   },
 
   actions: {
-    async loginUser(
-      loginBody: FusionAuthLoginBody,
-    ): Promise<void> {
-      const response = await authenticateUser(loginBody);
-      if (AUTH_STATUS_CODES.LOGIN.SUCCESS_CODES.includes(response.status)) {
-        const successResponse = response.data as SuccessAuthLogin;
-        this.setUserInfo(successResponse);
-      } else if (
-        response.status === AUTH_STATUS_CODES.LOGIN.CHANGE_PASSWORD_CODE
-      ) {
-        const successChangePassword =
-          response.data as SuccessAuthLoginChangePassword;
-        console.log('Need to change password', successChangePassword);
-      } else if (response.status === AUTH_STATUS_CODES.LOGIN.TWO_FACTOR_CODE) {
-        const successTwoFactor = response.data as SuccessAuthLoginTwoFactor;
-        console.log('Need to validate two factor', successTwoFactor);
-      } else if (
-        response.status === AUTH_STATUS_CODES.LOGIN.PREVENT_LOGIN_CODE
-      ) {
-        const errorLoginPrevent = response.data as ErrorAuthLoginPrevent;
-        console.log('Login was prevented', errorLoginPrevent);
-      } else if (response.status === AUTH_STATUS_CODES.LOGIN.MALFORMED_CODE) {
-        const errorLoginMalformed = response.data as FusionAuthErrorResponse;
-        console.log('Login was malformed', errorLoginMalformed);
+    async loginUser(loginBody: FusionAuthLoginBody): Promise<void> {
+      try {
+        const response = await authenticateUser(loginBody);
+        successLoginResponseHandler(response.status, response.data);
+      } catch (error) {
+        errorLoginResponseHandler(error);
+      }
+    },
+    async recoverPassword(body: ForgotPasswordBody): Promise<void> {
+      try {
+        await forgotPassword(body);
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    async changePassword(body: ChangePasswordBody): Promise<void> {
+      try {
+        await changePassword(body);
+      } catch (error) {
+        console.error(error);
       }
     },
     setUserInfo(userInfo: SuccessAuthLogin | undefined): void {
       this.userInfo = userInfo;
       if (this.userInfo) {
-        sessionStorage.setItem(
-          AUTH_TOKEN_NAMES.ACCESS_TOKEN,
-          JSON.stringify(this.userInfo.token)
-        );
-        sessionStorage.setItem(
-          AUTH_TOKEN_NAMES.TOKEN_EXPIRATION_INSTANT,
-          JSON.stringify(this.userInfo.tokenExpirationInstant)
+        setSessionStorageUserInfo(
+          this.userInfo.token,
+          this.userInfo.tokenExpirationInstant
         );
       }
     },
-  },
+    setTokenInfo(token: string, expirationInstant: number): void {
+      this.token = token;
+      this.tokenExpirationInstant = expirationInstant;
+    },
+    async logoutUser(): Promise<void> {
+      clearSessionStorageUserInfo();
+      this.token = '';
+      this.tokenExpirationInstant = 0;
+      this.userInfo = undefined;
+    }
+  }
 });

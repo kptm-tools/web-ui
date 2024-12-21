@@ -8,6 +8,7 @@
 // Configuration for your app
 // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js
 
+
 const { configure } = require('quasar/wrappers');
 const path = require('path');
 
@@ -40,6 +41,22 @@ module.exports = configure(function (/* ctx */) {
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#build
     build: {
+      chainWebpack: chain => {
+        chain.module
+          .rule('i18n-resource')
+          .test(/\.(json5?|ya?ml)$/)
+          .include.add(path.resolve(__dirname, './src/i18n'))
+          .end()
+          .type('javascript/auto')
+          .use('i18n-resource')
+          .loader('@intlify/vue-i18n-loader');
+        chain.module
+          .rule('i18n')
+          .resourceQuery(/blockType=i18n/)
+          .type('javascript/auto')
+          .use('i18n')
+          .loader('@intlify/vue-i18n-loader');
+      },
       target: {
         browser: ['es2019', 'edge88', 'firefox78', 'chrome87', 'safari13.1'],
         node: 'node20',
@@ -77,29 +94,29 @@ module.exports = configure(function (/* ctx */) {
             // runtimeOnly: false,
 
             // you need to set i18n resource including paths !
-            include: path.resolve(__dirname, './src/i18n/**'),
-          },
+            include: path.resolve(__dirname, './src/i18n/**')
+          }
         ],
         [
           'vite-plugin-checker',
           {
             vueTsc: {
-              tsconfigPath: 'tsconfig.vue-tsc.json',
+              tsconfigPath: 'tsconfig.vue-tsc.json'
             },
             eslint: {
-              lintCommand: 'eslint "./**/*.{js,ts,mjs,cjs,vue}"',
-            },
+              lintCommand: 'eslint "./**/*.{js,ts,mjs,cjs,vue}"'
+            }
           },
-          { server: false },
-        ],
-      ],
+          { server: false }
+        ]
+      ]
     },
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#devServer
     devServer: {
       // https: true
       open: true, // opens browser window automatically,
-      port: 5173,
+      port: 5173
     },
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#framework
@@ -117,7 +134,7 @@ module.exports = configure(function (/* ctx */) {
       // directives: [],
 
       // Quasar plugins
-      plugins: [],
+      plugins: ['Notify']
     },
 
     // animations: 'all', // --- includes all animations
@@ -153,8 +170,8 @@ module.exports = configure(function (/* ctx */) {
       // (gets superseded if process.env.PORT is specified at runtime)
 
       middlewares: [
-        'render', // keep this as last one
-      ],
+        'render' // keep this as last one
+      ]
     },
 
     // https://v2.quasar.dev/quasar-cli-vite/developing-pwa/configuring-pwa
@@ -163,7 +180,7 @@ module.exports = configure(function (/* ctx */) {
       injectPwaMetaTags: true,
       swFilename: 'sw.js',
       manifestFilename: 'manifest.json',
-      useCredentialsForManifestTag: false,
+      useCredentialsForManifestTag: false
       // useFilenameHashes: true,
       // extendGenerateSWOptions (cfg) {}
       // extendInjectManifestOptions (cfg) {},
@@ -178,7 +195,7 @@ module.exports = configure(function (/* ctx */) {
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/developing-capacitor-apps/configuring-capacitor
     capacitor: {
-      hideSplashscreen: true,
+      hideSplashscreen: true
     },
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/developing-electron-apps/configuring-electron
@@ -192,11 +209,13 @@ module.exports = configure(function (/* ctx */) {
 
       packager: {
         // https://github.com/electron-userland/electron-packager/blob/master/docs/api.md#options
+
         // OS X / Mac App Store
         // appBundleId: '',
         // appCategoryType: '',
         // osxSign: '',
         // protocol: 'myapp://path',
+
         // Windows only
         // win32metadata: { ... }
       },
@@ -204,16 +223,16 @@ module.exports = configure(function (/* ctx */) {
       builder: {
         // https://www.electron.build/configuration/configuration
 
-        appId: 'web-ui',
-      },
+        appId: 'web-ui'
+      }
     },
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/developing-browser-extensions/configuring-bex
     bex: {
-      contentScripts: ['my-content-script'],
+      contentScripts: ['my-content-script']
 
       // extendBexScriptsConf (esbuildConf) {}
       // extendBexManifestJson (json) {}
-    },
+    }
   };
 });
