@@ -1,4 +1,5 @@
 import axios, { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
+import { Loading, Notify } from 'quasar';
 import {
   AUTH_TOKEN_NAMES,
   UNPROTECTED_PATHS
@@ -19,17 +20,34 @@ const isUnprotected = (url: string): boolean => {
 
 fusionAuthApi.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
+    Loading.show();
     if (!isUnprotected(config.url || '')) {
       const token = sessionStorage.getItem(AUTH_TOKEN_NAMES.ACCESS_TOKEN);
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }
-    } else {
-      console.warn('No token found for protected endpoint.');
     }
     return config;
   },
   error => Promise.reject(error)
+);
+
+// Add a response interceptor
+fusionAuthApi.interceptors.response.use(
+  response => {
+    Loading.hide();
+    return response;
+  },
+  error => {
+    Loading.hide();
+    if (error.config && error.config.method === 'post') {
+      Notify.create({
+        message: error.response?.data.error,
+        color: 'negative'
+      });
+    }
+    return Promise.reject(error);
+  }
 );
 
 export { fusionAuthApi };

@@ -24,7 +24,7 @@ export const inputForms: InputFormContainer = {
       }
     ],
     submitText: 'auth.login.form.loginTitle',
-    secondaryText: 'auth.login.form.forgotPassword'
+    secondaryText: 'Register'
   },
   changePasswordForm: {
     inputs: [
@@ -110,7 +110,7 @@ export const inputForms: InputFormContainer = {
         requiredMessage: 'auth.login.form.applicationId.required'
       }
     ],
-    title: 'Register',
-    submitText: 'Submit'
+    submitText: 'Submit',
+    secondaryText: 'cancelar'
   }
 };
