@@ -13,6 +13,7 @@
   import { useRouter } from 'vue-router';
   import { useFusionAuthStore } from 'src/stores/auth-store';
   import { CreateUserBody } from 'src/models/fusion-auth.models';
+  import { ROUTES_NAMES } from 'src/router/routes-names';
 
   const router = useRouter();
   const store = useFusionAuthStore();
@@ -22,7 +23,7 @@
   }
 
   function goLogin(): void {
-    router.push({ name: 'Login' });
+    router.push({ name: ROUTES_NAMES.login });
   }
 </script>
 

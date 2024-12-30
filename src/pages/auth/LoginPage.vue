@@ -27,41 +27,28 @@
   import { inputForms } from 'src/constants/form.constants';
   import { useFusionAuthStore } from 'stores/auth-store';
   import { FusionAuthLoginBody } from 'src/models/fusion-auth.models';
-  import { useRoute, useRouter } from 'vue-router';
-  import { ref, Ref, watch } from 'vue';
+  import { useRouter } from 'vue-router';
+  import { ref, Ref } from 'vue';
   import { BodyForm } from 'src/models/form.models';
+  import { ROUTES_NAMES } from 'src/router/routes-names';
 
   const fusionAuthStore = useFusionAuthStore();
   const router = useRouter();
-  const route = useRoute();
 
   const remember: Ref<boolean> = ref(false);
 
   async function loginHandler(body: BodyForm): Promise<void> {
     await fusionAuthStore.loginUser(body as unknown as FusionAuthLoginBody);
-    await router.push({ name: 'Home' });
+    await router.push({ name: ROUTES_NAMES.home });
   }
 
   async function goRecoverHandler() {
-    await router.push({ name: 'RecoverPassword' });
+    await router.push({ name: ROUTES_NAMES.recoverPassword });
   }
 
   async function goRegisterUserHandler() {
-    await router.push({ name: 'RegisterUser' });
+    await router.push({ name: ROUTES_NAMES.registerUser });
   }
-
-  async function goCancelRecoverHandler() {
-    await router.push({ name: 'Login' });
-  }
-
-  watch(
-    () => route.query.recover,
-    newValue => {
-      if (newValue !== 'true') {
-        goCancelRecoverHandler();
-      }
-    }
-  );
 </script>
 
 <style scoped lang="scss">

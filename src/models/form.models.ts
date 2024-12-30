@@ -23,4 +23,5 @@ export type RegularFormTypes =
   | 'loginForm'
   | 'registerForm'
   | 'forgotPasswordForm'
-  | 'changePasswordForm';
+  | 'changePasswordForm'
+  | 'resetPasswordForm';
