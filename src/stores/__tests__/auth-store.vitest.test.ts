@@ -1,15 +1,7 @@
 import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
 import { useFusionAuthStore } from '../auth-store';
-import { authenticateUser } from 'src/services/auth.service';
-import {
-  AUTH_STATUS_CODES,
-  AUTH_TOKEN_NAMES
-} from 'src/constants/fusion-auth.constants';
-import {
-  FusionAuthLoginBody,
-  SuccessAuthLoginUser
-} from 'src/models/fusion-auth.models';
+import { SuccessAuthLoginUser } from 'src/models/fusion-auth.models';
 
 vi.mock('src/services/fusion-auth.service', () => ({
   authenticateUser: vi.fn() as Mock
@@ -24,22 +16,6 @@ describe('FusionAuth Store', () => {
     vi.clearAllMocks();
     sessionStorage.clear();
   });
-
-  const authLoginPayload = { loginId: 'test', password: 'password' };
-  const logMessages = {
-    changePasswordMsg: 'Need to change password',
-    twoFactorMsg: 'Need to validate two factor',
-    loginPreventedMsg: 'Login was prevented',
-    loginMalformedMsg: 'Login was malformed'
-  };
-
-  function mockAuthResponse(statusCode: number, responseData: object) {
-    (authenticateUser as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
-      status: statusCode,
-      data: responseData
-    });
-    return vi.spyOn(console, 'log'); // Optionally spy on console.log
-  }
 
   it('should return false when userInfo is undefined', () => {
     store.userInfo = undefined; // Simulate no user logged in
