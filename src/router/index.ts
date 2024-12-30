@@ -40,7 +40,7 @@ export default route(function (/* { store, ssrContext } */) {
   const authStore = useFusionAuthStore();
 
   Router.beforeEach(async (to, from, next) => {
-    if (to.name !== 'Login' && !authStore.isAuthenticated) {
+    if (!to.fullPath.includes('auth') && !authStore.isAuthenticated) {
       return next({ name: 'Login' });
     }
 
@@ -68,6 +68,10 @@ export default route(function (/* { store, ssrContext } */) {
     }
 
     next();
+  });
+
+  Router.afterEach(to => {
+    document.title = to.meta.title as string;
   });
 
   return Router;

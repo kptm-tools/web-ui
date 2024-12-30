@@ -1,109 +1,54 @@
 <template>
-  <div class="q-px-md q-py-md q-mx-auto fullscreen login-container">
-    <div class="row full-height q-pa-xl justify-center">
-      <div
-        class="gt-md col-8 login-left text-white flex column justify-center d-"
-      >
-        <div class="text q-mb-xl">
-          <p class="title">
-            {{
-              isRecoverForm
-                ? $t('auth.login.form.recoverPasswordTitle')
-                : $t('auth.login.form.loginTitle')
-            }}
-          </p>
-          <p class="subtitle">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt.
-          </p>
-        </div>
-
-        <div class="flex items-center full-width">
-          <span class="q-mr-md">Powered by</span>
-          <img
-            src="../../assets/logos/aynitech-logo.svg"
-            alt="Aynitech Logo"
-            class="logo"
+  <form-regular
+    :form-body="inputForms.loginForm"
+    @submit="loginHandler"
+    @secondary-button="goRegisterUserHandler"
+  >
+    <template #aux-buttons>
+      <div class="flex justify-between">
+        <div>
+          <q-checkbox
+            v-model="remember"
+            color="grey-7"
+            dense
+            label="Remember"
           />
         </div>
+        <div>
+          <q-btn flat label="Forgot your password?" @click="goRecoverHandler" />
+        </div>
       </div>
-      <div class="col-12 col-md-8 col-lg-4 flex column justify-center q-pl-lg">
-        <q-card class="login-card">
-          <q-card-section class="text-center">
-            <img
-              src="../../assets/logos/kriptone-logo.svg"
-              alt="Aynitech Logo"
-              class="logo"
-            />
-          </q-card-section>
-
-          <q-card-section class="q-mt-lg">
-            <form-regular
-              v-if="isRecoverForm"
-              :form-body="inputForms.forgotPasswordForm"
-              @submit="recoverHandler"
-              @secondary-button="goCancelRecoverHandler"
-            />
-
-            <form-regular
-              v-else
-              :form-body="inputForms.loginForm"
-              @submit="loginHandler"
-              @secondary-button="goRecoverHandler"
-            />
-          </q-card-section>
-        </q-card>
-      </div>
-    </div>
-  </div>
+    </template>
+  </form-regular>
 </template>
 
 <script lang="ts" setup>
   import FormRegular from 'src/components/Form/FormRegular.vue';
   import { inputForms } from 'src/constants/form.constants';
   import { useFusionAuthStore } from 'stores/auth-store';
-  import {
-    ForgotPasswordBody,
-    FusionAuthLoginBody
-  } from 'src/models/fusion-auth.models';
-  import { useRoute, useRouter } from 'vue-router';
-  import { computed, ComputedRef, watch } from 'vue';
+  import { FusionAuthLoginBody } from 'src/models/fusion-auth.models';
+  import { useRouter } from 'vue-router';
+  import { ref, Ref } from 'vue';
   import { BodyForm } from 'src/models/form.models';
+  import { ROUTES_NAMES } from 'src/router/routes-names';
 
   const fusionAuthStore = useFusionAuthStore();
   const router = useRouter();
-  const route = useRoute();
-  const isRecoverForm: ComputedRef<boolean> = computed(
-    () => route.query.recover === 'true'
-  );
+
+  const remember: Ref<boolean> = ref(false);
 
   async function loginHandler(body: BodyForm): Promise<void> {
     await fusionAuthStore.loginUser(body as unknown as FusionAuthLoginBody);
-    await router.push({ name: 'Home' });
-  }
-
-  async function recoverHandler(body: BodyForm): Promise<void> {
-    await fusionAuthStore.recoverPassword(
-      body as unknown as ForgotPasswordBody
-    );
+    await router.push({ name: ROUTES_NAMES.home });
   }
 
   async function goRecoverHandler() {
-    await router.replace({ query: { recover: 'true' } });
+    await router.push({ name: ROUTES_NAMES.recoverPassword });
   }
 
-  async function goCancelRecoverHandler() {
-    await router.replace({ query: undefined });
+  async function goRegisterUserHandler() {
+    await router.push({ name: ROUTES_NAMES.registerUser });
   }
-
-  watch(
-    () => route.query.recover,
-    newValue => {
-      if (newValue !== 'true') {
-        goCancelRecoverHandler();
-      }
-    }
-  );
 </script>
 
 <style scoped lang="scss">

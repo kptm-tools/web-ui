@@ -17,20 +17,21 @@
       />
     </template>
 
+    <slot name="aux-buttons"></slot>
+
     <div class="flex justify-between">
       <template v-if="props.formBody.secondaryText">
         <q-btn
           :label="$t(props.formBody.secondaryText || '')"
-          color="primary"
-          flat
+          class="secondary-button text-primary"
           @click="$emit('secondary-button')"
         />
       </template>
-
       <q-btn
         :label="$t(props.formBody.submitText)"
         color="primary"
         type="submit"
+        class="primary-button"
       />
     </div>
   </q-form>
@@ -62,4 +63,13 @@
   }
 </script>
 
-<style scoped></style>
+<style scoped>
+  .primary-button {
+    flex: 1;
+    margin-left: 0.4em;
+  }
+
+  .secondary-button {
+    flex: 1;
+  }
+</style>

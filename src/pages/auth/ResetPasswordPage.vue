@@ -1,27 +1,25 @@
 <template>
   <form-regular
-    :form-body="inputForms.forgotPasswordForm"
+    :form-body="inputForms.resetPasswordForm"
     @submit="changePasswordHandler"
     @secondary-button="goLogin"
   />
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
+  import FormRegular from 'src/components/Form/FormRegular.vue';
   import { inputForms } from 'src/constants/form.constants';
   import { BodyForm } from 'src/models/form.models';
   import { ChangePasswordBody } from 'src/models/fusion-auth.models';
   import { useFusionAuthStore } from 'src/stores/auth-store';
-  import FormRegular from 'src/components/Form/FormRegular.vue';
   import { useRouter } from 'vue-router';
   import { ROUTES_NAMES } from 'src/router/routes-names';
 
-  const fusionAuthStore = useFusionAuthStore();
   const router = useRouter();
+  const store = useFusionAuthStore();
 
-  async function changePasswordHandler(body: BodyForm): Promise<void> {
-    await fusionAuthStore.recoverPassword(
-      body as unknown as ChangePasswordBody
-    );
+  function changePasswordHandler(body: BodyForm): void {
+    store.changePassword(body as unknown as ChangePasswordBody);
   }
 
   function goLogin(): void {

@@ -1,18 +1,19 @@
 import {
   authenticateUser,
-  forgotPassword,
-  changePassword
+  changePassword,
+  forgotPassword
 } from 'src/services/auth.service';
+import { createUser } from 'src/services/user.service';
 import { defineStore } from 'pinia';
 import {
   ChangePasswordBody,
+  CreateUserBody,
   ForgotPasswordBody,
   FusionAuthLoginBody,
   SuccessAuthLogin
 } from 'src/models/fusion-auth.models';
 import {
   clearSessionStorageUserInfo,
-  errorLoginResponseHandler,
   isTokenExpired,
   setSessionStorageUserInfo,
   successLoginResponseHandler
@@ -48,7 +49,15 @@ export const useFusionAuthStore = defineStore('fusion-auth', {
         const response = await authenticateUser(loginBody);
         successLoginResponseHandler(response.status, response.data);
       } catch (error) {
-        errorLoginResponseHandler(error);
+        console.error(error);
+      }
+    },
+    async registerUser(body: CreateUserBody): Promise<void> {
+      try {
+        const response = await createUser(body);
+        console.info('User created:', response);
+      } catch (error) {
+        console.error(error);
       }
     },
     async recoverPassword(body: ForgotPasswordBody): Promise<void> {
