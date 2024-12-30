@@ -4,6 +4,7 @@ import {
   AUTH_TOKEN_NAMES,
   UNPROTECTED_PATHS
 } from 'src/constants/fusion-auth.constants';
+import { getErrorMessage } from 'src/utils/axios.utils';
 
 declare module 'vue' {
   interface ComponentCustomProperties {
@@ -42,7 +43,7 @@ fusionAuthApi.interceptors.response.use(
     Loading.hide();
     if (error.config && error.config.method === 'post') {
       Notify.create({
-        message: error.response?.data.error,
+        message: getErrorMessage(error.response?.status || 500),
         color: 'negative'
       });
     }

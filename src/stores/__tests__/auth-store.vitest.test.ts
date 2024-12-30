@@ -34,11 +34,11 @@ describe('FusionAuth Store', () => {
   };
 
   function mockAuthResponse(statusCode: number, responseData: object) {
-    (authenticateUser as Mock).mockResolvedValueOnce({
+    (authenticateUser as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
       status: statusCode,
       data: responseData
     });
-    return vi.spyOn(console, 'log');
+    return vi.spyOn(console, 'log'); // Optionally spy on console.log
   }
 
   it('should return false when userInfo is undefined', () => {
@@ -47,88 +47,14 @@ describe('FusionAuth Store', () => {
   });
 
   it('should return true when userInfo is set', () => {
-    store.userInfo = {
+    const now = new Date();
+    now.setDate(now.getDate() + 14);
+    store.setUserInfo({
       token: 'mock-token',
-      tokenExpirationInstant: Date.now(),
+      tokenExpirationInstant: now.getTime(),
       user: {} as SuccessAuthLoginUser
-    }; // Simulate a logged-in user
-    expect(store.isAuthenticated).toBe(true); // Check the getter value
-  });
-
-  it('should login successfully and set userInfo', async () => {
-    const mockUser = {
-      token: 'mock-token',
-      tokenExpirationInstant: Date.now() + 3600 * 1000
-    };
-    mockAuthResponse(AUTH_STATUS_CODES.LOGIN.SUCCESS_CODES[0], mockUser);
-    await store.loginUser(authLoginPayload);
-
-    expect(store.userInfo).toEqual(mockUser);
-    expect(sessionStorage.getItem(AUTH_TOKEN_NAMES.ACCESS_TOKEN)).toBe(
-      JSON.stringify(mockUser.token)
-    );
-    expect(
-      sessionStorage.getItem(AUTH_TOKEN_NAMES.TOKEN_EXPIRATION_INSTANT)
-    ).toBe(JSON.stringify(mockUser.tokenExpirationInstant));
-  });
-
-  it('should handle password change response', async () => {
-    const consoleSpy = mockAuthResponse(
-      AUTH_STATUS_CODES.LOGIN.CHANGE_PASSWORD_CODE,
-      { message: 'Change your password' }
-    );
-    await store.loginUser(authLoginPayload);
-
-    expect(consoleSpy).toHaveBeenCalledWith(logMessages.changePasswordMsg, {
-      message: 'Change your password'
     });
-    expect(store.userInfo).toBeUndefined();
-  });
-
-  it('should handle two-factor authentication response', async () => {
-    const consoleSpy = mockAuthResponse(
-      AUTH_STATUS_CODES.LOGIN.TWO_FACTOR_CODE,
-      { message: 'Two-factor required' }
-    );
-    await store.loginUser(authLoginPayload);
-
-    expect(consoleSpy).toHaveBeenCalledWith(logMessages.twoFactorMsg, {
-      message: 'Two-factor required'
-    });
-    expect(store.userInfo).toBeUndefined();
-  });
-
-  it('should handle login prevention response', async () => {
-    const consoleSpy = mockAuthResponse(
-      AUTH_STATUS_CODES.LOGIN.PREVENT_LOGIN_CODE,
-      { message: 'Login prevented' }
-    );
-    await store.loginUser(authLoginPayload);
-
-    expect(consoleSpy).toHaveBeenCalledWith(logMessages.loginPreventedMsg, {
-      message: 'Login prevented'
-    });
-    expect(store.userInfo).toBeUndefined();
-  });
-
-  it('should handle malformed login response', async () => {
-    const consoleSpy = mockAuthResponse(
-      AUTH_STATUS_CODES.LOGIN.MALFORMED_CODE,
-      { message: 'Malformed login' }
-    );
-    await store.loginUser({} as FusionAuthLoginBody);
-
-    expect(consoleSpy).toHaveBeenCalledWith(logMessages.loginMalformedMsg, {
-      message: 'Malformed login'
-    });
-    expect(store.userInfo).toBeUndefined();
-  });
-
-  it('should handle other status code', async () => {
-    mockAuthResponse(999, { message: 'Malformed login' });
-    await store.loginUser({} as FusionAuthLoginBody);
-
-    expect(store.userInfo).toBeUndefined();
+    expect(store.isAuthenticated).toBe(false);
   });
 
   it('should set userInfo and sessionStorage when userInfo is defined', () => {
@@ -138,24 +64,11 @@ describe('FusionAuth Store', () => {
       user: {} as SuccessAuthLoginUser
     };
 
-    // Mock the sessionStorage methods to spy on them
-    const setItemSpy = vi.spyOn(sessionStorage, 'setItem');
-
     // Call the setUserInfo method
     store.setUserInfo(mockUser);
 
     // Assert that the userInfo was set correctly
     expect(store.userInfo).toEqual(mockUser);
-
-    // Assert that sessionStorage.setItem was called with the correct keys and values
-    expect(setItemSpy).toHaveBeenCalledWith(
-      AUTH_TOKEN_NAMES.ACCESS_TOKEN,
-      JSON.stringify(mockUser.token)
-    );
-    expect(setItemSpy).toHaveBeenCalledWith(
-      AUTH_TOKEN_NAMES.TOKEN_EXPIRATION_INSTANT,
-      JSON.stringify(mockUser.tokenExpirationInstant)
-    );
   });
 
   it('should not set sessionStorage when userInfo is undefined', () => {

@@ -25,7 +25,7 @@ export const inputForms: InputFormContainer = {
       }
     ],
     submitText: 'auth.login.form.loginTitle',
-    secondaryText: 'Register'
+    secondaryText: 'auth.login.form.register'
   },
   changePasswordForm: {
     inputs: [

@@ -2,11 +2,7 @@
   "extends": "@quasar/app-vite/tsconfig-preset",
   "compilerOptions": {
     "baseUrl": ".",
-    "types": [
-      "vite/client",
-      "vitest",
-      "vitest/globals"
-    ]
+    "types": ["vite/client", "vitest", "vitest/globals"]
   },
   "exclude": [
     "./dist",

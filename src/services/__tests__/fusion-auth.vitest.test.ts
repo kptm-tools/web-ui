@@ -45,11 +45,7 @@ describe('FusionAuth API Service', () => {
       const response = await authenticateUser(body);
 
       // Assert
-      expect(fusionAuthApi.post).toHaveBeenCalledWith('/api/login', body, {
-        headers: {
-          Authorization: process.env.FUSION_APP_TOKE
-        }
-      });
+      expect(fusionAuthApi.post).toHaveBeenCalledWith('/api/login', body);
       expect(response).toEqual(mockResponse);
     });
 

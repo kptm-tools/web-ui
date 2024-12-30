@@ -19,7 +19,9 @@
   const router = useRouter();
 
   async function changePasswordHandler(body: BodyForm): Promise<void> {
-    await fusionAuthStore.changePassword(body as unknown as ChangePasswordBody);
+    await fusionAuthStore.recoverPassword(
+      body as unknown as ChangePasswordBody
+    );
   }
 
   function goLogin(): void {
