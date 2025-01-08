@@ -3,5 +3,6 @@ export const ROUTES_NAMES = {
   login: 'Login',
   registerUser: 'RegisterUser',
   recoverPassword: 'RecoverPassword',
-  resetPassword: 'ResetPassword'
+  resetPassword: 'ResetPassword',
+  hosts: 'Hosts'
 };
