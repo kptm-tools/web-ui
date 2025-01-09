@@ -59,7 +59,7 @@
           <q-item
             v-ripple
             clickable
-            to="#"
+            to="scans"
             class="nav-item"
             :active="route.name === 'Scans'"
           >

@@ -97,9 +97,12 @@
 <script setup lang="ts">
   import { computed, ref, watch } from 'vue';
   import { validateDomainOrIp } from 'src/services/host.service';
-  import { ValidatedHost } from 'src/models/hosts.models';
+  import { ValidatedHost, Host } from 'src/models/hosts.models';
 
   const emits = defineEmits(['validatedHosts']);
+  defineProps<{
+    hosts: Host[];
+  }>();
 
   const isDomain = ref(true);
   const domain = ref('');

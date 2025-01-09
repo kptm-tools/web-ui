@@ -7,10 +7,10 @@
       <q-card-section>
         <q-card-title class="text-h6">Host Details</q-card-title>
       </q-card-section>
-
       <q-card-section>
         <form-validate-host
           v-if="step == 'validate'"
+          :hosts="hosts"
           @validated-hosts="hostValidationHandler"
         />
         <form-host-credentials
@@ -49,6 +49,13 @@
   import { registerHosts } from 'src/services/host.service';
 
   defineEmits([...useDialogPluginComponent.emits]);
+
+  defineProps({
+    hosts: {
+      type: Array as () => Host[],
+      required: true
+    }
+  });
 
   const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
   const step = ref('validate');
@@ -89,9 +96,7 @@
       value: h.host,
       value_type: 'Domain'
     }));
-    data.forEach(async host => {
-      await registerHosts(host);
-    });
-    onDialogOK();
+    await Promise.all(data.map(host => registerHosts(host)));
+    await onDialogOK();
   }
 </script>

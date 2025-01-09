@@ -62,7 +62,12 @@
     </div>
 
     <div class="row">
-      <q-btn label="Save" @click="registerHosts" />
+      <q-btn
+        label="Save"
+        type="submit"
+        :disabled="!hostsWithEmails.length"
+        @click="registerHosts"
+      />
     </div>
   </q-form>
 </template>

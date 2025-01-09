@@ -21,6 +21,7 @@ export interface Host {
   host?: string;
   credentials: Credential[];
   rapporteurs: Rapporteur[];
+  picked?: boolean;
 }
 
 export interface HostCreateBody {

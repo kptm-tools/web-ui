@@ -4,5 +4,6 @@ export const ROUTES_NAMES = {
   registerUser: 'RegisterUser',
   recoverPassword: 'RecoverPassword',
   resetPassword: 'ResetPassword',
-  hosts: 'Hosts'
+  hosts: 'Hosts',
+  scans: 'Scans'
 };

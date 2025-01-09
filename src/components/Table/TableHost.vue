@@ -19,7 +19,7 @@
   import DialogHost from '../Dialog/DialogHost.vue';
   import { useQuasar } from 'quasar';
 
-  defineProps<{
+  const props = defineProps<{
     rows: Record<string, unknown>[];
   }>();
 
@@ -62,7 +62,10 @@
 
   function addHost(): void {
     $q.dialog({
-      component: DialogHost
+      component: DialogHost,
+      componentProps: {
+        hosts: props.rows
+      }
     })
       .onOk(() => {
         emits('refreshTable');
