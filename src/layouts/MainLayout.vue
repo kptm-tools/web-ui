@@ -95,9 +95,15 @@
             </q-item-section>
             <q-item-section>
               <q-item-label
-                >{{ userInformation?.user.firstName }}
-                {{ userInformation?.user.lastName }}</q-item-label
-              >
+                >{{
+                  userInformation?.user?.user?.name ||
+                  userInformation?.user.firstName
+                }}
+                {{
+                  userInformation?.user?.user?.lastname ||
+                  userInformation?.user.lastName
+                }}
+              </q-item-label>
               <!-- <q-item-label>{{
                 userInformation.user.memberships
               }}</q-item-label> -->
@@ -137,7 +143,8 @@
 <script setup lang="ts">
   import { useFusionAuthStore } from 'stores/auth-store';
   import { computed } from 'vue';
-  import { useRouter, useRoute } from 'vue-router';
+  import { useRoute, useRouter } from 'vue-router';
+
   const router = useRouter();
   const route = useRoute();
   const fusionAuthStore = useFusionAuthStore();

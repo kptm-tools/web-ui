@@ -86,6 +86,9 @@ export interface SuccessAuthLoginUser {
   usernameStatus: string;
   verified: boolean;
   verifiedInstant: number;
+  user?: SuccessAuthLoginUser;
+  name: string;
+  lastname: string;
 }
 
 export interface FusionAuthErrorResponse {

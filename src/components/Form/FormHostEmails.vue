@@ -1,5 +1,5 @@
 <template>
-  <q-form>
+  <q-form @submit.prevent="registerHosts">
     <div class="row q-col-gutter-md flex items-center">
       <div class="col-5">
         <q-select
@@ -62,19 +62,14 @@
     </div>
 
     <div class="row">
-      <q-btn
-        label="Save"
-        type="submit"
-        :disabled="!hostsWithEmails.length"
-        @click="registerHosts"
-      />
+      <q-btn :disabled="!hostsWithEmails.length" label="Save" type="submit" />
     </div>
   </q-form>
 </template>
 
 <script setup lang="ts">
   import { computed, ComputedRef, onMounted, ref, Ref } from 'vue';
-  import { ValidateHostAuth, Host } from 'src/models/hosts.models';
+  import { Host, ValidateHostAuth } from 'src/models/hosts.models';
 
   const props = defineProps<{
     hosts: ValidateHostAuth[];

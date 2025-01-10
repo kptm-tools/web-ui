@@ -97,7 +97,7 @@
 <script setup lang="ts">
   import { computed, ref, watch } from 'vue';
   import { validateDomainOrIp } from 'src/services/host.service';
-  import { ValidatedHost, Host } from 'src/models/hosts.models';
+  import { Host, ValidatedHost } from 'src/models/hosts.models';
 
   const emits = defineEmits(['validatedHosts']);
   defineProps<{
@@ -139,7 +139,7 @@
       try {
         // isValidated.value =
         //   (await validateDomainOrIp(domainOrIp)).data === 'Verified';
-        await validateDomainOrIp(domainOrIp);
+        await validateDomainOrIp(domainOrIp, hostname.value);
         isValidated.value = true;
       } catch (e) {
         isValidated.value = true;
