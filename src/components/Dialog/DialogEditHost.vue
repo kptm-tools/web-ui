@@ -4,12 +4,12 @@
       <q-card-section class="text-h6">
         <q-card-title class="text-h6">Edit Host</q-card-title>
       </q-card-section>
-      <q-card-section> 'editForm' </q-card-section>
+      <q-card-section> 'editForm'</q-card-section>
     </q-card>
   </q-dialog>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
   import { useDialogPluginComponent } from 'quasar';
   import { Host } from 'src/models/hosts.models';
   import { onMounted } from 'vue';

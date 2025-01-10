@@ -14,11 +14,10 @@
 </template>
 
 <script setup lang="ts">
-  import { QTableColumn } from 'quasar';
+  import { QTableColumn, useQuasar } from 'quasar';
   import TableRegular from './TableRegular.vue';
   import DialogHost from '../Dialog/DialogHost.vue';
   import DialogEditHost from '../Dialog/DialogEditHost.vue';
-  import { useQuasar } from 'quasar';
 
   const props = defineProps<{
     rows: Record<string, unknown>[];

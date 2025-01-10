@@ -16,24 +16,24 @@
           <template v-if="col.name === 'Status'">
             <q-linear-progress
               :value="col.value"
-              color="secondary"
               class="q-mt-sm"
+              color="secondary"
             />
           </template>
           <template v-else-if="col.name === 'Severity'">
             <template v-if="col.value == 5">
               <q-chip
-                square
-                color="red"
-                text-color="white"
                 :label="col.value"
+                color="red"
+                square
+                text-color="white"
               />
-              <q-chip square color="warning" text-color="white" label="3" />
-              <q-chip square color="positive" text-color="white" label="1" />
+              <q-chip color="warning" label="3" square text-color="white" />
+              <q-chip color="positive" label="1" square text-color="white" />
             </template>
             <template v-if="col.value == 4">
-              <q-chip square color="orange" text-color="white" label="4" />
-              <q-chip square color="positive" text-color="white" label="1" />
+              <q-chip color="orange" label="4" square text-color="white" />
+              <q-chip color="positive" label="1" square text-color="white" />
             </template>
           </template>
           <template v-else-if="col.name === 'actions'">
