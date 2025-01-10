@@ -6,7 +6,7 @@ import {
 } from 'src/models/fusion-auth.models';
 import { fusionAuthApi } from 'boot/axios';
 
-const BASE_PATH = '/api/user';
+const BASE_PATH = '/api/users';
 
 export function getUser(
   userId: string

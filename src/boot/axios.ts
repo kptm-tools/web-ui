@@ -41,7 +41,10 @@ fusionAuthApi.interceptors.response.use(
   },
   error => {
     Loading.hide();
-    if (error.config && error.config.method === 'post') {
+    if (
+      error.config &&
+      (error.config.method === 'post' || error.config.method === 'delete')
+    ) {
       Notify.create({
         message: getErrorMessage(error.response?.status || 500),
         color: 'negative'
