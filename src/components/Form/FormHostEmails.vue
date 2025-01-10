@@ -1,5 +1,5 @@
 <template>
-  <q-form>
+  <q-form @submit.prevent="registerHosts">
     <div class="row q-col-gutter-md flex items-center">
       <div class="col-5">
         <q-select
@@ -62,12 +62,7 @@
     </div>
 
     <div class="row">
-      <q-btn
-        label="Save"
-        type="submit"
-        :disabled="!hostsWithEmails.length"
-        @click="registerHosts"
-      />
+      <q-btn label="Save" type="submit" :disabled="!hostsWithEmails.length" />
     </div>
   </q-form>
 </template>

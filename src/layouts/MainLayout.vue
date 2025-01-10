@@ -95,8 +95,14 @@
             </q-item-section>
             <q-item-section>
               <q-item-label
-                >{{ userInformation?.user.firstName }}
-                {{ userInformation?.user.lastName }}</q-item-label
+                >{{
+                  userInformation?.user?.user?.name ||
+                  userInformation?.user.firstName
+                }}
+                {{
+                  userInformation?.user?.user?.lastname ||
+                  userInformation?.user.lastName
+                }}</q-item-label
               >
               <!-- <q-item-label>{{
                 userInformation.user.memberships

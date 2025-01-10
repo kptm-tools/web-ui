@@ -46,7 +46,9 @@ fusionAuthApi.interceptors.response.use(
       (error.config.method === 'post' || error.config.method === 'delete')
     ) {
       Notify.create({
-        message: getErrorMessage(error.response?.status || 500),
+        message:
+          error.response?.data.error ||
+          getErrorMessage(error.response?.status || 500),
         color: 'negative'
       });
     }

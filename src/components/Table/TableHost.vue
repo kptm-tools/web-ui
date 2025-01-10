@@ -17,6 +17,7 @@
   import { QTableColumn } from 'quasar';
   import TableRegular from './TableRegular.vue';
   import DialogHost from '../Dialog/DialogHost.vue';
+  import DialogEditHost from '../Dialog/DialogEditHost.vue';
   import { useQuasar } from 'quasar';
 
   const props = defineProps<{
@@ -78,8 +79,32 @@
       });
   }
 
+  function editHost(col: unknown): void {
+    $q.dialog({
+      component: DialogEditHost,
+      componentProps: {
+        host: col
+      }
+    })
+      .onOk(() => {
+        emits('refreshTable');
+      })
+      .onCancel(() => {
+        console.log('Cancel');
+      })
+      .onDismiss(() => {
+        console.log('Called on OK or Cancel');
+      });
+  }
+
   function handlerEmitter(action: unknown): void {
-    emits('action', action);
+    const actionType = action as { action: string; col: unknown };
+    if (actionType.action === 'edit') {
+      console.log(props.rows);
+      editHost(actionType.col);
+    } else {
+      emits('action', action);
+    }
   }
 </script>
 

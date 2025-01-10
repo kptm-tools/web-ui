@@ -13,7 +13,30 @@
     <template #body="props">
       <q-tr :props="props" class="">
         <q-td v-for="col in props.cols" :key="col.name" :props="props">
-          <template v-if="col.name === 'actions'">
+          <template v-if="col.name === 'Status'">
+            <q-linear-progress
+              :value="col.value"
+              color="secondary"
+              class="q-mt-sm"
+            />
+          </template>
+          <template v-else-if="col.name === 'Severity'">
+            <template v-if="col.value == 5">
+              <q-chip
+                square
+                color="red"
+                text-color="white"
+                :label="col.value"
+              />
+              <q-chip square color="warning" text-color="white" label="3" />
+              <q-chip square color="positive" text-color="white" label="1" />
+            </template>
+            <template v-if="col.value == 4">
+              <q-chip square color="orange" text-color="white" label="4" />
+              <q-chip square color="positive" text-color="white" label="1" />
+            </template>
+          </template>
+          <template v-else-if="col.name === 'actions'">
             <q-btn
               v-for="action in componentProps.actions"
               :key="action"
@@ -24,8 +47,9 @@
               @click="() => handlerEmitter(action, props.row)"
             />
           </template>
-
-          {{ col.value }}
+          <template v-else>
+            {{ col.value }}
+          </template>
         </q-td>
       </q-tr>
     </template>

@@ -40,17 +40,15 @@ export default route(function (/* { store, ssrContext } */) {
   const authStore = useFusionAuthStore();
 
   Router.beforeEach(async (to, from, next) => {
-    if (!to.fullPath.includes('auth') && !authStore.isAuthenticated) {
-      return next({ name: 'Login' });
-    }
+    const accessToken = sessionStorage.getItem('access_token') || '';
+    const tokenExpirationInstant =
+      Number(sessionStorage.getItem('token_expiration_instant')) || 0;
 
-    if (to.name === 'Login') {
-      const accessToken = sessionStorage.getItem('access_token') || '';
-      const tokenExpirationInstant =
-        Number(sessionStorage.getItem('token_expiration_instant')) || 0;
-
-      authStore.setTokenInfo(accessToken, tokenExpirationInstant);
-      if (authStore.isAuthenticated) {
+    authStore.setTokenInfo(accessToken, tokenExpirationInstant);
+    if (to.matched.some(record => record.meta.requiresAuth)) {
+      if (!authStore.isAuthenticated) {
+        next({ name: 'Login' });
+      } else {
         try {
           const response = await getUser(decodeJwt(accessToken).sub);
           authStore.setUserInfo({
@@ -58,16 +56,15 @@ export default route(function (/* { store, ssrContext } */) {
             tokenExpirationInstant,
             user: response.data
           });
-          return next({ name: 'Home' });
+          return next();
         } catch (error) {
           console.error('Error fetching user data:', error);
         }
+        next(); // go to wherever I'm going
       }
-
-      return next();
+    } else {
+      next(); // does not require auth, make sure to always call next()!
     }
-
-    next();
   });
 
   Router.afterEach(to => {

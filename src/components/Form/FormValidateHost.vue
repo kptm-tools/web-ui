@@ -139,7 +139,7 @@
       try {
         // isValidated.value =
         //   (await validateDomainOrIp(domainOrIp)).data === 'Verified';
-        await validateDomainOrIp(domainOrIp);
+        await validateDomainOrIp(domainOrIp, hostname.value);
         isValidated.value = true;
       } catch (e) {
         isValidated.value = true;
