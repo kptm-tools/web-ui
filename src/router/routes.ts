@@ -9,7 +9,27 @@ const routes: RouteRecordRaw[] = [
       {
         path: '',
         name: ROUTES_NAMES.home,
+        meta: {
+          title: 'Overview'
+        },
+
         component: () => import('pages/IndexPage.vue')
+      },
+      {
+        path: 'hosts',
+        name: ROUTES_NAMES.hosts,
+        meta: {
+          title: 'Hosts'
+        },
+        component: () => import('pages/HostPage.vue')
+      },
+      {
+        path: 'scans',
+        name: ROUTES_NAMES.scans,
+        meta: {
+          title: 'Scans'
+        },
+        component: () => import('pages/ScanPage.vue')
       }
     ]
   },
