@@ -17,6 +17,7 @@
           color="primary"
           icon="add"
           dense
+          :disable="disabledAdd"
           @click="addReporterToHost"
         />
       </div>
@@ -84,23 +85,46 @@
   const hostsRegister: Ref<Host[]> = ref([] as Host[]);
 
   const hostsWithEmails: ComputedRef<Host[]> = computed(() => {
-    return hostsRegister.value.filter(host => host.rapporteurs.length > 0);
+    return hostsRegister.value.filter(
+      host =>
+        host.rapporteurs.length > 0 &&
+        (host.alias === pickedHost.value.alias ||
+          pickedHost.value.alias === 'All')
+    );
+  });
+
+  const disabledAdd = computed(() => {
+    return !name.value || !email.value;
   });
 
   function addReporterToHost() {
     const index = hostsRegister.value.findIndex(
       host => host.alias === pickedHost.value.alias
     );
-    hostsRegister.value[index].rapporteurs.push({
-      name: name.value,
-      email: email.value,
-      is_principal: false
-    });
+
+    if (hostsRegister.value[index].alias === 'All') {
+      hostsRegister.value.forEach((val, i) => {
+        hostsRegister.value[i].rapporteurs.push({
+          name: name.value,
+          email: email.value,
+          is_principal: false
+        });
+      });
+    } else {
+      hostsRegister.value[index].rapporteurs.push({
+        name: name.value,
+        email: email.value,
+        is_principal: false
+      });
+    }
+
+    name.value = '';
+    email.value = '';
   }
 
   function registerHosts() {
-    console.log('body form', hostsWithEmails.value);
-    emits('registerHost', hostsWithEmails.value);
+    console.log('body form', hostsRegister.value);
+    emits('registerHost', hostsRegister.value);
   }
 
   onMounted(async () => {
