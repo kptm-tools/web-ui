@@ -16,6 +16,8 @@ export interface Host {
   value?: string;
   value_type?: 'Domain' | 'IP';
   created_at?: string;
+  creationDate?: string;
+  hostName?: string;
   ip?: string;
   alias?: string;
   host?: string;

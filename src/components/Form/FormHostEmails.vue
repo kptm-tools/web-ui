@@ -62,8 +62,13 @@
       </template>
     </div>
 
-    <div class="row">
-      <q-btn :disabled="!hostsWithEmails.length" label="Save" type="submit" />
+    <div class="row q-pt-md justify-end">
+      <q-btn
+        :disabled="!hostsWithEmails.length"
+        color="primary"
+        label="Save"
+        type="submit"
+      />
     </div>
   </q-form>
 </template>
@@ -98,11 +103,7 @@
   });
 
   function addReporterToHost() {
-    const index = hostsRegister.value.findIndex(
-      host => host.alias === pickedHost.value.alias
-    );
-
-    if (hostsRegister.value[index].alias === 'All') {
+    if (pickedHost.value.alias === 'All') {
       hostsRegister.value.forEach((val, i) => {
         hostsRegister.value[i].rapporteurs.push({
           name: name.value,
@@ -111,6 +112,9 @@
         });
       });
     } else {
+      const index = hostsRegister.value.findIndex(
+        host => host.alias === pickedHost.value.alias
+      );
       hostsRegister.value[index].rapporteurs.push({
         name: name.value,
         email: email.value,
