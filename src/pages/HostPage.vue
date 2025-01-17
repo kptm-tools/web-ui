@@ -1,17 +1,17 @@
 <template>
-  <q-page class="q-pa-md">
+  <div class="q-pa-md">
     <table-host
       :rows="store.getFilteredList"
       @refresh-table="fetchDataToTable"
       @action="actionHandler"
     />
-  </q-page>
+  </div>
 </template>
 
 <script setup lang="ts">
   import TableHost from 'src/components/Table/TableHost.vue';
   import { onMounted } from 'vue';
-  import { getHosts, deleteHost } from 'src/services/host.service';
+  import { deleteHost, getHosts } from 'src/services/host.service';
   import { Host } from 'src/models/hosts.models';
   import { useHosthStore } from 'src/stores/host-store';
 

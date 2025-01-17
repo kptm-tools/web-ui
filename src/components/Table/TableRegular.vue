@@ -4,6 +4,8 @@
     :columns="updateColumns"
     flat
     separator="none"
+    style="max-height: 80vh"
+    virtual-scroll
   >
     <template #header-cell="props">
       <q-th :class="props.col.__thClass" class="table-header">
@@ -76,7 +78,7 @@
   }>();
 
   const updateColumns = computed(() => {
-    const columns = componentProps.columns;
+    const columns = [...componentProps.columns];
     if (componentProps.actions?.length)
       columns.push({
         name: 'actions',

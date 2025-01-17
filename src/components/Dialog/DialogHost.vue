@@ -5,7 +5,7 @@
       style="max-width: 700px; width: 100%"
     >
       <q-card-section>
-        <q-card-title class="text-h6">Host Details</q-card-title>
+        <q-card-title class="text-h6">{{ title }}</q-card-title>
       </q-card-section>
       <q-card-section>
         <form-validate-host
@@ -45,7 +45,7 @@
     ValidatedHost,
     ValidateHostAuth
   } from 'src/models/hosts.models';
-  import { ref, Ref } from 'vue';
+  import { computed, ref, Ref } from 'vue';
   import { registerHosts } from 'src/services/host.service';
 
   defineEmits([...useDialogPluginComponent.emits]);
@@ -77,6 +77,14 @@
 
   const validatedHosts: Ref<ValidatedHost[]> = ref([] as ValidatedHost[]);
   const validateHostsAuth: Ref<ValidateHostAuth[]> = ref([]);
+
+  const title = computed(() => {
+    return step.value === 'validate'
+      ? 'Host Validation'
+      : step.value === 'auth'
+      ? 'Authentication '
+      : 'Send email';
+  });
 
   function hostValidationHandler(hosts: ValidatedHost[]): void {
     step.value = 'auth';

@@ -53,7 +53,10 @@
               dense
               flat
               color="grey"
-              @click="rep.is_principal = !rep.is_principal"
+              @click="
+                host.rapporteurs.map(val => (val.is_principal = false));
+                rep.is_principal = !rep.is_principal;
+              "
             ></q-btn>
             <q-btn icon="fas fa-pen-to-square" dense flat color="grey"></q-btn>
             <q-btn icon="fas fa-trash" dense flat color="grey"></q-btn>
