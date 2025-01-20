@@ -47,6 +47,7 @@
   } from 'src/models/hosts.models';
   import { computed, ref, Ref } from 'vue';
   import { registerHosts } from 'src/services/host.service';
+  import { useQuasar } from 'quasar';
 
   defineEmits([...useDialogPluginComponent.emits]);
 
@@ -59,6 +60,7 @@
 
   const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
   const step = ref('validate');
+  const $q = useQuasar();
   // dialogRef      - Vue ref to be applied to QDialog
   // onDialogHide   - Function to be used as handler for @hide on QDialog
   // onDialogOK     - Function to call to settle dialog with "ok" outcome
@@ -104,7 +106,20 @@
       value: h.host,
       value_type: 'Domain'
     }));
-    await Promise.all(data.map(host => registerHosts(host)));
+    for (const host of data) {
+      try {
+        await registerHosts(host);
+        $q.notify({
+          type: 'positive',
+          message: `Host created ${host.name}`
+        });
+      } catch (error) {
+        $q.notify({
+          type: 'negative',
+          message: `Failure for host ${host.name}`
+        });
+      }
+    }
     await onDialogOK();
   }
 </script>

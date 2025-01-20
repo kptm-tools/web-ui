@@ -1,10 +1,9 @@
 import axios, { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
-import { Loading, Notify } from 'quasar';
+import { Loading } from 'quasar';
 import {
   AUTH_TOKEN_NAMES,
   UNPROTECTED_PATHS
 } from 'src/constants/fusion-auth.constants';
-import { getErrorMessage } from 'src/utils/axios.utils';
 
 declare module 'vue' {
   interface ComponentCustomProperties {
@@ -41,17 +40,6 @@ fusionAuthApi.interceptors.response.use(
   },
   error => {
     Loading.hide();
-    if (
-      error.config &&
-      (error.config.method === 'post' || error.config.method === 'delete')
-    ) {
-      Notify.create({
-        message:
-          error.response?.data.error ||
-          getErrorMessage(error.response?.status || 500),
-        color: 'negative'
-      });
-    }
     return Promise.reject(error);
   }
 );
