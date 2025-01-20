@@ -1,6 +1,6 @@
 <template>
   <div class="q-pa-md">
-    <table-scan :rows="[]" />
+    <table-scan :rows="rows" />
   </div>
 </template>
 
@@ -11,6 +11,25 @@
   import { onMounted, ref, Ref } from 'vue';
 
   const scans: Ref<Scan[]> = ref([]);
+
+  const rows = [
+    {
+      scanDate: '2021-09-01',
+      host: 'host1',
+      numVulnerabilities: 10,
+      severity: 5,
+      durations: '1h 5m',
+      status: 0.7
+    },
+    {
+      scanDate: '2021-09-01',
+      host: 'host3',
+      numVulnerabilities: 4,
+      severity: 4,
+      durations: '1h 5m',
+      status: 0.2
+    }
+  ];
 
   onMounted(async () => {
     scans.value = (await getScans()).data;

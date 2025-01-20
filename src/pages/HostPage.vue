@@ -1,33 +1,35 @@
 <template>
-  <q-page class="q-pa-md">
+  <div class="q-pa-md">
     <table-host
-      :rows="hostRows"
+      :rows="store.getFilteredList"
       @refresh-table="fetchDataToTable"
       @action="actionHandler"
     />
-  </q-page>
+  </div>
 </template>
 
 <script setup lang="ts">
   import TableHost from 'src/components/Table/TableHost.vue';
-  import { computed, onMounted, ref } from 'vue';
-  import { getHosts, deleteHost } from 'src/services/host.service';
+  import { onMounted } from 'vue';
+  import { deleteHost, getHosts } from 'src/services/host.service';
   import { Host } from 'src/models/hosts.models';
+  import { useHosthStore } from 'src/stores/host-store';
 
-  const hostValues = ref([] as Host[]);
-  const hostRows = computed(() =>
-    hostValues.value.map(host => ({
+  const store = useHosthStore();
+
+  async function fetchDataToTable(): Promise<void> {
+    const data: Host[] = (await getHosts()).data.map(host => ({
       id: host.id,
       domain: host.domain,
       ip: host.ip,
       hostName: host.name,
       creationDate: host.created_at,
-      email: ''
-    }))
-  );
-
-  async function fetchDataToTable(): Promise<void> {
-    hostValues.value = (await getHosts()).data;
+      email:
+        host.rapporteurs.find(({ is_principal }) => is_principal)?.email || '',
+      rapporteurs: host.rapporteurs,
+      credentials: host.credentials
+    })) as Host[];
+    store.setInitialList(data);
   }
 
   async function actionHandler(action: {

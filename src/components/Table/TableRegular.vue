@@ -4,6 +4,8 @@
     :columns="updateColumns"
     flat
     separator="none"
+    style="max-height: 80vh"
+    virtual-scroll
   >
     <template #header-cell="props">
       <q-th :class="props.col.__thClass" class="table-header">
@@ -13,7 +15,30 @@
     <template #body="props">
       <q-tr :props="props" class="">
         <q-td v-for="col in props.cols" :key="col.name" :props="props">
-          <template v-if="col.name === 'actions'">
+          <template v-if="col.name === 'Status'">
+            <q-linear-progress
+              :value="col.value"
+              class="q-mt-sm"
+              color="secondary"
+            />
+          </template>
+          <template v-else-if="col.name === 'Severity'">
+            <template v-if="col.value == 5">
+              <q-chip
+                :label="col.value"
+                color="red"
+                square
+                text-color="white"
+              />
+              <q-chip color="warning" label="3" square text-color="white" />
+              <q-chip color="positive" label="1" square text-color="white" />
+            </template>
+            <template v-if="col.value == 4">
+              <q-chip color="orange" label="4" square text-color="white" />
+              <q-chip color="positive" label="1" square text-color="white" />
+            </template>
+          </template>
+          <template v-else-if="col.name === 'actions'">
             <q-btn
               v-for="action in componentProps.actions"
               :key="action"
@@ -24,8 +49,12 @@
               @click="() => handlerEmitter(action, props.row)"
             />
           </template>
-
-          {{ col.value }}
+          <template v-else>
+            <template v-if="isDate(col.value)">
+              {{ formatDate(col.value) }}
+            </template>
+            <template v-else>{{ col.value }}</template>
+          </template>
         </q-td>
       </q-tr>
     </template>
@@ -49,7 +78,7 @@
   }>();
 
   const updateColumns = computed(() => {
-    const columns = componentProps.columns;
+    const columns = [...componentProps.columns];
     if (componentProps.actions?.length)
       columns.push({
         name: 'actions',
@@ -73,6 +102,14 @@
 
   function handlerEmitter(action: tableActions, col: unknown): void {
     emits('action', { action, col });
+  }
+
+  function isDate(date: string): boolean {
+    return new Date(date).toString() !== 'Invalid Date';
+  }
+
+  function formatDate(date: Date): string {
+    return new Date(date).toLocaleDateString();
   }
 </script>
 

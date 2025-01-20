@@ -5,10 +5,12 @@ import { Host, HostCreateBody } from 'src/models/hosts.models';
 const BASE_PATH = '/api/hosts';
 
 export function validateDomainOrIp(
-  domainOrIp: string
+  domainOrIp: string,
+  hostname: string
 ): Promise<AxiosResponse<string>> {
   return fusionAuthApi.post(`${BASE_PATH}/validate`, {
-    value: domainOrIp
+    value: domainOrIp,
+    hostname
   });
 }
 
