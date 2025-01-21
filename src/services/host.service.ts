@@ -24,7 +24,7 @@ export async function deleteHost(
   return await fusionAuthApi.delete(`${BASE_PATH}/${hostId}`);
 }
 
-export async function registerHosts(
+export async function registerHost(
   body: HostCreateBody
 ): Promise<AxiosResponse> {
   return await fusionAuthApi.post(`${BASE_PATH}`, body);
