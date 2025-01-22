@@ -4,6 +4,8 @@
     :columns="updateColumns"
     flat
     separator="none"
+    style="max-height: 80vh"
+    virtual-scroll
   >
     <template #header-cell="props">
       <q-th :class="props.col.__thClass" class="table-header">
@@ -48,7 +50,10 @@
             />
           </template>
           <template v-else>
-            {{ col.value }}
+            <template v-if="isDate(col.value)">
+              {{ formatDate(col.value) }}
+            </template>
+            <template v-else>{{ col.value }}</template>
           </template>
         </q-td>
       </q-tr>
@@ -73,7 +78,7 @@
   }>();
 
   const updateColumns = computed(() => {
-    const columns = componentProps.columns;
+    const columns = [...componentProps.columns];
     if (componentProps.actions?.length)
       columns.push({
         name: 'actions',
@@ -97,6 +102,14 @@
 
   function handlerEmitter(action: tableActions, col: unknown): void {
     emits('action', { action, col });
+  }
+
+  function isDate(date: string): boolean {
+    return new Date(date).toString() !== 'Invalid Date';
+  }
+
+  function formatDate(date: Date): string {
+    return new Date(date).toLocaleDateString();
   }
 </script>
 

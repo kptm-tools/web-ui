@@ -17,6 +17,7 @@
           color="primary"
           icon="add"
           dense
+          :disable="disabledAdd"
           @click="addReporterToHost"
         />
       </div>
@@ -52,7 +53,10 @@
               dense
               flat
               color="grey"
-              @click="rep.is_principal = !rep.is_principal"
+              @click="
+                host.rapporteurs.map(val => (val.is_principal = false));
+                rep.is_principal = !rep.is_principal;
+              "
             ></q-btn>
             <q-btn icon="fas fa-pen-to-square" dense flat color="grey"></q-btn>
             <q-btn icon="fas fa-trash" dense flat color="grey"></q-btn>
@@ -61,8 +65,13 @@
       </template>
     </div>
 
-    <div class="row">
-      <q-btn :disabled="!hostsWithEmails.length" label="Save" type="submit" />
+    <div class="row q-pt-md justify-end">
+      <q-btn
+        :disabled="!hostsWithEmails.length"
+        color="primary"
+        label="Save"
+        type="submit"
+      />
     </div>
   </q-form>
 </template>
@@ -84,23 +93,45 @@
   const hostsRegister: Ref<Host[]> = ref([] as Host[]);
 
   const hostsWithEmails: ComputedRef<Host[]> = computed(() => {
-    return hostsRegister.value.filter(host => host.rapporteurs.length > 0);
+    return hostsRegister.value.filter(
+      host =>
+        host.rapporteurs.length > 0 &&
+        (host.alias === pickedHost.value.alias ||
+          pickedHost.value.alias === 'All')
+    );
+  });
+
+  const disabledAdd = computed(() => {
+    return !name.value || !email.value;
   });
 
   function addReporterToHost() {
-    const index = hostsRegister.value.findIndex(
-      host => host.alias === pickedHost.value.alias
-    );
-    hostsRegister.value[index].rapporteurs.push({
-      name: name.value,
-      email: email.value,
-      is_principal: false
-    });
+    if (pickedHost.value.alias === 'All') {
+      hostsRegister.value.forEach((val, i) => {
+        hostsRegister.value[i].rapporteurs.push({
+          name: name.value,
+          email: email.value,
+          is_principal: false
+        });
+      });
+    } else {
+      const index = hostsRegister.value.findIndex(
+        host => host.alias === pickedHost.value.alias
+      );
+      hostsRegister.value[index].rapporteurs.push({
+        name: name.value,
+        email: email.value,
+        is_principal: false
+      });
+    }
+
+    name.value = '';
+    email.value = '';
   }
 
   function registerHosts() {
-    console.log('body form', hostsWithEmails.value);
-    emits('registerHost', hostsWithEmails.value);
+    console.log('body form', hostsRegister.value);
+    emits('registerHost', hostsRegister.value);
   }
 
   onMounted(async () => {

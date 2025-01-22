@@ -5,12 +5,14 @@
     class="q-mb-md"
     @click="addHost"
   ></q-btn>
-  <table-regular
-    :columns="columns"
-    :rows="rows"
-    :actions="['edit', 'delete']"
-    @action="handlerEmitter($event)"
-  />
+  <div style="height: 80vh; overflow-y: auto">
+    <table-regular
+      :actions="['edit', 'delete']"
+      :columns="columns"
+      :rows="rows"
+      @action="handlerEmitter($event)"
+    />
+  </div>
 </template>
 
 <script setup lang="ts">

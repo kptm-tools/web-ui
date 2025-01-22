@@ -8,6 +8,48 @@
 
         <q-separator />
 
+        <div v-if="$route.name === 'Hosts'" class="row items-center q-mr-md">
+          <q-input
+            v-model="search"
+            outlined
+            dense
+            label="Search"
+            class="q-mr-md"
+            @update:model-value="handleSeach"
+          >
+            <template #append> <q-icon name="search" /> </template
+          ></q-input>
+          <q-input
+            v-model="creationDate"
+            outlined
+            dense
+            mask="date"
+            :rules="['date']"
+            class="q-pa-none"
+            label="Date"
+            @update:model-value="handleDate"
+          >
+            <template #append>
+              <q-icon name="event" class="cursor-pointer">
+                <q-popup-proxy
+                  cover
+                  transition-show="scale"
+                  transition-hide="scale"
+                >
+                  <q-date
+                    v-model="creationDate"
+                    @update:model-value="handleDate"
+                  >
+                    <div class="row items-center justify-end">
+                      <q-btn v-close-popup label="Close" color="primary" flat />
+                    </div>
+                  </q-date>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
+        </div>
+
         <q-btn dense flat icon="far fa-bell" size="md" color="primary" />
 
         <!-- <q-toggle v-model="language" size="lg" val="lg" label="EN" /> -->
@@ -142,11 +184,13 @@
 
 <script setup lang="ts">
   import { useFusionAuthStore } from 'stores/auth-store';
-  import { computed } from 'vue';
+  import { computed, ref } from 'vue';
   import { useRoute, useRouter } from 'vue-router';
+  import { useHosthStore } from 'src/stores/host-store';
 
   const router = useRouter();
   const route = useRoute();
+  const hostStore = useHosthStore();
   const fusionAuthStore = useFusionAuthStore();
   const userInformation = computed(() => fusionAuthStore.getUserInfo);
   // const language = ref(true);
@@ -154,6 +198,30 @@
   async function logout(): Promise<void> {
     await fusionAuthStore.logoutUser();
     await router.push({ name: 'Login' });
+  }
+
+  const creationDate = ref();
+  const search = ref();
+
+  function handleDate(date: string | number | null): void {
+    if (
+      !date ||
+      date.toString().length < 10 ||
+      isNaN(new Date(date).getTime())
+    ) {
+      hostStore.setFilter({ created_at: '' });
+      return;
+    }
+
+    hostStore.setFilter({ created_at: new Date(date).toISOString() });
+  }
+
+  function handleSeach(searchText: string | number | null): void {
+    const currentFilter = { ...hostStore.filter };
+    hostStore.setFilter({
+      ...currentFilter,
+      searchText: searchText?.toString()
+    });
   }
 </script>
 

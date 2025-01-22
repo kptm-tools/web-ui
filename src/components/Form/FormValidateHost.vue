@@ -98,6 +98,7 @@
   import { computed, ref, watch } from 'vue';
   import { validateDomainOrIp } from 'src/services/host.service';
   import { Host, ValidatedHost } from 'src/models/hosts.models';
+  import { useQuasar } from 'quasar';
 
   const emits = defineEmits(['validatedHosts']);
   defineProps<{
@@ -109,6 +110,7 @@
   const ip = ref('');
   const hostname = ref('');
   const isValidated = ref(false);
+  const $q = useQuasar();
 
   const hostnameValidates = ref(
     [] as { value: string; hostname: string; isDomain: boolean }[]
@@ -137,12 +139,14 @@
         domainOrIp = ip.value;
       }
       try {
-        // isValidated.value =
-        //   (await validateDomainOrIp(domainOrIp)).data === 'Verified';
         await validateDomainOrIp(domainOrIp, hostname.value);
         isValidated.value = true;
+        $q.notify({
+          type: 'positive',
+          message: 'Host validated'
+        });
       } catch (e) {
-        isValidated.value = true;
+        isValidated.value = false;
       }
     }
   }
