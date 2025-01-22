@@ -22,7 +22,7 @@
         <form-host-emails
           v-if="step == 'email'"
           :hosts="validateHostsAuth"
-          @register-host="registerHost"
+          @register-host="hostCreationHandler"
         />
       </q-card-section>
 
@@ -46,7 +46,8 @@
     ValidateHostAuth
   } from 'src/models/hosts.models';
   import { computed, ref, Ref } from 'vue';
-  import { registerHosts } from 'src/services/host.service';
+  import { registerHost } from 'src/services/host.service';
+  import { useQuasar } from 'quasar';
 
   defineEmits([...useDialogPluginComponent.emits]);
 
@@ -59,6 +60,7 @@
 
   const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
   const step = ref('validate');
+  const $q = useQuasar();
   // dialogRef      - Vue ref to be applied to QDialog
   // onDialogHide   - Function to be used as handler for @hide on QDialog
   // onDialogOK     - Function to call to settle dialog with "ok" outcome
@@ -96,7 +98,7 @@
     validateHostsAuth.value = hosts;
   }
 
-  async function registerHost(hostsList: Host[]): Promise<void> {
+  async function hostCreationHandler(hostsList: Host[]): Promise<void> {
     const data: HostCreateBody[] = hostsList.map(h => ({
       name: h.alias,
       credentials: h.credentials,
@@ -104,7 +106,24 @@
       value: h.host,
       value_type: 'Domain'
     }));
-    await Promise.all(data.map(host => registerHosts(host)));
+    await registerHosts(data);
     await onDialogOK();
+  }
+
+  async function registerHosts(hostsBody: HostCreateBody[]) {
+    for (const hostBody of hostsBody) {
+      try {
+        await registerHost(hostBody);
+        $q.notify({
+          type: 'positive',
+          message: `Host created ${hostBody.name}`
+        });
+      } catch (error) {
+        $q.notify({
+          type: 'negative',
+          message: `Failure for host ${hostBody.name}`
+        });
+      }
+    }
   }
 </script>
