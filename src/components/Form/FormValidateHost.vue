@@ -147,6 +147,10 @@
         });
       } catch (e) {
         isValidated.value = false;
+        $q.notify({
+          type: 'negative',
+          message: 'Invalid Host'
+        });
       }
     }
   }

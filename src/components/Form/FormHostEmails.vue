@@ -140,12 +140,7 @@
       return {
         alias: host.alias,
         host: host.hostname,
-        credentials: [
-          {
-            username: host.username,
-            password: host.password
-          }
-        ],
+        credentials: host.credentials,
         rapporteurs: []
       };
     });
@@ -153,8 +148,7 @@
       alias: 'All',
       hostname: 'All',
       ip: 'All',
-      username: 'All',
-      password: 'All'
+      credentials: []
     });
     pickedHost.value = hostOptions.value[0];
   });
