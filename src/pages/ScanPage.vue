@@ -17,6 +17,7 @@
 
   const rows = computed(() =>
     scans.value.map(scan => ({
+      id: scan.scan_id,
       scanDate: scan.scan_date,
       host: scan.host,
       numVulnerabilities: scan.vulnerabilities,
@@ -28,13 +29,15 @@
 
   async function handlerEmitter(action: {
     action: string;
-    col: { host: string };
+    col: { id: string };
   }): Promise<void> {
     if (action.action === 'insight') {
       try {
-        const scan = scans.value.find(scan => scan.host === action.col.host);
+        console.log(action.col);
+        const scan = scans.value.find(scan => scan.scan_id === action.col.id);
+        console.log(scan?.scan_id);
         $q.loading.show();
-        const insight = await getScanInsights(scan?.scan_id || '');
+        const insight = (await getScanInsights(scan?.scan_id || '')).data;
         $q.loading.hide();
         $q.dialog({
           component: DialogScanInsight,

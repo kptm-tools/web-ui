@@ -34,6 +34,12 @@
 
   const columns: QTableColumn[] = [
     {
+      name: 'ID',
+      label: 'ID',
+      align: 'left',
+      field: 'id'
+    },
+    {
       name: 'Scan Date',
       label: 'ScanDate',
       align: 'left',

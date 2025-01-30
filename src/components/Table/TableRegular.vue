@@ -44,38 +44,7 @@
             </q-linear-progress>
           </template>
           <template v-else-if="col.field === 'severity'">
-            <q-chip
-              v-if="col.value.critical"
-              :label="col.value.critical"
-              color="red"
-              square
-              text-color="white"
-            />
-            <q-chip
-              v-if="col.value.high"
-              color="amber-10"
-              :label="col.value.high"
-              square
-              text-color="white"
-            />
-            <q-chip
-              v-if="col.value.medium"
-              color="warning"
-              :label="col.value.medium"
-              square
-              text-color="white"
-            />
-            <q-chip
-              v-if="col.value.low"
-              color="positive"
-              :label="col.value.low"
-              square
-              text-color="white"
-            />
-            <template v-if="col.value == 4">
-              <q-chip color="orange" label="4" square text-color="white" />
-              <q-chip color="positive" label="1" square text-color="white" />
-            </template>
+            <severity-chip :severity="col.value" />
           </template>
           <template v-else-if="col.field === 'actions'">
             <q-btn
@@ -89,12 +58,12 @@
             />
           </template>
 
-          <template
-            v-else-if="
-              col.field === 'numVulnerabilities' || col.field === 'durations'
-            "
-          >
+          <template v-else-if="col.field === 'numVulnerabilities'">
             {{ col.value }}
+          </template>
+
+          <template v-else-if="col.field === 'durations'">
+            {{ formatDuration(col.value) }}
           </template>
 
           <template v-else>
@@ -112,6 +81,7 @@
 <script setup lang="ts">
   import { QTableColumn } from 'quasar';
   import { computed } from 'vue';
+  import SeverityChip from '../shared/SeverityChip.vue';
 
   type tableActions = 'edit' | 'delete' | 'insight';
 
@@ -160,6 +130,20 @@
 
   function formatDate(date: Date): string {
     return new Date(date).toLocaleDateString();
+  }
+
+  function formatDuration(seconds: number): string {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+
+    let result = '';
+    if (hours > 0) result += `${hours}h `;
+    if (minutes > 0) result += `${minutes}m `;
+    if ((secs > 0 && seconds < 60) || result === '')
+      result += `${secs.toFixed(0)}s`;
+
+    return result.trim();
   }
 </script>
 

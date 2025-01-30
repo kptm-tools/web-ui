@@ -20,12 +20,15 @@ interface SeverityCounts {
   low: number;
 }
 
-interface SeverityPerType {
+export interface SeverityPerType {
   RCE: number;
   'SQL Injection': number;
   XSS: number;
   'Open Port': number;
+  cve: number;
 }
+
+export type SeverityKey = keyof SeverityPerType;
 
 interface Metadata {
   scan_id: string;
