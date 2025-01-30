@@ -1,6 +1,6 @@
 <template>
   <q-form greedy @submit="submitHandler">
-    <div class="row q-mb-md q-col-gutter-md">
+    <div v-if="!edit" class="row q-mb-md q-col-gutter-md">
       <div class="col-5">
         <q-select
           v-model="pickedHost"
@@ -59,8 +59,8 @@
           </template>
         </q-input>
       </div>
-      <div class="col-2 text-center">
-        <q-btn color="primary" icon="add" type="submit" />
+      <div class="col-2">
+        <q-btn square color="primary" icon="add" dense type="submit" />
       </div>
     </q-form>
 
@@ -86,12 +86,13 @@
             v-model="credential.password"
             outlined
             dense
+            square
             class="input-text"
             :type="!credential.visible ? 'password' : 'text'"
             label="Password"
             readonly
           >
-            <template #append>
+            <template v-if="!edit" #append>
               <q-icon
                 :name="!credential.visible ? 'visibility_off' : 'visibility'"
                 class="cursor-pointer"
@@ -100,31 +101,52 @@
             </template>
           </q-input>
         </div>
-        <div class="col-2 text-center">
+        <div class="col-2">
           <q-btn
-            color="primary"
-            icon="delete"
+            icon="fas fa-trash"
+            dense
+            flat
+            color="grey"
             @click="removeCredentialToHost(index)"
           />
         </div>
       </div>
     </template>
 
-    <div class="row flex justify-end q-mt-md">
+    <div v-if="!edit" class="row flex justify-end q-mt-md">
       <q-btn color="primary" label="Next" type="submit" class="col-2" />
     </div>
   </q-form>
 </template>
 
 <script setup lang="ts">
-  import { ValidatedHost, ValidateHostAuth } from 'src/models/hosts.models';
+  import {
+    ValidatedHost,
+    ValidateHostAuth,
+    Credential
+  } from 'src/models/hosts.models';
   import { ref, Ref, ComputedRef, computed, onMounted } from 'vue';
   import { requiredRules } from 'src/utils/auth.utils';
   import { QForm } from 'quasar';
 
-  const props = defineProps<{
-    hosts: ValidatedHost[];
-  }>();
+  defineExpose({ submitHandler });
+
+  const props = defineProps({
+    hosts: {
+      type: Array as () => ValidatedHost[],
+      required: true
+    },
+    credentials: {
+      type: Array as () => Credential[],
+      required: false,
+      default: () => []
+    },
+    edit: {
+      type: Boolean,
+      required: false,
+      default: false
+    }
+  });
 
   const emits = defineEmits(['hostCredentials']);
   const credentialForm = ref({ username: '', password: '' });
@@ -183,6 +205,9 @@
 
   onMounted(() => {
     rawHosts.value = props.hosts.map(host => ({ ...host, credentials: [] }));
+    if (props.credentials) {
+      rawHosts.value[0].credentials = props.credentials;
+    }
   });
 </script>
 

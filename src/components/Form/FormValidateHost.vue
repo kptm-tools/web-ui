@@ -1,5 +1,5 @@
 <template>
-  <q-form @submit="validateHost">
+  <q-form @submit="validateHostHandler">
     <div class="row">
       <div class="col-3 flex">
         <q-radio v-model="isDomain" :val="true" label="Domain" dense />
@@ -96,7 +96,7 @@
 
 <script setup lang="ts">
   import { computed, ref, watch } from 'vue';
-  import { validateDomainOrIp } from 'src/services/host.service';
+  import { validateHost } from 'src/services/host.service';
   import { Host, ValidatedHost } from 'src/models/hosts.models';
   import { useQuasar } from 'quasar';
 
@@ -130,7 +130,7 @@
     hostnameValidates.value.filter(host => !host.isDomain)
   );
 
-  async function validateHost() {
+  async function validateHostHandler() {
     if (validateIsEnable.value) {
       let domainOrIp = '';
       if (isDomain.value) {
@@ -139,7 +139,7 @@
         domainOrIp = ip.value;
       }
       try {
-        await validateDomainOrIp(domainOrIp, hostname.value);
+        await validateHost(domainOrIp);
         isValidated.value = true;
         $q.notify({
           type: 'positive',

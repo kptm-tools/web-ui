@@ -15,30 +15,69 @@
     <template #body="props">
       <q-tr :props="props" class="">
         <q-td v-for="col in props.cols" :key="col.name" :props="props">
-          <template v-if="col.name === 'Status'">
+          <template v-if="col.field === 'status'">
             <q-linear-progress
-              :value="col.value"
+              :value="
+                col.value === 'Completed' || col.value === 'Cancelled' ? 1 : 0
+              "
+              size="20px"
+              rounded
               class="q-mt-sm"
-              color="secondary"
-            />
+              :indeterminate="col.value === 'Pending'"
+              :color="
+                col.value === 'Completed'
+                  ? 'positive'
+                  : col.value === 'Pending'
+                  ? 'warning'
+                  : col.value === 'Cancelled'
+                  ? 'grey'
+                  : 'negative'
+              "
+            >
+              <div class="absolute-full flex flex-center">
+                <q-badge
+                  color="transparent"
+                  text-color="white"
+                  :label="col.value"
+                />
+              </div>
+            </q-linear-progress>
           </template>
-          <template v-else-if="col.name === 'Severity'">
-            <template v-if="col.value == 5">
-              <q-chip
-                :label="col.value"
-                color="red"
-                square
-                text-color="white"
-              />
-              <q-chip color="warning" label="3" square text-color="white" />
-              <q-chip color="positive" label="1" square text-color="white" />
-            </template>
+          <template v-else-if="col.field === 'severity'">
+            <q-chip
+              v-if="col.value.critical"
+              :label="col.value.critical"
+              color="red"
+              square
+              text-color="white"
+            />
+            <q-chip
+              v-if="col.value.high"
+              color="amber-10"
+              :label="col.value.high"
+              square
+              text-color="white"
+            />
+            <q-chip
+              v-if="col.value.medium"
+              color="warning"
+              :label="col.value.medium"
+              square
+              text-color="white"
+            />
+            <q-chip
+              v-if="col.value.low"
+              color="positive"
+              :label="col.value.low"
+              square
+              text-color="white"
+            />
             <template v-if="col.value == 4">
               <q-chip color="orange" label="4" square text-color="white" />
               <q-chip color="positive" label="1" square text-color="white" />
             </template>
           </template>
-          <template v-else-if="col.name === 'actions'">
+          <template v-else-if="col.field === 'actions'">
             <q-btn
               v-for="action in componentProps.actions"
               :key="action"
@@ -49,6 +88,15 @@
               @click="() => handlerEmitter(action, props.row)"
             />
           </template>
+
+          <template
+            v-else-if="
+              col.field === 'numVulnerabilities' || col.field === 'durations'
+            "
+          >
+            {{ col.value }}
+          </template>
+
           <template v-else>
             <template v-if="isDate(col.value)">
               {{ formatDate(col.value) }}
@@ -65,7 +113,7 @@
   import { QTableColumn } from 'quasar';
   import { computed } from 'vue';
 
-  type tableActions = 'edit' | 'delete';
+  type tableActions = 'edit' | 'delete' | 'insight';
 
   const componentProps = defineProps<{
     columns: QTableColumn[];
@@ -95,6 +143,8 @@
         return 'fas fa-pen-to-square';
       case 'delete':
         return 'fas fa-trash-can';
+      case 'insight':
+        return 'fas fa-chart-simple';
       default:
         return '';
     }

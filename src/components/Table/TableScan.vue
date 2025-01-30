@@ -8,7 +8,7 @@
   <table-regular
     :columns="columns"
     :rows="rows"
-    :actions="['edit', 'delete']"
+    :actions="['insight']"
     @action="handlerEmitter($event)"
   />
 </template>

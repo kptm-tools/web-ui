@@ -1,6 +1,6 @@
 <template>
   <q-form @submit.prevent="registerHosts">
-    <div class="row q-col-gutter-md flex items-center">
+    <div v-if="!edit" class="row q-col-gutter-md flex items-center">
       <div class="col-5">
         <q-select
           v-model="pickedHost"
@@ -29,6 +29,16 @@
       </div>
       <div class="col-5">
         <q-input v-model="email" outlined label="Email" dense />
+      </div>
+      <div v-if="edit" class="col-2">
+        <q-btn
+          square
+          color="primary"
+          icon="add"
+          dense
+          :disable="disabledAdd"
+          @click="addReporterToHost"
+        />
       </div>
     </div>
 
@@ -65,7 +75,7 @@
       </template>
     </div>
 
-    <div class="row q-pt-md justify-end">
+    <div v-if="!edit" class="row q-pt-md justify-end">
       <q-btn
         :disabled="!hostsWithEmails.length"
         color="primary"
@@ -78,11 +88,26 @@
 
 <script setup lang="ts">
   import { computed, ComputedRef, onMounted, ref, Ref } from 'vue';
-  import { Host, ValidateHostAuth } from 'src/models/hosts.models';
+  import { Host, ValidateHostAuth, Rapporteur } from 'src/models/hosts.models';
 
-  const props = defineProps<{
-    hosts: ValidateHostAuth[];
-  }>();
+  defineExpose({ registerHosts });
+
+  const props = defineProps({
+    hosts: {
+      type: Array as () => ValidateHostAuth[],
+      required: true
+    },
+    rapporteurs: {
+      type: Array as () => Rapporteur[],
+      required: false,
+      default: () => []
+    },
+    edit: {
+      type: Boolean as () => boolean,
+      required: false,
+      default: false
+    }
+  });
 
   const emits = defineEmits(['registerHost']);
 
@@ -130,7 +155,6 @@
   }
 
   function registerHosts() {
-    console.log('body form', hostsRegister.value);
     emits('registerHost', hostsRegister.value);
   }
 
@@ -144,12 +168,17 @@
         rapporteurs: []
       };
     });
-    await hostOptions.value.unshift({
-      alias: 'All',
-      hostname: 'All',
-      ip: 'All',
-      credentials: []
-    });
+    if (!props.edit) {
+      await hostOptions.value.unshift({
+        alias: 'All',
+        hostname: 'All',
+        ip: 'All',
+        credentials: []
+      });
+    } else {
+      hostsRegister.value[0].rapporteurs = props.rapporteurs;
+    }
+
     pickedHost.value = hostOptions.value[0];
   });
 </script>
