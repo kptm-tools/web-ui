@@ -23,7 +23,7 @@
               size="20px"
               rounded
               class="q-mt-sm"
-              :indeterminate="col.value === 'Pending'"
+              :indeterminate="col.value === 'InProgress'"
               :color="
                 col.value === 'Completed'
                   ? 'positive'
@@ -63,7 +63,15 @@
           </template>
 
           <template v-else-if="col.field === 'durations'">
-            {{ formatDuration(col.value) }}
+            <tempate v-if="secondTick">
+              {{
+                props.row.status === 'InProgress'
+                  ? formatDuration(
+                      getElapsedSeconds(new Date(props.row.scanDate))
+                    )
+                  : formatDuration(col.value)
+              }}
+            </tempate>
           </template>
 
           <template v-else>
@@ -80,7 +88,7 @@
 
 <script setup lang="ts">
   import { QTableColumn } from 'quasar';
-  import { computed } from 'vue';
+  import { computed, onMounted, ref } from 'vue';
   import SeverityChip from '../shared/SeverityChip.vue';
 
   type tableActions = 'edit' | 'delete' | 'insight';
@@ -94,6 +102,8 @@
   const emits = defineEmits<{
     action: unknown;
   }>();
+
+  const secondTick = ref(true);
 
   const updateColumns = computed(() => {
     const columns = [...componentProps.columns];
@@ -138,13 +148,26 @@
     const secs = seconds % 60;
 
     let result = '';
-    if (hours > 0) result += `${hours}h `;
-    if (minutes > 0) result += `${minutes}m `;
+    if (hours > 0) result += `${hours}h ${minutes}m`;
+    if (minutes > 0 && hours < 1) result += `${minutes}m ${secs.toFixed(0)}s`;
     if ((secs > 0 && seconds < 60) || result === '')
       result += `${secs.toFixed(0)}s`;
 
     return result.trim();
   }
+
+  function getElapsedSeconds(startDate: Date): number {
+    const startTs = Math.floor(startDate.getTime() / 1000);
+    const currentTs = Math.floor(Date.now() / 1000);
+    return currentTs - startTs;
+  }
+
+  onMounted(() => {
+    setInterval(async function () {
+      secondTick.value = false;
+      secondTick.value = true;
+    }, 1000);
+  });
 </script>
 
 <style scoped>

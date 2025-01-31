@@ -8,12 +8,16 @@
   import TableScan from 'src/components/Table/TableScan.vue';
   import { getScanInsights, getScans } from 'src/services/scan.service';
   import { Scan } from 'src/models/scans.model';
-  import { computed, onMounted, ref, Ref } from 'vue';
+  import { computed, onMounted, onUnmounted, ref, Ref } from 'vue';
   import DialogScanInsight from 'src/components/Dialog/DialogScanInsight.vue';
   import { useQuasar } from 'quasar';
 
   const scans: Ref<Scan[]> = ref([]);
   const $q = useQuasar();
+
+  let interval = setInterval(async function () {
+    scans.value = (await getScans()).data;
+  }, 3000);
 
   const rows = computed(() =>
     scans.value.map(scan => ({
@@ -53,5 +57,9 @@
 
   onMounted(async () => {
     scans.value = (await getScans()).data;
+  });
+
+  onUnmounted(() => {
+    clearInterval(interval);
   });
 </script>
