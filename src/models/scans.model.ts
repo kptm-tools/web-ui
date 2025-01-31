@@ -21,11 +21,13 @@ interface SeverityCounts {
 }
 
 export interface SeverityPerType {
-  RCE: number;
-  'SQL Injection': number;
-  XSS: number;
-  'Open Port': number;
-  cve: number;
+  [key: string]: number;
+}
+
+export interface VulnerabilityItem {
+  id: number;
+  name: string;
+  count: number;
 }
 
 export type SeverityKey = keyof SeverityPerType;

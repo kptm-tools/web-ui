@@ -15,7 +15,10 @@
               <div class="title">Vulnerability Count</div>
 
               <div class="full-width">
-                <apexchart :options="options" :series="series"></apexchart>
+                <apexchart
+                  :options="SCAN_INSIGHT_VULNERABILITY_OPTIONS"
+                  :series="vulnerabilitySeries"
+                ></apexchart>
               </div>
             </div>
             <div class="row flex items-center q-mb-md protection">
@@ -39,7 +42,7 @@
               <div class="title">Protection Score</div>
               <div class="relative-position">
                 <apexchart
-                  :options="protectionScoreOptions"
+                  :options="SCAN_INSIGHT_PROTECTION_SCORE_OPTIONS"
                   :series="protecion"
                 ></apexchart>
                 <img
@@ -78,11 +81,13 @@
 <script setup lang="ts">
   import { useDialogPluginComponent } from 'quasar';
   import { ScanInsight } from 'src/models/scans.model';
-  import { computed, onMounted, PropType, watchEffect } from 'vue';
+  import { computed, onMounted, PropType, watchEffect, ref, Ref } from 'vue';
   import TableVulnerabilities from 'src/components/insight/TableVulnerabilities.vue';
-  import { ref } from 'vue';
-
-  defineEmits([...useDialogPluginComponent.emits]);
+  import {
+    SCAN_INSIGHT_VULNERABILITY_OPTIONS,
+    SCAN_INSIGHT_PROTECTION_SCORE_OPTIONS
+  } from 'src/constants/apexcharts.constants';
+  import { getVariationIcon } from 'src/utils/insight.utils';
 
   const props = defineProps({
     insight: {
@@ -91,88 +96,20 @@
     }
   });
 
+  defineEmits([...useDialogPluginComponent.emits]);
+
   const { dialogRef, onDialogHide } = useDialogPluginComponent();
 
-  let series: number[] = [];
+  const vulnerabilitySeries: Ref<number[]> = ref([]);
   const protecion = [1, 1, 1];
 
-  const options = {
-    chart: {
-      type: 'donut'
-    },
-    dataLabels: {
-      enabled: true,
-      formatter: function (
-        value: number,
-        {
-          seriesIndex,
-          w
-        }: { seriesIndex: number; w: { config: { series: [] } } }
-      ) {
-        return w.config.series[seriesIndex];
-      },
-      style: {
-        fontSize: '16px',
-        fontWeight: 'regular',
-        colors: ['#313541', '#313541', '#313541', '#313541']
-      }
-    },
-    plotOptions: {
-      pie: {
-        dataLabels: {
-          offset: 20
-        }
-      }
-    },
-    labels: ['Critical', 'High', 'Medium', 'Low'],
-    colors: ['#ED273D', '#F3A488', '#F6BE63', '#97B951']
-  };
-
-  const protectionScoreOptions = {
-    chart: {
-      type: 'donut'
-    },
-    dataLabels: {
-      enabled: false,
-      offsetX: 500,
-      offsetY: 200
-    },
-    legend: {
-      show: true,
-      fontSize: '0px',
-      markers: {
-        size: 0
-      }
-    },
-    colors: ['#E5494D', '#FBBF65', '#46A758'],
-    plotOptions: {
-      pie: {
-        startAngle: -90,
-        endAngle: 90,
-        offsetY: 10
-      }
-    }
-  };
   const actualRotation = ref(0);
+
   const variation = computed(() => props.insight.vulnerability_variation);
-  const dateFormated = computed(() => {
-    const date = new Date(props.insight.metadata.scan_date);
-    return date.toLocaleDateString();
-  });
-
-  const variationIcon = computed(() => {
-    let iconClass = 'fa-solid q-mx-sm ';
-
-    if (variation.value === 0) {
-      iconClass += 'text-grey fa-caret-up';
-    } else if (variation.value > 0) {
-      iconClass += 'text-green fa-caret-up';
-    } else {
-      iconClass += 'text-red fa-caret-down';
-    }
-
-    return iconClass;
-  });
+  const dateFormated = computed(() =>
+    new Date(props.insight.metadata.scan_date).toLocaleDateString()
+  );
+  const variationIcon = computed(() => getVariationIcon(variation.value));
 
   watchEffect(() => {
     setTimeout(() => {
@@ -181,7 +118,7 @@
   });
 
   onMounted(() => {
-    series = [
+    vulnerabilitySeries.value = [
       props.insight.severity_counts?.critical || 0,
       props.insight.severity_counts?.high || 0,
       props.insight.severity_counts?.medium || 0,
@@ -223,6 +160,7 @@
       border-radius: 8px;
       background: #f6f7fc;
       padding: 0.5em 0em;
+
       &-score {
         font-size: 32px;
         font-weight: 800;

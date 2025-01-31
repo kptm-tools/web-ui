@@ -5,58 +5,56 @@
 </template>
 
 <script setup lang="ts">
-  import TableScan from 'src/components/Table/TableScan.vue';
-  import { getScanInsights, getScans } from 'src/services/scan.service';
-  import { Scan } from 'src/models/scans.model';
-  import { computed, onMounted, onUnmounted, ref, Ref } from 'vue';
-  import DialogScanInsight from 'src/components/Dialog/DialogScanInsight.vue';
   import { useQuasar } from 'quasar';
+  import { computed, onMounted, onUnmounted, ref, Ref } from 'vue';
+  import { TableScan, DialogScanInsight } from 'src/components';
+  import { Scan } from 'src/models/scans.model';
+  import {
+    formatScansForTable,
+    getScansFromService,
+    getScanInsightsFromService
+  } from 'src/utils/scan.utils';
 
   const scans: Ref<Scan[]> = ref([]);
   const $q = useQuasar();
 
-  let interval = setInterval(async function () {
-    scans.value = (await getScans()).data;
+  const rows = computed(() => formatScansForTable(scans.value));
+
+  const interval = setInterval(async () => {
+    await setScansData();
   }, 3000);
 
-  const rows = computed(() =>
-    scans.value.map(scan => ({
-      id: scan.scan_id,
-      scanDate: scan.scan_date,
-      host: scan.host,
-      numVulnerabilities: scan.vulnerabilities,
-      severity: scan.severities,
-      durations: scan.duration,
-      status: scan.status
-    }))
-  );
+  async function setScansData(): Promise<void> {
+    scans.value = await getScansFromService();
+  }
+
+  async function insightActionHandler(scanId: string): Promise<void> {
+    try {
+      $q.loading.show();
+      const insight = await getScanInsightsFromService(scanId);
+      $q.loading.hide();
+      $q.dialog({
+        component: DialogScanInsight,
+        componentProps: {
+          insight
+        }
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   async function handlerEmitter(action: {
     action: string;
     col: { id: string };
   }): Promise<void> {
     if (action.action === 'insight') {
-      try {
-        console.log(action.col);
-        const scan = scans.value.find(scan => scan.scan_id === action.col.id);
-        console.log(scan?.scan_id);
-        $q.loading.show();
-        const insight = (await getScanInsights(scan?.scan_id || '')).data;
-        $q.loading.hide();
-        $q.dialog({
-          component: DialogScanInsight,
-          componentProps: {
-            insight
-          }
-        });
-      } catch (error) {
-        console.error(error);
-      }
+      await insightActionHandler(action.col.id);
     }
   }
 
   onMounted(async () => {
-    scans.value = (await getScans()).data;
+    setScansData();
   });
 
   onUnmounted(() => {

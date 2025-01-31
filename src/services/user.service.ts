@@ -6,24 +6,32 @@ import {
 } from 'src/models/fusion-auth.models';
 import { fusionAuthApi } from 'boot/axios';
 
-const BASE_PATH = '/api/users';
+export class UserService {
+  private static readonly BASE_PATH = '/api/users';
 
-export function getUser(
-  userId: string
-): Promise<AxiosResponse<SuccessAuthLoginUser>> {
-  return fusionAuthApi.get<SuccessAuthLoginUser>(`${BASE_PATH}/${userId}`);
-}
+  static async getUser(
+    userId: string
+  ): Promise<AxiosResponse<SuccessAuthLoginUser>> {
+    return fusionAuthApi.get<SuccessAuthLoginUser>(
+      `${this.BASE_PATH}/${userId}`
+    );
+  }
 
-export function createUser(body: CreateUserBody): Promise<AxiosResponse> {
-  return fusionAuthApi.post(`${BASE_PATH}`, body);
-}
+  static async createUser(body: CreateUserBody): Promise<AxiosResponse> {
+    return fusionAuthApi.post(`${this.BASE_PATH}`, body);
+  }
 
-export function verifyEmail(
-  userId: string,
-  tenantId: string,
-  body: VerifyEmailBody
-): Promise<AxiosResponse> {
-  return fusionAuthApi.post(`${BASE_PATH}/${userId}/verify-email`, body, {
-    headers: { 'X-TenantId': tenantId }
-  });
+  static async verifyEmail(
+    userId: string,
+    tenantId: string,
+    body: VerifyEmailBody
+  ): Promise<AxiosResponse> {
+    return fusionAuthApi.post(
+      `${this.BASE_PATH}/${userId}/verify-email`,
+      body,
+      {
+        headers: { 'X-TenantId': tenantId }
+      }
+    );
+  }
 }

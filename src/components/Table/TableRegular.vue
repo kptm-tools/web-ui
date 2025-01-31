@@ -8,79 +8,34 @@
     virtual-scroll
   >
     <template #header-cell="props">
-      <q-th :class="props.col.__thClass" class="table-header">
-        {{ props.col.name }}</q-th
-      >
+      <template v-if="props.col.name !== 'ID'">
+        <q-th :class="props.col.__thClass" class="table-header">
+          {{ props.col.name }}</q-th
+        >
+      </template>
     </template>
     <template #body="props">
       <q-tr :props="props" class="">
-        <q-td v-for="col in props.cols" :key="col.name" :props="props">
-          <template v-if="col.field === 'status'">
-            <q-linear-progress
-              :value="
-                col.value === 'Completed' || col.value === 'Cancelled' ? 1 : 0
-              "
-              size="20px"
-              rounded
-              class="q-mt-sm"
-              :indeterminate="col.value === 'InProgress'"
-              :color="
-                col.value === 'Completed'
-                  ? 'positive'
-                  : col.value === 'Pending'
-                  ? 'warning'
-                  : col.value === 'Cancelled'
-                  ? 'grey'
-                  : 'negative'
-              "
-            >
-              <div class="absolute-full flex flex-center">
-                <q-badge
-                  color="transparent"
-                  text-color="white"
-                  :label="col.value"
+        <template v-for="col in props.cols" :key="col.name">
+          <template v-if="col.name !== 'ID'">
+            <q-td>
+              <slot name="column" :column="col" :row="props.row">
+                {{ col.value }}
+              </slot>
+              <template v-if="col.field === 'actions'">
+                <q-btn
+                  v-for="action in componentProps.actions"
+                  :key="action"
+                  :icon="getIcon(action)"
+                  class="button-table-action"
+                  dense
+                  flat
+                  @click="() => handlerEmitter(action, props.row)"
                 />
-              </div>
-            </q-linear-progress>
+              </template>
+            </q-td>
           </template>
-          <template v-else-if="col.field === 'severity'">
-            <severity-chip :severity="col.value" />
-          </template>
-          <template v-else-if="col.field === 'actions'">
-            <q-btn
-              v-for="action in componentProps.actions"
-              :key="action"
-              :icon="getIcon(action)"
-              class="button-table-action"
-              dense
-              flat
-              @click="() => handlerEmitter(action, props.row)"
-            />
-          </template>
-
-          <template v-else-if="col.field === 'numVulnerabilities'">
-            {{ col.value }}
-          </template>
-
-          <template v-else-if="col.field === 'durations'">
-            <tempate v-if="secondTick">
-              {{
-                props.row.status === 'InProgress'
-                  ? formatDuration(
-                      getElapsedSeconds(new Date(props.row.scanDate))
-                    )
-                  : formatDuration(col.value)
-              }}
-            </tempate>
-          </template>
-
-          <template v-else>
-            <template v-if="isDate(col.value)">
-              {{ formatDate(col.value) }}
-            </template>
-            <template v-else>{{ col.value }}</template>
-          </template>
-        </q-td>
+        </template>
       </q-tr>
     </template>
   </q-table>
@@ -89,7 +44,6 @@
 <script setup lang="ts">
   import { QTableColumn } from 'quasar';
   import { computed, onMounted, ref } from 'vue';
-  import SeverityChip from '../shared/SeverityChip.vue';
 
   type tableActions = 'edit' | 'delete' | 'insight';
 
@@ -134,33 +88,13 @@
     emits('action', { action, col });
   }
 
-  function isDate(date: string): boolean {
-    return new Date(date).toString() !== 'Invalid Date';
-  }
+  // function isDate(date: string): boolean {
+  //   return new Date(date).toString() !== 'Invalid Date';
+  // }
 
-  function formatDate(date: Date): string {
-    return new Date(date).toLocaleDateString();
-  }
-
-  function formatDuration(seconds: number): string {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
-
-    let result = '';
-    if (hours > 0) result += `${hours}h ${minutes}m`;
-    if (minutes > 0 && hours < 1) result += `${minutes}m ${secs.toFixed(0)}s`;
-    if ((secs > 0 && seconds < 60) || result === '')
-      result += `${secs.toFixed(0)}s`;
-
-    return result.trim();
-  }
-
-  function getElapsedSeconds(startDate: Date): number {
-    const startTs = Math.floor(startDate.getTime() / 1000);
-    const currentTs = Math.floor(Date.now() / 1000);
-    return currentTs - startTs;
-  }
+  // function formatDate(date: Date): string {
+  //   return new Date(date).toLocaleDateString();
+  // }
 
   onMounted(() => {
     setInterval(async function () {

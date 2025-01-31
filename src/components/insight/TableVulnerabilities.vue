@@ -1,6 +1,6 @@
 <template>
   <div class="table-vulnerabilities">
-    <div class="row">
+    <div class="row header">
       <div class="col-2"></div>
       <div class="col-10">
         <div class="row">
@@ -13,7 +13,7 @@
       v-for="vulnerability in vulnerabilitiesList"
       :key="vulnerability.id"
     >
-      <div class="row">
+      <div class="row q-mb-xs">
         <div class="col-2 number flex items-center justify-center">
           {{ vulnerability.id + 1 }}
         </div>
@@ -33,13 +33,12 @@
 </template>
 
 <script lang="ts" setup>
-  import { SeverityKey, SeverityPerType } from 'src/models/scans.model';
+  import { SeverityPerType, VulnerabilityItem } from 'src/models/scans.model';
   import { onMounted, PropType, ref, Ref } from 'vue';
-  import SeverityChip from 'src/components/shared/SeverityChip.vue';
+  import { SeverityChip } from 'src/components';
+  import { getVulnerabilityList } from 'src/utils';
 
-  const vulnerabilitiesList: Ref<
-    { id: number; name: string; count: number }[]
-  > = ref([]);
+  const vulnerabilitiesList: Ref<Array<VulnerabilityItem>> = ref([]);
 
   const props = defineProps({
     vulnerabilities: {
@@ -49,14 +48,7 @@
   });
 
   onMounted(() => {
-    Object.keys(props.vulnerabilities).forEach((key, index) => {
-      const severityKey = key as SeverityKey;
-      vulnerabilitiesList.value.push({
-        id: index,
-        name: severityKey,
-        count: props.vulnerabilities[severityKey]
-      });
-    });
+    vulnerabilitiesList.value = getVulnerabilityList(props.vulnerabilities);
   });
 </script>
 
