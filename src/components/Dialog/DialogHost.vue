@@ -15,6 +15,7 @@
         />
         <form-host-credentials
           v-if="step == 'auth'"
+          :edit="false"
           :hosts="validatedHosts"
           @host-credentials="hostCredentialsHandler"
         />

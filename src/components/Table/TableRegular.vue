@@ -8,54 +8,34 @@
     virtual-scroll
   >
     <template #header-cell="props">
-      <q-th :class="props.col.__thClass" class="table-header">
-        {{ props.col.name }}</q-th
-      >
+      <template v-if="props.col.name !== 'ID'">
+        <q-th :class="props.col.__thClass" class="table-header">
+          {{ props.col.name }}</q-th
+        >
+      </template>
     </template>
     <template #body="props">
       <q-tr :props="props" class="">
-        <q-td v-for="col in props.cols" :key="col.name" :props="props">
-          <template v-if="col.name === 'Status'">
-            <q-linear-progress
-              :value="col.value"
-              class="q-mt-sm"
-              color="secondary"
-            />
+        <template v-for="col in props.cols" :key="col.name">
+          <template v-if="col.name !== 'ID'">
+            <q-td>
+              <slot name="column" :column="col" :row="props.row">
+                {{ col.value }}
+              </slot>
+              <template v-if="col.field === 'actions'">
+                <q-btn
+                  v-for="action in componentProps.actions"
+                  :key="action"
+                  :icon="getIcon(action)"
+                  class="button-table-action"
+                  dense
+                  flat
+                  @click="() => handlerEmitter(action, props.row)"
+                />
+              </template>
+            </q-td>
           </template>
-          <template v-else-if="col.name === 'Severity'">
-            <template v-if="col.value == 5">
-              <q-chip
-                :label="col.value"
-                color="red"
-                square
-                text-color="white"
-              />
-              <q-chip color="warning" label="3" square text-color="white" />
-              <q-chip color="positive" label="1" square text-color="white" />
-            </template>
-            <template v-if="col.value == 4">
-              <q-chip color="orange" label="4" square text-color="white" />
-              <q-chip color="positive" label="1" square text-color="white" />
-            </template>
-          </template>
-          <template v-else-if="col.name === 'actions'">
-            <q-btn
-              v-for="action in componentProps.actions"
-              :key="action"
-              :icon="getIcon(action)"
-              class="button-table-action"
-              dense
-              flat
-              @click="() => handlerEmitter(action, props.row)"
-            />
-          </template>
-          <template v-else>
-            <template v-if="isDate(col.value)">
-              {{ formatDate(col.value) }}
-            </template>
-            <template v-else>{{ col.value }}</template>
-          </template>
-        </q-td>
+        </template>
       </q-tr>
     </template>
   </q-table>
@@ -63,9 +43,9 @@
 
 <script setup lang="ts">
   import { QTableColumn } from 'quasar';
-  import { computed } from 'vue';
+  import { computed, onMounted, ref } from 'vue';
 
-  type tableActions = 'edit' | 'delete';
+  type tableActions = 'edit' | 'delete' | 'insight';
 
   const componentProps = defineProps<{
     columns: QTableColumn[];
@@ -76,6 +56,8 @@
   const emits = defineEmits<{
     action: unknown;
   }>();
+
+  const secondTick = ref(true);
 
   const updateColumns = computed(() => {
     const columns = [...componentProps.columns];
@@ -95,6 +77,8 @@
         return 'fas fa-pen-to-square';
       case 'delete':
         return 'fas fa-trash-can';
+      case 'insight':
+        return 'fas fa-chart-simple';
       default:
         return '';
     }
@@ -104,13 +88,20 @@
     emits('action', { action, col });
   }
 
-  function isDate(date: string): boolean {
-    return new Date(date).toString() !== 'Invalid Date';
-  }
+  // function isDate(date: string): boolean {
+  //   return new Date(date).toString() !== 'Invalid Date';
+  // }
 
-  function formatDate(date: Date): string {
-    return new Date(date).toLocaleDateString();
-  }
+  // function formatDate(date: Date): string {
+  //   return new Date(date).toLocaleDateString();
+  // }
+
+  onMounted(() => {
+    setInterval(async function () {
+      secondTick.value = false;
+      secondTick.value = true;
+    }, 1000);
+  });
 </script>
 
 <style scoped>

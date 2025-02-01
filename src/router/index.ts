@@ -8,8 +8,9 @@ import {
 import { useFusionAuthStore } from 'stores/auth-store';
 
 import routes from './routes';
-import { getUser } from 'src/services/user.service';
+import { UserService } from 'src/services';
 import { decodeJwt } from 'src/utils/auth.utils';
+import { AxiosError } from 'axios';
 
 /*
  * If not building with SSR mode, you can
@@ -50,7 +51,9 @@ export default route(function (/* { store, ssrContext } */) {
         next({ name: 'Login' });
       } else {
         try {
-          const response = await getUser(decodeJwt(accessToken).sub);
+          const response = await UserService.getUser(
+            decodeJwt(accessToken).sub
+          );
           authStore.setUserInfo({
             token: accessToken,
             tokenExpirationInstant,
@@ -58,6 +61,11 @@ export default route(function (/* { store, ssrContext } */) {
           });
           return next();
         } catch (error) {
+          const errorAxios = error as AxiosError;
+          if (errorAxios.status === 401) {
+            next({ name: 'Login' });
+          }
+          console.log(errorAxios.status);
           console.error('Error fetching user data:', error);
         }
         next(); // go to wherever I'm going

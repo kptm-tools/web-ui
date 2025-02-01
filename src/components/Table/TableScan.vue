@@ -8,20 +8,61 @@
   <table-regular
     :columns="columns"
     :rows="rows"
-    :actions="['edit', 'delete']"
+    :actions="['insight']"
     @action="handlerEmitter($event)"
-  />
+  >
+    <template #column="{ column }">
+      <template v-if="column.field === 'id'"> </template>
+      <template v-else-if="column.field === 'status'">
+        <q-linear-progress
+          :value="
+            column.value === 'Completed' || column.value === 'Cancelled' ? 1 : 0
+          "
+          size="20px"
+          rounded
+          class="q-mt-sm"
+          :indeterminate="column.value === 'InProgress'"
+          :color="
+            column.value === 'Completed'
+              ? 'positive'
+              : column.value === 'Pending'
+              ? 'warning'
+              : column.value === 'Cancelled'
+              ? 'grey'
+              : 'negative'
+          "
+        >
+          <div class="absolute-full flex flex-center">
+            <q-badge
+              color="transparent"
+              text-color="white"
+              :label="column.value"
+            />
+          </div>
+        </q-linear-progress>
+      </template>
+      <template v-else-if="column.field === 'severity'">
+        <severity-chip :severity="column.value" />
+      </template>
+
+      <template v-else-if="column.field === 'durations'">
+        {{ formatDuration(column.value) }}
+      </template>
+
+      <template v-else>
+        {{ column.value }}
+      </template>
+    </template>
+  </table-regular>
 </template>
 
 <script setup lang="ts">
-  import { QTableColumn } from 'quasar';
-  import TableRegular from './TableRegular.vue';
-  import DialogScan from '../Dialog/DialogScan.vue';
-  import { useQuasar } from 'quasar';
-  import { getHosts } from 'src/services/host.service';
   import { onMounted, ref, Ref } from 'vue';
+  import { QTableColumn, useQuasar } from 'quasar';
+  import { ScanService } from 'src/services';
+  import { getHosts } from 'src/services/host.service';
   import { Host } from 'src/models/hosts.models';
-  import { createScans } from 'src/services/scan.service';
+  import { SeverityChip, TableRegular, DialogScan } from 'src/components';
 
   defineProps<{
     rows: Record<string, unknown>[];
@@ -32,7 +73,27 @@
   const $q = useQuasar();
   const hosts: Ref<Host[]> = ref([]);
 
+  function formatDuration(seconds: number): string {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+
+    let result = '';
+    if (hours > 0) result += `${hours}h ${minutes}m`;
+    if (minutes > 0 && hours < 1) result += `${minutes}m ${secs.toFixed(0)}s`;
+    if ((secs > 0 && seconds < 60) || result === '')
+      result += `${secs.toFixed(0)}s`;
+
+    return result.trim();
+  }
+
   const columns: QTableColumn[] = [
+    {
+      name: 'ID',
+      label: 'ID',
+      align: 'left',
+      field: 'id'
+    },
     {
       name: 'Scan Date',
       label: 'ScanDate',
@@ -79,7 +140,7 @@
       }
     })
       .onOk(data => {
-        createScans(data.map((s: Host) => s.id));
+        ScanService.createScans(data.map((s: Host) => s.id));
       })
       .onCancel(() => {
         console.log('Cancel');

@@ -11,7 +11,7 @@
 <script setup lang="ts">
   import TableHost from 'src/components/Table/TableHost.vue';
   import { onMounted } from 'vue';
-  import { deleteHost, getHosts } from 'src/services/host.service';
+  import { deleteHost, getHosts, getHost } from 'src/services/host.service';
   import { Host } from 'src/models/hosts.models';
   import { useHosthStore } from 'src/stores/host-store';
 
@@ -36,16 +36,16 @@
     action: string;
     col: Host;
   }): Promise<void> {
+    const hostId = action.col.id || '';
     if (action.action === 'edit') {
       try {
-        console.log('edit');
-        console.log(action.col);
+        await getHost(hostId);
       } catch (e) {
         console.log(e);
       }
     } else if (action.action === 'delete') {
       try {
-        await deleteHost(action.col.id || '');
+        await deleteHost(hostId);
         await fetchDataToTable();
       } catch (e) {
         console.log(e);

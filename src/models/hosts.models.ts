@@ -5,8 +5,7 @@ export interface ValidatedHost {
 }
 
 export interface ValidateHostAuth extends ValidatedHost {
-  username: string;
-  password: string;
+  credentials: { username: string; password: string; visible?: boolean }[];
 }
 
 export interface Host {
