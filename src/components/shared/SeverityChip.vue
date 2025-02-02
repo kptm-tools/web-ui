@@ -30,13 +30,10 @@
 </template>
 
 <script setup lang="ts">
-
-defineProps({
-  severity: {
-    type: Object,
-    required: true
-  }
-})
-
-
+  defineProps({
+    severity: {
+      type: Object,
+      required: true
+    }
+  });
 </script>

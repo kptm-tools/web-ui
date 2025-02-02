@@ -15,7 +15,11 @@ export function validateDomainOrIp(
 }
 
 export function validateHost(value: string): Promise<AxiosResponse<string>> {
-  return fusionAuthApi.post(`${BASE_PATH}/validate-host`, { value });
+  return fusionAuthApi.post(`${BASE_PATH}/validate-host`, { value: value });
+}
+
+export function validateAlias(value: string): Promise<AxiosResponse<string>> {
+  return fusionAuthApi.post(`${BASE_PATH}/validate-alias`, { hostname: value });
 }
 
 export async function getHosts(): Promise<AxiosResponse<Host[]>> {
