@@ -14,8 +14,27 @@ export function validateDomainOrIp(
   });
 }
 
+export function validateHost(value: string): Promise<AxiosResponse<string>> {
+  return fusionAuthApi.post(`${BASE_PATH}/validate-host`, { value: value });
+}
+
+export function validateAlias(value: string): Promise<AxiosResponse<string>> {
+  return fusionAuthApi.post(`${BASE_PATH}/validate-alias`, { hostname: value });
+}
+
 export async function getHosts(): Promise<AxiosResponse<Host[]>> {
   return await fusionAuthApi.get(`${BASE_PATH}`);
+}
+
+export async function getHost(hostId: string): Promise<AxiosResponse<Host>> {
+  return await fusionAuthApi.get(`${BASE_PATH}/${hostId}`);
+}
+
+export async function editHost(
+  hostId: string,
+  body: HostCreateBody
+): Promise<AxiosResponse> {
+  return await fusionAuthApi.patch(`${BASE_PATH}/${hostId}`, body);
 }
 
 export async function deleteHost(

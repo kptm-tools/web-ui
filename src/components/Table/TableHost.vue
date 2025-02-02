@@ -20,6 +20,8 @@
   import TableRegular from './TableRegular.vue';
   import DialogHost from '../Dialog/DialogHost.vue';
   import DialogEditHost from '../Dialog/DialogEditHost.vue';
+  import { getHost, editHost } from 'src/services/host.service';
+  import { HostCreateBody } from 'src/models/hosts.models';
 
   const props = defineProps<{
     rows: Record<string, unknown>[];
@@ -80,14 +82,17 @@
       });
   }
 
-  function editHost(col: unknown): void {
+  async function editHostHandler(col: unknown): Promise<void> {
+    const hostId = (col as { id: string }).id;
+    const host = (await getHost(hostId)).data;
     $q.dialog({
       component: DialogEditHost,
       componentProps: {
-        host: col
+        host
       }
     })
-      .onOk(() => {
+      .onOk(async (hostForm: HostCreateBody) => {
+        await editHost(hostId, hostForm);
         emits('refreshTable');
       })
       .onCancel(() => {
@@ -101,8 +106,7 @@
   function handlerEmitter(action: unknown): void {
     const actionType = action as { action: string; col: unknown };
     if (actionType.action === 'edit') {
-      console.log(props.rows);
-      editHost(actionType.col);
+      editHostHandler(actionType.col);
     } else {
       emits('action', action);
     }

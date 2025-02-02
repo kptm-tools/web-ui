@@ -1,5 +1,4 @@
 import axios, { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
-import { Loading } from 'quasar';
 import {
   AUTH_TOKEN_NAMES,
   UNPROTECTED_PATHS
@@ -20,7 +19,6 @@ const isUnprotected = (url: string): boolean => {
 
 fusionAuthApi.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    Loading.show();
     if (!isUnprotected(config.url || '')) {
       const token = sessionStorage.getItem(AUTH_TOKEN_NAMES.ACCESS_TOKEN);
       if (token) {
@@ -35,11 +33,9 @@ fusionAuthApi.interceptors.request.use(
 // Add a response interceptor
 fusionAuthApi.interceptors.response.use(
   response => {
-    Loading.hide();
     return response;
   },
   error => {
-    Loading.hide();
     return Promise.reject(error);
   }
 );

@@ -3,7 +3,7 @@ import {
   changePassword,
   forgotPassword
 } from 'src/services/auth.service';
-import { createUser } from 'src/services/user.service';
+import { UserService } from 'src/services';
 import { defineStore } from 'pinia';
 import {
   ChangePasswordBody,
@@ -54,7 +54,7 @@ export const useFusionAuthStore = defineStore('fusion-auth', {
     },
     async registerUser(body: CreateUserBody): Promise<void> {
       try {
-        const response = await createUser(body);
+        const response = await UserService.createUser(body);
         console.info('User created:', response);
       } catch (error) {
         console.error(error);
