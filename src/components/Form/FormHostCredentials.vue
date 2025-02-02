@@ -188,8 +188,7 @@
     }
     rawHosts.value[indexHost].credentials.push({
       username: credentialForm.value.username,
-      password: credentialForm.value.password,
-      visible: false
+      password: credentialForm.value.password
     });
     credentialForm.value.username = '';
     credentialForm.value.password = '';
