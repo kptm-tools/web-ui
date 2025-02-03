@@ -25,7 +25,7 @@
               <div
                 class="col-6 flex items-center justify-center text-weight-bold protection-score"
               >
-                {{ (insight.protection_score * 100).toFixed(0) }}
+                {{ insight.total_vulnerabilities }}
               </div>
               <div class="col-6">
                 <p class="q-ma-none protection-host">
@@ -59,7 +59,7 @@
 
                 <div class="protection-score-variation">
                   <span class="q-ma-none text">
-                    5%
+                    {{ (insight.protection_score_variation * 100).toFixed(0) }}%
                     <i class="fa-solid fa-caret-up q-mx-sm text-red"></i>
                     Variation
                   </span>
@@ -137,6 +137,7 @@
       overflow: hidden;
       height: 700px;
     }
+
     .title {
       font-size: 16px;
       font-weight: 700;
@@ -214,7 +215,8 @@
       font-size: 20px;
       font-style: normal;
       font-weight: 600;
-      line-height: 33.356px; /* 208.475% */
+      line-height: 33.356px;
+      /* 208.475% */
       position: absolute;
       bottom: 160px;
       margin-left: auto;
