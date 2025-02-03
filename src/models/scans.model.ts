@@ -44,5 +44,6 @@ export interface ScanInsight {
   total_vulnerabilities: number;
   vulnerability_variation: number;
   protection_score: number;
+  protection_score_variation: number;
   metadata: Metadata;
 }
