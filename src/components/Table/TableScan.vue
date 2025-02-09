@@ -9,28 +9,19 @@
     :columns="columns"
     :rows="rows"
     :actions="['insight']"
+    :show-actions="false"
     @action="handlerEmitter($event)"
   >
-    <template #column="{ column }">
+    <template #column="{ column, row }">
       <template v-if="column.field === 'id'"> </template>
       <template v-else-if="column.field === 'status'">
         <q-linear-progress
-          :value="
-            column.value === 'Completed' || column.value === 'Cancelled' ? 1 : 0
-          "
+          :value="getProgressBarValue(column.value)"
           size="20px"
           rounded
           class="q-mt-sm"
-          :indeterminate="column.value === 'InProgress'"
-          :color="
-            column.value === 'Completed'
-              ? 'positive'
-              : column.value === 'Pending'
-              ? 'warning'
-              : column.value === 'Cancelled'
-              ? 'grey'
-              : 'negative'
-          "
+          :indeterminate="column.value === ScanStatus.inProgress"
+          :color="getProgressBarColor(column.value)"
         >
           <div class="absolute-full flex flex-center">
             <q-badge
@@ -49,6 +40,19 @@
         {{ formatDuration(column.value) }}
       </template>
 
+      <template v-else-if="column.field === 'actions'">
+        <template v-for="action in tableActions" :key="action.name">
+          <q-btn
+            v-if="action.show(row.status)"
+            :icon="action.icon"
+            class="button-table-action"
+            dense
+            flat
+            @click="() => handlerEmitter({ action, row })"
+          />
+        </template>
+      </template>
+
       <template v-else>
         {{ column.value }}
       </template>
@@ -62,6 +66,7 @@
   import { ScanService } from 'src/services';
   import { getHosts } from 'src/services/host.service';
   import { Host } from 'src/models/hosts.models';
+  import { ScanStatus, ScanActions } from 'src/models/scans.model';
   import { SeverityChip, TableRegular, DialogScan } from 'src/components';
 
   defineProps<{
@@ -72,6 +77,22 @@
 
   const $q = useQuasar();
   const hosts: Ref<Host[]> = ref([]);
+
+  function getProgressBarColor(status: string): string {
+    return status === ScanStatus.completed
+      ? 'positive'
+      : status === ScanStatus.pending
+      ? 'warning'
+      : status === ScanStatus.cancelled
+      ? 'grey'
+      : 'negative';
+  }
+
+  function getProgressBarValue(status: string): number {
+    return status === ScanStatus.completed || status === ScanStatus.cancelled
+      ? 1
+      : 0;
+  }
 
   function formatDuration(seconds: number): string {
     const hours = Math.floor(seconds / 3600);
@@ -86,6 +107,19 @@
 
     return result.trim();
   }
+
+  const tableActions = [
+    {
+      name: ScanActions.insight,
+      icon: 'fas fa-chart-simple',
+      show: (value: string): boolean => value === ScanStatus.completed
+    },
+    {
+      name: ScanActions.cancel,
+      icon: 'close',
+      show: (value: string): boolean => value === ScanStatus.inProgress
+    }
+  ];
 
   const columns: QTableColumn[] = [
     {
@@ -151,6 +185,7 @@
   }
 
   function handlerEmitter(action: unknown): void {
+    console.log(action);
     emits('action', action);
   }
 

@@ -22,3 +22,9 @@ export async function getScanInsightsFromService(
 ): Promise<ScanInsight> {
   return (await ScanService.getScanInsights(scan_id)).data;
 }
+
+export async function postScanCancelService(
+  scan_id: string = ''
+): Promise<string> {
+  return (await ScanService.cancelScan(scan_id)).data;
+}

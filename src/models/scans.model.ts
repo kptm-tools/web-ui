@@ -47,3 +47,15 @@ export interface ScanInsight {
   protection_score_variation: number;
   metadata: Metadata;
 }
+
+export enum ScanStatus {
+  inProgress = 'InProgress',
+  completed = 'Completed',
+  pending = 'Pending',
+  cancelled = 'Cancelled'
+}
+
+export enum ScanActions {
+  insight = 'insight',
+  cancel = 'cancel'
+}

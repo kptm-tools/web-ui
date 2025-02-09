@@ -22,7 +22,7 @@
               <slot name="column" :column="col" :row="props.row">
                 {{ col.value }}
               </slot>
-              <template v-if="col.field === 'actions'">
+              <template v-if="col.field === 'actions' && showActions">
                 <q-btn
                   v-for="action in componentProps.actions"
                   :key="action"
@@ -47,11 +47,18 @@
 
   type tableActions = 'edit' | 'delete' | 'insight';
 
-  const componentProps = defineProps<{
-    columns: QTableColumn[];
-    rows: Record<string, unknown>[];
-    actions?: tableActions[];
-  }>();
+  const componentProps = withDefaults(
+    defineProps<{
+      columns: QTableColumn[];
+      rows: Record<string, unknown>[];
+      actions?: tableActions[];
+      showActions?: boolean;
+    }>(),
+    {
+      actions: () => [],
+      showActions: true
+    }
+  );
 
   const emits = defineEmits<{
     action: unknown;
