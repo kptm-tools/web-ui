@@ -13,6 +13,16 @@ export interface Scan {
   status: string;
 }
 
+export interface ScanTableColums {
+  id: string;
+  scanDate: string;
+  host: string;
+  numVulnerabilities: number;
+  severity: SeverityCounts;
+  durations: string;
+  status: string;
+}
+
 interface SeverityCounts {
   critical: number;
   high: number;
@@ -55,7 +65,20 @@ export enum ScanStatus {
   cancelled = 'Cancelled'
 }
 
+export type ScanStatusType = keyof ScanStatus;
+
 export enum ScanActions {
   insight = 'insight',
   cancel = 'cancel'
+}
+
+export interface ScanTableAction {
+  name: string;
+  icon: string;
+  show: (value: string) => boolean;
+}
+
+export interface ScanTableEventAction {
+  action: ScanTableAction;
+  row: ScanTableColums;
 }

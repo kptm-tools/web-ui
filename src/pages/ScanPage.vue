@@ -8,13 +8,13 @@
   import { useQuasar } from 'quasar';
   import { computed, onMounted, onUnmounted, ref, Ref } from 'vue';
   import { TableScan, DialogScanInsight } from 'src/components';
-  import { Scan, ScanActions } from 'src/models/scans.model';
+  import { Scan, ScanActions, ScanTableEventAction } from 'src/models';
   import {
     formatScansForTable,
     getScansFromService,
     getScanInsightsFromService,
     postScanCancelService
-  } from 'src/utils/scan.utils';
+  } from 'src/utils';
 
   const scans: Ref<Scan[]> = ref([]);
   const $q = useQuasar();
@@ -55,19 +55,15 @@
     }
   }
 
-  async function handlerEmitter(action: {
-    action: {
-      name: string;
-    };
-    row: {
-      id: string;
-    };
-  }): Promise<void> {
-    console.log(action.action);
-    if (action.action.name === ScanActions.insight) {
-      await insightActionHandler(action.row.id);
-    } else if (action.action.name === ScanActions.cancel) {
-      await cancelActionHandler(action.row.id);
+  async function handlerEmitter(data: ScanTableEventAction): Promise<void> {
+    const {
+      action: { name: scanAction },
+      row: { id: scanId }
+    } = data;
+    if (scanAction === ScanActions.insight) {
+      await insightActionHandler(scanId);
+    } else if (scanAction === ScanActions.cancel) {
+      await cancelActionHandler(scanId);
     }
   }
 
