@@ -18,4 +18,8 @@ export class ScanService {
   static async createScans(host_ids: string[]): Promise<AxiosResponse<Scan>> {
     return await fusionAuthApi.post(`${this.BASE_PATH}`, { host_ids });
   }
+
+  static async cancelScan(scanId: string): Promise<AxiosResponse> {
+    return await fusionAuthApi.post(`${this.BASE_PATH}/${scanId}/cancel`);
+  }
 }

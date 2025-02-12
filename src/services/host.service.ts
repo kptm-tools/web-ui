@@ -4,6 +4,22 @@ import { Host, HostCreateBody } from 'src/models/hosts.models';
 
 const BASE_PATH = '/api/hosts';
 
+export class HostService {
+  private static readonly BASE_PATH = '/api/hosts';
+
+  static async getHosts(): Promise<AxiosResponse<Host[]>> {
+    return await fusionAuthApi.get(`${this.BASE_PATH}`);
+  }
+
+  static async deleteHostById(hostId: string): Promise<AxiosResponse<Host[]>> {
+    return await fusionAuthApi.delete(`${BASE_PATH}/${hostId}`);
+  }
+
+  static async getHostById(hostId: string): Promise<AxiosResponse<Host>> {
+    return await fusionAuthApi.get(`${BASE_PATH}/${hostId}`);
+  }
+}
+
 export function validateDomainOrIp(
   domainOrIp: string,
   hostname: string

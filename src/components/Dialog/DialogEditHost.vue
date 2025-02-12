@@ -88,7 +88,7 @@
   } from 'src/models/hosts.models';
   import FormHostCredentials from 'components/Form/FormHostCredentials.vue';
   import FormHostEmails from 'components/Form/FormHostEmails.vue';
-  import { validateHost, validateAlias } from 'src/services/host.service';
+  import { validateHost } from 'src/services/host.service';
   import { errorQuasarNotify } from 'src/utils';
 
   defineEmits([...useDialogPluginComponent.emits]);
@@ -120,7 +120,6 @@
       formEmails.value.registerHosts();
 
       await validateHost(value || '');
-      await validateAlias(name || '');
 
       const body: HostCreateBody = {
         value,

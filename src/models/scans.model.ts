@@ -13,6 +13,16 @@ export interface Scan {
   status: string;
 }
 
+export interface ScanTableColums {
+  id: string;
+  scanDate: string;
+  host: string;
+  numVulnerabilities: number;
+  severity: SeverityCounts;
+  durations: string;
+  status: string;
+}
+
 interface SeverityCounts {
   critical: number;
   high: number;
@@ -46,4 +56,29 @@ export interface ScanInsight {
   protection_score: number;
   protection_score_variation: number;
   metadata: Metadata;
+}
+
+export enum ScanStatus {
+  inProgress = 'InProgress',
+  completed = 'Completed',
+  pending = 'Pending',
+  cancelled = 'Cancelled'
+}
+
+export type ScanStatusType = keyof ScanStatus;
+
+export enum ScanActions {
+  insight = 'insight',
+  cancel = 'cancel'
+}
+
+export interface ScanTableAction {
+  name: string;
+  icon: string;
+  show: (value: string) => boolean;
+}
+
+export interface ScanTableEventAction {
+  action: ScanTableAction;
+  row: ScanTableColums;
 }
