@@ -82,3 +82,34 @@ export interface ScanTableEventAction {
   action: ScanTableAction;
   row: ScanTableColums;
 }
+
+export interface ScanVulnerabilitesResponse {
+  scan_date: string;
+  alias: string;
+  total_vulnerabilities: number;
+  severity_counts: ScanVulnerabilitesServerityCounts;
+  vulnerabilities: ScanVulnerability[];
+}
+
+export interface ScanVulnerabilitesServerityCounts {
+  Critical: number;
+  High: number;
+  Medium: number;
+  Low: number;
+}
+
+export interface ScanVulnerability {
+  id: number;
+  name: string;
+  severity: string;
+  max_cvss: number;
+  risk_score: number;
+  impact_score: number;
+  likelihood: string;
+  access: string;
+  complexity: string;
+  privileges: string;
+  exploitability: string;
+  comment: string;
+  references: string[];
+}

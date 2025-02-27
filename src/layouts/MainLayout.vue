@@ -115,7 +115,7 @@
           <q-item
             v-ripple
             clickable
-            to="#"
+            to="reports"
             class="nav-item"
             :active="route.name === 'Reports'"
           >
@@ -172,11 +172,15 @@
     </q-drawer>
 
     <q-page-container style="overflow: hidden">
-      <div
-        class="bg-white q-ma-md"
-        style="height: calc(100vh - 85px); border-radius: 1em"
-      >
-        <router-view />
+      <div class="row">
+        <div class="col">
+          <div
+            class="bg-white q-ma-md"
+            style="height: calc(100vh - 85px); border-radius: 1em"
+          >
+            <router-view />
+          </div>
+        </div>
       </div>
     </q-page-container>
   </q-layout>

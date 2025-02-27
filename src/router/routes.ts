@@ -33,6 +33,22 @@ const routes: RouteRecordRaw[] = [
           title: 'Scans'
         },
         component: () => import('pages/ScanPage.vue')
+      },
+      {
+        path: 'reports',
+        name: ROUTES_NAMES.reports,
+        meta: {
+          title: 'Reports'
+        },
+        component: () => import('pages/ReportPage.vue')
+      },
+      {
+        path: 'reports/:id',
+        name: ROUTES_NAMES.reportsDetail,
+        meta: {
+          title: 'Reports'
+        },
+        component: () => import('pages/ReportDetailPage.vue')
       }
     ]
   },

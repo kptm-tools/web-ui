@@ -5,5 +5,7 @@ export const ROUTES_NAMES = {
   recoverPassword: 'RecoverPassword',
   resetPassword: 'ResetPassword',
   hosts: 'Hosts',
-  scans: 'Scans'
+  scans: 'Scans',
+  reports: 'Reports',
+  reportsDetail: 'ReportsDetail'
 };

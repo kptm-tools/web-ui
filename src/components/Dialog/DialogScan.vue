@@ -5,7 +5,7 @@
       style="max-width: 700px; width: 100%"
     >
       <q-card-section>
-        <q-card-title class="text-h6">New Scan</q-card-title>
+        <q-card-title class="text-h6">{{ modalTitle }} </q-card-title>
       </q-card-section>
       <template v-if="step === 0">
         <scan-pick-hosts-step
@@ -23,7 +23,7 @@
 
       <template v-if="step === 2">
         <q-card-section>
-          <form-host-emails :hosts="validatedHost" />
+          <form-host-emails :hosts="validatedHost" @register-host="submit" />
         </q-card-section>
       </template>
     </q-card>
@@ -33,7 +33,7 @@
 <script setup lang="ts">
   import { useDialogPluginComponent } from 'quasar';
   import { Host, ValidateHostAuth } from 'src/models/hosts.models';
-  import { onMounted, Ref, ref } from 'vue';
+  import { computed, onMounted, Ref, ref } from 'vue';
   import {
     ScanPickHostsStep,
     ScanScheduleStep,
@@ -49,7 +49,7 @@
     }
   });
 
-  const { dialogRef, onDialogHide } = useDialogPluginComponent();
+  const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
   const pickedHosts: Ref<Host[]> = ref([]);
   const validatedHost: Ref<ValidateHostAuth[]> = ref([]);
   const step: Ref<number> = ref(0);
@@ -69,9 +69,15 @@
     step.value++;
   }
 
-  // function submit() {
-  //   onDialogOK(pickedHosts.value);
-  // }
+  const modalTitle = computed(() => {
+    if (step.value == 0) return 'Host Details';
+    else if (step.value == 1) return 'New Scan ';
+    return 'Send email';
+  });
+
+  function submit() {
+    onDialogOK(pickedHosts.value);
+  }
 
   onMounted(() => {
     props.hosts.map((host: Host) => {

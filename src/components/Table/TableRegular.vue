@@ -45,7 +45,7 @@
   import { QTableColumn } from 'quasar';
   import { computed, onMounted, ref } from 'vue';
 
-  type tableActions = 'edit' | 'delete' | 'insight';
+  type tableActions = 'edit' | 'delete' | 'insight' | 'search';
 
   const componentProps = withDefaults(
     defineProps<{
@@ -86,6 +86,8 @@
         return 'fas fa-trash-can';
       case 'insight':
         return 'fas fa-chart-simple';
+      case 'search':
+        return 'fas fa-magnifying-glass';
       default:
         return '';
     }
