@@ -7,5 +7,6 @@ export const ROUTES_NAMES = {
   hosts: 'Hosts',
   scans: 'Scans',
   reports: 'Reports',
-  reportsDetail: 'ReportsDetail'
+  reportsDetail: 'ReportsDetail',
+  reportsDetailVul: 'ReportsDetailVul'
 };

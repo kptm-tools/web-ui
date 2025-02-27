@@ -3,7 +3,7 @@
     <q-header class="bg-transparent text-black">
       <q-toolbar class="q-px-lg">
         <q-toolbar-title class="title">
-          {{ $route.meta.title }}
+          <div id="header"></div>
         </q-toolbar-title>
 
         <q-separator />
@@ -56,126 +56,146 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer show-if-above side="left" class="flex column">
-      <div class="text-center q-pt-lg">
-        <img
-          alt="Aynitech Logo"
-          class="logo"
-          src="../assets/logos/kriptone-logo.svg"
-        />
-      </div>
-
-      <q-list
-        style="height: calc(100% - 90px)"
-        class="flex column justify-between"
+    <q-drawer
+      show-if-above
+      side="left"
+      class="flex column"
+      :width="showSecondDrawer ? 500 : 300"
+    >
+      <div
+        style="
+          width: 300px;
+          display: flex;
+          flex-direction: column;
+          height: 100%;
+        "
       >
-        <div style="margin-top: 40%">
-          <q-item
-            v-ripple
-            clickable
-            to="/"
-            class="nav-item"
-            :active="route.name === 'Home'"
-          >
-            <q-item-section avatar class="q-px-none items-center">
-              <q-icon name="home" />
-            </q-item-section>
-            <q-item-section>
-              <q-item-label>Overview</q-item-label>
-            </q-item-section>
-          </q-item>
-          <q-item
-            v-ripple
-            clickable
-            to="/hosts"
-            class="nav-item"
-            :active="route.name === 'Hosts'"
-          >
-            <q-item-section avatar class="q-px-none items-center">
-              <q-icon name="fas fa-sitemap" />
-            </q-item-section>
-            <q-item-section>
-              <q-item-label>Host Details</q-item-label>
-            </q-item-section>
-          </q-item>
-          <q-item
-            v-ripple
-            clickable
-            to="scans"
-            class="nav-item"
-            :active="route.name === 'Scans'"
-          >
-            <q-item-section avatar class="q-px-none items-center">
-              <q-icon name="search" />
-            </q-item-section>
-            <q-item-section>
-              <q-item-label>Scans</q-item-label>
-            </q-item-section>
-          </q-item>
-          <q-item
-            v-ripple
-            clickable
-            to="reports"
-            class="nav-item"
-            :active="route.name === 'Reports'"
-          >
-            <q-item-section avatar class="q-px-none items-center">
-              <q-icon name="warning" />
-            </q-item-section>
-            <q-item-section>
-              <q-item-label>Reports</q-item-label>
-            </q-item-section>
-          </q-item>
+        <div class="text-center q-pt-lg">
+          <img
+            alt="Aynitech Logo"
+            class="logo"
+            src="../assets/logos/kriptone-logo.svg"
+          />
         </div>
 
-        <div>
-          <q-item>
-            <q-item-section avatar class="q-px-none items-center">
-              <q-avatar>
-                <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
-              </q-avatar>
-            </q-item-section>
-            <q-item-section>
-              <q-item-label
-                >{{
-                  userInformation?.user?.user?.name ||
-                  userInformation?.user.firstName
-                }}
-                {{
-                  userInformation?.user?.user?.lastname ||
-                  userInformation?.user.lastName
-                }}
-              </q-item-label>
-              <!-- <q-item-label>{{
+        <q-list
+          style="height: calc(100% - 90px)"
+          class="flex column justify-between"
+        >
+          <div style="margin-top: 40%">
+            <q-item
+              v-ripple
+              clickable
+              to="/"
+              class="nav-item"
+              :active="route.name === 'Home'"
+            >
+              <q-item-section avatar class="q-px-none items-center">
+                <q-icon name="home" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>Overview</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item
+              v-ripple
+              clickable
+              to="/hosts"
+              class="nav-item"
+              :active="route.name === 'Hosts'"
+            >
+              <q-item-section avatar class="q-px-none items-center">
+                <q-icon name="fas fa-sitemap" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>Host Details</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item
+              v-ripple
+              clickable
+              to="scans"
+              class="nav-item"
+              :active="route.name === 'Scans'"
+            >
+              <q-item-section avatar class="q-px-none items-center">
+                <q-icon name="search" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>Scans</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item
+              v-ripple
+              clickable
+              to="reports"
+              class="nav-item"
+              :active="route.name === 'Reports'"
+            >
+              <q-item-section avatar class="q-px-none items-center">
+                <q-icon name="warning" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>Reports</q-item-label>
+              </q-item-section>
+            </q-item>
+          </div>
+
+          <div>
+            <q-item>
+              <q-item-section avatar class="q-px-none items-center">
+                <q-avatar>
+                  <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
+                </q-avatar>
+              </q-item-section>
+              <q-item-section>
+                <q-item-label
+                  >{{
+                    userInformation?.user?.user?.name ||
+                    userInformation?.user.firstName
+                  }}
+                  {{
+                    userInformation?.user?.user?.lastname ||
+                    userInformation?.user.lastName
+                  }}
+                </q-item-label>
+                <!-- <q-item-label>{{
                 userInformation.user.memberships
               }}</q-item-label> -->
-            </q-item-section>
-          </q-item>
-          <q-item v-ripple clickable to="/settings" class="nav-item">
-            <q-item-section avatar class="q-px-none items-center">
-              <q-icon name="settings" />
-            </q-item-section>
-            <q-item-section>
-              <q-item-label>CONFIG</q-item-label>
-            </q-item-section>
-          </q-item>
-          <q-item v-ripple clickable class="nav-item" @click="logout">
-            <q-item-section avatar class="q-px-none items-center">
-              <q-icon name="power_settings_new" />
-            </q-item-section>
-            <q-item-section>
-              <q-item-label>LOG OUT</q-item-label>
-            </q-item-section>
-          </q-item>
-        </div>
-      </q-list>
+              </q-item-section>
+            </q-item>
+            <q-item v-ripple clickable to="/settings" class="nav-item">
+              <q-item-section avatar class="q-px-none items-center">
+                <q-icon name="settings" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>CONFIG</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item v-ripple clickable class="nav-item" @click="logout">
+              <q-item-section avatar class="q-px-none items-center">
+                <q-icon name="power_settings_new" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>LOG OUT</q-item-label>
+              </q-item-section>
+            </q-item>
+          </div>
+        </q-list>
+      </div>
+      <div
+        v-if="showSecondDrawer"
+        style="width: 200px; height: 100%; overflow: hidden"
+      >
+        <div id="aux-sidebar" style="width: 200px; height: 100%"></div>
+      </div>
     </q-drawer>
 
     <q-page-container style="overflow: hidden">
       <div class="row">
         <div class="col">
           <div
-            class="bg-white q-ma-md"
+            class="bg-white q-ma-sm"
             style="height: calc(100vh - 85px); border-radius: 1em"
           >
             <router-view />
@@ -191,6 +211,7 @@
   import { computed, ref } from 'vue';
   import { useRoute, useRouter } from 'vue-router';
   import { useHosthStore } from 'src/stores/host-store';
+  import { ROUTES_NAMES } from 'src/router/routes-names';
 
   const router = useRouter();
   const route = useRoute();
@@ -227,6 +248,12 @@
       searchText: searchText?.toString()
     });
   }
+
+  const showSecondDrawer = computed(
+    () =>
+      route.name === ROUTES_NAMES.reportsDetail ||
+      route.name === ROUTES_NAMES.reportsDetailVul
+  );
 </script>
 
 <style lang="scss">

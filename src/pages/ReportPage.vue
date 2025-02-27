@@ -1,4 +1,7 @@
 <template>
+  <Teleport v-if="isMounted" to="#header">
+    <div>Reports</div>
+  </Teleport>
   <table-reports :rows="reportsRow" @action="handleTableAction" />
 </template>
 
@@ -19,10 +22,10 @@
   const reports: Ref<Report[]> = ref([]);
   const router = useRouter();
   const reportsRow: Ref<Record<string, unknown>[]> = ref([]);
+  const isMounted = ref(false);
   const $q = useQuasar();
 
   function handleTableAction(action: ReportTableEventAction): void {
-    console.log(action);
     if (action.action === 'insight') {
       ReportService.getReportsVulnerabilitiesSummary(
         action.col.scan_id,
@@ -51,5 +54,6 @@
         ...data
       }));
     });
+    isMounted.value = true;
   });
 </script>

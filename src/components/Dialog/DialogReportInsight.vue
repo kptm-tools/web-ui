@@ -11,6 +11,7 @@
             dense
             :options="severityOptions"
             label="Severity"
+            @update:model-value="handlerSelect"
           />
         </div>
         <div class="col-3">
@@ -100,7 +101,7 @@
     ReportSummaryTimeRange.SEMESTER
   ];
 
-  const severityPicked = ref('');
+  const severityPicked = ref([]);
   const timePicked = ref('' as ReportSummaryTimeRange);
 
   const vulnerabiltyOptions = computed(() => {
@@ -169,16 +170,16 @@
       name: 'Count',
       type: 'line',
       data: insightInformation.value.vulnerability_trends.time_periods.map(
-        period => period.vulnerability_count
+        period => period.vulnerability_count.toFixed(2)
       )
     },
     {
       name: 'Average',
       type: 'line',
-      data: insightInformation.value.vulnerability_trends.time_periods.map(
-        () =>
-          insightInformation.value.vulnerability_trends
-            .average_vulnerability_count
+      data: insightInformation.value.vulnerability_trends.time_periods.map(() =>
+        insightInformation.value.vulnerability_trends.average_vulnerability_count.toFixed(
+          0
+        )
       )
     }
   ]);
@@ -187,7 +188,7 @@
     showGraph.value = false;
     ReportService.getReportsVulnerabilitiesSummary(
       insightInformation.value.scan_id,
-      severityPicked.value,
+      severityPicked.value.join(','),
       timePicked.value
     ).then(response => {
       showGraph.value = true;

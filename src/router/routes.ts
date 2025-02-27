@@ -49,6 +49,14 @@ const routes: RouteRecordRaw[] = [
           title: 'Reports'
         },
         component: () => import('pages/ReportDetailPage.vue')
+      },
+      {
+        path: 'reports/:id/vulnerability/:idvul',
+        name: ROUTES_NAMES.reportsDetailVul,
+        meta: {
+          title: 'Reports'
+        },
+        component: () => import('pages/ReportDetailVulnerability.vue')
       }
     ]
   },

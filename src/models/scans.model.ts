@@ -92,10 +92,10 @@ export interface ScanVulnerabilitesResponse {
 }
 
 export interface ScanVulnerabilitesServerityCounts {
-  Critical: number;
-  High: number;
-  Medium: number;
-  Low: number;
+  critical: number;
+  high: number;
+  medium: number;
+  low: number;
 }
 
 export interface ScanVulnerability {
@@ -111,5 +111,37 @@ export interface ScanVulnerability {
   privileges: string;
   exploitability: string;
   comment: string;
+  recommendation?: string;
   references: string[];
+  port?: {
+    protocol: string;
+  };
+  host?: {
+    ip_address: string;
+    alias: string;
+  };
+  date?: {
+    published: string;
+    last_updated: string;
+  };
+  plugin?: {
+    cpe: string;
+    severity: string;
+    version: string;
+    type: string;
+    family: string;
+  };
+  vpr_key_d?: {
+    threat_intensity: string;
+    exploit_code_maturity: string;
+    age_of_vuln: number;
+    product_coverage: string;
+  };
+  risk?: {
+    risk_score: number;
+    availability_impact: string;
+    integrity_impact: string;
+    cvss_v3_base: number;
+    cvss_v3_vector: string;
+  };
 }
