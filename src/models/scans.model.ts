@@ -113,12 +113,18 @@ export interface ScanVulnerability {
   comment: string;
   recommendation?: string;
   references: string[];
+  description?: string;
   port?: {
+    id: string;
     protocol: string;
   };
   host?: {
     ip_address: string;
     alias: string;
+  };
+  operating_system?: {
+    name: string;
+    type: string;
   };
   date?: {
     published: string;

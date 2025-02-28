@@ -53,7 +53,7 @@
       v-model="sort"
       borderless
       dense
-      :options="['Vulnerability', 'cvss', 'Risk']"
+      :options="['Vulnerability', 'Cvss', 'Risk']"
       @update:model-value="sortList"
     ></q-select>
     <div
@@ -72,6 +72,7 @@
   import { computed, onMounted, Ref, ref } from 'vue';
   import { useRoute } from 'vue-router';
   import { ROUTES_NAMES } from 'src/router/routes-names';
+  import { useQuasar } from 'quasar';
   import VulnerabilityCard from 'src/components/report/VulnerabilityCard.vue';
 
   const route = useRoute();
@@ -79,8 +80,9 @@
   const vulnerabilites: Ref<ScanVulnerabilitesResponse> = ref(
     {} as ScanVulnerabilitesResponse
   );
-  const sort = ref('vulnerability');
+  const sort = ref('Vulnerability');
   const isMounted = ref(false);
+  const $q = useQuasar();
 
   const totalSeverity = computed(() => {
     return Object.values(vulnerabilites.value.severity_counts).reduce(
@@ -89,13 +91,13 @@
   });
 
   function sortList(type: string): void {
-    let updatedList: ScanVulnerability[] = [];
+    let updatedList: ScanVulnerability[] = vulnerabilites.value.vulnerabilities;
     if (type === 'Vulnerability') {
       updatedList = vulnerabilites.value.vulnerabilities.sort((a, b) =>
         a.name.localeCompare(b.name)
       );
     }
-    if (type === 'cvss') {
+    if (type === 'Cvss') {
       updatedList = vulnerabilites.value.vulnerabilities.sort(
         (a, b) => b.max_cvss - a.max_cvss
       );
@@ -109,9 +111,11 @@
   }
 
   onMounted(async () => {
+    $q.loading.show();
     vulnerabilites.value = (
       await ReportService.getReportsVulnerabilities(scanId)
     ).data;
+    $q.loading.hide();
     sortList('Vulnerability');
     isMounted.value = true;
   });

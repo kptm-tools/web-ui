@@ -48,14 +48,13 @@
             ></apexchart>
           </div>
         </div>
-
-        <div class="row">
+        <div class="row justify-center">
           <apexchart
             type="line"
             height="300"
             :options="vulnerabilityTrendOptions"
             :series="vulnerabilitiesTrendValues"
-            width="650"
+            width="700"
           ></apexchart>
         </div>
       </q-card-section> </q-card
@@ -152,7 +151,13 @@
             text: 'Vulnerabilites'
           }
         }
-      ]
+      ],
+      xasis: {
+        labels: {
+          show: true,
+          rotate: 90
+        }
+      }
     };
   });
 
@@ -296,5 +301,11 @@
       left: -40px;
       right: 0;
     }
+  }
+
+  .apexcharts-text.apexcharts-xaxis-label {
+    transform: rotate(0deg);
+    transform: translate(10px, 10px);
+    font-size: 10px;
   }
 </style>
