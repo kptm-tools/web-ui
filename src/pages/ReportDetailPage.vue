@@ -94,7 +94,7 @@
     let updatedList: ScanVulnerability[] = vulnerabilites.value.vulnerabilities;
     if (type === 'Vulnerability') {
       updatedList = vulnerabilites.value.vulnerabilities.sort((a, b) =>
-        a.name.localeCompare(b.name)
+        b.name.localeCompare(a.name)
       );
     }
     if (type === 'Cvss') {
