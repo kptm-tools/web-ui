@@ -82,3 +82,72 @@ export interface ScanTableEventAction {
   action: ScanTableAction;
   row: ScanTableColums;
 }
+
+export interface ScanVulnerabilitesResponse {
+  scan_date: string;
+  alias: string;
+  total_vulnerabilities: number;
+  severity_counts: ScanVulnerabilitesServerityCounts;
+  vulnerabilities: ScanVulnerability[];
+}
+
+export interface ScanVulnerabilitesServerityCounts {
+  critical: number;
+  high: number;
+  medium: number;
+  low: number;
+}
+
+export interface ScanVulnerability {
+  id: number;
+  name: string;
+  severity: string;
+  max_cvss: number;
+  risk_score: number;
+  impact_score: number;
+  likelihood: string;
+  access: string;
+  complexity: string;
+  privileges: string;
+  exploitability: string;
+  comment: string;
+  recommendation?: string;
+  references: string[];
+  description?: string;
+  port?: {
+    id: string;
+    protocol: string;
+  };
+  host?: {
+    ip_address: string;
+    alias: string;
+  };
+  operating_system?: {
+    name: string;
+    type: string;
+  };
+  date?: {
+    published: string;
+    last_updated: string;
+  };
+  plugin?: {
+    cpe: string;
+    severity: string;
+    version: string;
+    type: string;
+    family: string;
+  };
+  vpr_key_d?: {
+    threat_intensity: string;
+    exploit_code_maturity: string;
+    age_of_vuln: number;
+    product_coverage: string;
+  };
+  risk?: {
+    risk_score: number;
+    availability_impact: string;
+    integrity_impact: string;
+    cvss_v3_base: number;
+    cvss_v3_vector: string;
+  };
+}

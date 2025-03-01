@@ -23,8 +23,8 @@ export const SCAN_INSIGHT_VULNERABILITY_OPTIONS = {
       }
     }
   },
-  labels: ['Critical', 'High', 'Medium', 'Low'],
-  colors: ['#ED273D', '#F3A488', '#F6BE63', '#97B951']
+  labels: ['Critical', 'High', 'Medium', 'Low', 'None', 'Unknown'],
+  colors: ['#ED273D', '#F3A488', '#F6BE63', '#97B951', '#42B188', '#A2B188']
 };
 
 export const SCAN_INSIGHT_PROTECTION_SCORE_OPTIONS = {
