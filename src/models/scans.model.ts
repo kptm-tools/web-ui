@@ -151,3 +151,10 @@ export interface ScanVulnerability {
     cvss_v3_vector: string;
   };
 }
+
+export interface ScanScoreTrend {
+  alias: string;
+  oldest_score: number | null;
+  latest_score: number;
+  latest_score_grade: string;
+}

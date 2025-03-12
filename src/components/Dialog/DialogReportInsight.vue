@@ -183,7 +183,7 @@
       type: 'line',
       data: insightInformation.value.vulnerability_trends.time_periods.map(() =>
         insightInformation.value.vulnerability_trends.average_vulnerability_count.toFixed(
-          0
+          2
         )
       )
     }

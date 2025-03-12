@@ -2,7 +2,16 @@
   <Teleport v-if="isMounted" to="#header">
     <div>Reports</div>
   </Teleport>
-  <table-reports :rows="reportsRow" @action="handleTableAction" />
+
+  <div class="q-pa-md">
+    <q-btn
+      label="Scoredcard Trends"
+      color="primary"
+      class="q-mb-md"
+      @click="openScoredcardTrends"
+    ></q-btn>
+    <table-reports :rows="reportsRow" @action="handleTableAction" />
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -17,6 +26,7 @@
   import { useQuasar } from 'quasar';
   import { ROUTES_NAMES } from 'src/router/routes-names';
   import { useRouter } from 'vue-router';
+  import ScoredcardTrendsDialog from 'src/components/report/ScoredcardTrendsDialog.vue';
   // import { SCAN_INSIGHT_VULNERABILITY_OPTIONS } from 'src/constants/apexcharts.constants';
 
   const reports: Ref<Report[]> = ref([]);
@@ -24,6 +34,12 @@
   const reportsRow: Ref<Record<string, unknown>[]> = ref([]);
   const isMounted = ref(false);
   const $q = useQuasar();
+
+  function openScoredcardTrends(): void {
+    $q.dialog({
+      component: ScoredcardTrendsDialog
+    });
+  }
 
   function handleTableAction(action: ReportTableEventAction): void {
     if (action.action === 'insight') {
@@ -36,7 +52,9 @@
           component: DialogReportInsight,
           componentProps: {
             insight: response.data
-          }
+          },
+          fullHeight: true,
+          fullWidth: true
         });
       });
     } else if (action.action === 'search') {
