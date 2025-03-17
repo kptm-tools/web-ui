@@ -48,8 +48,9 @@
 <script setup lang="ts">
   import { onMounted, ref, Ref } from 'vue';
   import { useQuasar } from 'quasar';
-  import { ScanService, HostService } from 'src/services';
-  import { Host } from 'src/models';
+  // import { ScanService, HostService } from 'src/services';
+  import { HostService, ScanService } from 'src/services';
+  import { CreateScanBody, Host, HostSchedule } from 'src/models';
   import { SeverityChip, TableRegular, DialogScan } from 'src/components';
   import {
     formatDuration,
@@ -74,8 +75,18 @@
         hosts: hosts.value
       }
     })
-      .onOk(data => {
-        ScanService.createScans(data.map((s: Host) => s.id));
+      .onOk((data: HostSchedule[]) => {
+        const body: CreateScanBody[] = data.map(val => ({
+          host_id: Number(val.id),
+          repeat_frequency: {
+            quantity: val.repeat_frequency.quantity,
+            unit_of_frequency: val.repeat_frequency.unit_of_frequency
+          },
+          schedule_at: formatDate(val.scanDateTime.date, val.scanDateTime.time)
+        }));
+        body.forEach(value => {
+          ScanService.createScan(value);
+        });
       })
       .onCancel(() => {
         console.log('Cancel');
@@ -92,6 +103,20 @@
   onMounted(async () => {
     hosts.value = (await HostService.getHosts()).data;
   });
+
+  function formatDate(
+    dateFormat: string | null = '',
+    timeFormat: string | null = ''
+  ): string | null {
+    if (dateFormat && timeFormat) {
+      const date =
+        dateFormat !== '' && dateFormat ? new Date(dateFormat) : new Date();
+      const formattedDate = date.toISOString().split('T')[0];
+      return `${formattedDate}T${timeFormat}:00.000Z`;
+    } else {
+      return null;
+    }
+  }
 </script>
 
 <style scoped></style>
