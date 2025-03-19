@@ -76,14 +76,19 @@
       }
     })
       .onOk((data: HostSchedule[]) => {
-        const body: CreateScanBody[] = data.map(val => ({
-          host_id: Number(val.id),
-          repeat_frequency: {
-            quantity: val.repeat_frequency.quantity,
-            unit_of_frequency: val.repeat_frequency.unit_of_frequency
-          },
-          schedule_at: formatDate(val.scanDateTime.date, val.scanDateTime.time)
-        }));
+        const body: CreateScanBody[] = data
+          .map(val => ({
+            host_id: Number(val.id),
+            repeat_frequency: {
+              quantity: val.repeat_frequency.quantity,
+              unit_of_frequency: val.repeat_frequency.unit_of_frequency
+            },
+            schedule_at: formatDate(
+              val.scanDateTime.date,
+              val.scanDateTime.time
+            )
+          }))
+          .filter(scan => scan.host_id === 0);
         body.forEach(value => {
           ScanService.createScan(value);
         });
