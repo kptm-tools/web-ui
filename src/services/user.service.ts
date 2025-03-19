@@ -25,7 +25,7 @@ export class UserService {
     tenantId: string
   ): Promise<AxiosResponse> {
     return fusionAuthApi.get(
-      `${this.BASE_PATH}/verify?verificationId=${verificationId}&tenandId=${tenantId}`,
+      `${this.BASE_PATH}/verify?verificationId=${verificationId}&tenantId=${tenantId}`,
     );
   }
 }
