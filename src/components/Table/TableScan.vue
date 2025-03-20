@@ -1,61 +1,102 @@
 <template>
+  <q-tabs
+    v-model="tab"
+    class="text-teal q-mb-md"
+    content-class="justify-start text-primary"
+  >
+    <q-tab name="scans" label="Scans" />
+    <q-tab name="scheduled" label="Scheduled Scans" />
+  </q-tabs>
   <q-btn
     label="New Scan"
     color="primary"
     class="q-mb-md"
     @click="newScan"
   ></q-btn>
-  <table-regular
-    :columns="SCAN_TABLE_COLUMNS"
-    :rows="rows"
-    :actions="['insight']"
-    :show-actions="false"
-    @action="handlerEmitter($event)"
-  >
-    <template #column="{ column, row }">
-      <template v-if="column.field === 'id'"> </template>
-      <template v-else-if="column.field === 'status'">
-        <scan-table-progress-bar :status="column.value" />
-      </template>
-      <template v-else-if="column.field === 'severity'">
-        <severity-chip :severity="column.value" />
-      </template>
+  <template v-if="tab === 'scans'">
+    <table-regular
+      :columns="SCAN_TABLE_COLUMNS"
+      :rows="rows"
+      :actions="['insight']"
+      :show-actions="false"
+      @action="handlerEmitter($event)"
+    >
+      <template #column="{ column, row }">
+        <template v-if="column.field === 'id'"> </template>
+        <template v-else-if="column.field === 'status'">
+          <scan-table-progress-bar :status="column.value" />
+        </template>
+        <template v-else-if="column.field === 'severity'">
+          <severity-chip :severity="column.value" />
+        </template>
 
-      <template v-else-if="column.field === 'durations'">
-        {{ formatDuration(column.value) }}
-      </template>
+        <template v-else-if="column.field === 'durations'">
+          {{ formatDuration(column.value) }}
+        </template>
 
-      <template v-else-if="column.field === 'actions'">
-        <template v-for="action in SCAN_TABLE_ACTIONS" :key="action.name">
-          <q-btn
-            v-if="action.show(row.status)"
-            :icon="action.icon"
-            class="button-table-action"
-            dense
-            flat
-            @click="() => handlerEmitter({ action, row })"
-          />
+        <template v-else-if="column.field === 'actions'">
+          <template v-for="action in SCAN_TABLE_ACTIONS" :key="action.name">
+            <q-btn
+              v-if="action.show(row.status)"
+              :icon="action.icon"
+              class="button-table-action"
+              dense
+              flat
+              @click="() => handlerEmitter({ action, row })"
+            />
+          </template>
+        </template>
+
+        <template v-else>
+          {{ column.value }}
         </template>
       </template>
+    </table-regular>
+  </template>
+  <template v-if="tab === 'scheduled'">
+    <table-regular
+      :columns="SCAN_TABLE_SCHEDULE_COLUMNS"
+      :rows="scheduleScan"
+      :actions="['edit', 'delete']"
+      :show-actions="false"
+      @action="handlerEmitter($event)"
+    >
+      <template #column="{ column, row }">
+        <template v-if="column.field === 'id'"> </template>
+        <template v-else-if="column.field === 'actions'">
+          <template v-for="action in SCAN_TABLE_ACTIONS" :key="action.name">
+            <q-btn
+              v-if="action.show(row.status)"
+              :icon="action.icon"
+              class="button-table-action"
+              dense
+              flat
+              @click="() => handlerEmitter({ action, row })"
+            />
+          </template>
+        </template>
 
-      <template v-else>
-        {{ column.value }}
+        <template v-else>
+          {{ column.value }}
+        </template>
       </template>
-    </template>
-  </table-regular>
+    </table-regular>
+  </template>
 </template>
 
 <script setup lang="ts">
-  import { onMounted, ref, Ref } from 'vue';
+  import { onMounted, ref, Ref, watch } from 'vue';
   import { useQuasar } from 'quasar';
   // import { ScanService, HostService } from 'src/services';
+  import { ScanSchedulesService } from 'src/services/scan-schedules.service';
   import { HostService, ScanService } from 'src/services';
   import { CreateScanBody, Host, HostSchedule } from 'src/models';
   import { SeverityChip, TableRegular, DialogScan } from 'src/components';
   import {
     formatDuration,
     SCAN_TABLE_COLUMNS,
-    SCAN_TABLE_ACTIONS
+    SCAN_TABLE_ACTIONS,
+    SCAN_TABLE_SCHEDULE_COLUMNS
   } from 'src/utils';
   import { ScanTableProgressBar } from 'src/components';
 
@@ -67,6 +108,8 @@
 
   const $q = useQuasar();
   const hosts: Ref<Host[]> = ref([]);
+  const tab = ref('scans');
+  const scheduleScan = ref([]);
 
   function newScan(): void {
     $q.dialog({
@@ -88,7 +131,7 @@
               val.scanDateTime.time
             )
           }))
-          .filter(scan => scan.host_id === 0);
+          .filter(scan => scan.host_id);
         body.forEach(value => {
           ScanService.createScan(value);
         });
@@ -117,11 +160,20 @@
       const date =
         dateFormat !== '' && dateFormat ? new Date(dateFormat) : new Date();
       const formattedDate = date.toISOString().split('T')[0];
-      return `${formattedDate}T${timeFormat}:00.000Z`;
+      const finalDate = new Date(`${formattedDate}T${timeFormat}:00.000Z`);
+      return finalDate.toUTCString();
     } else {
       return null;
     }
   }
+
+  watch(tab, () => {
+    if (tab.value === 'scheduled') {
+      ScanSchedulesService.getScanSchedules().then(res => {
+        scheduleScan.value = res.data;
+      });
+    }
+  });
 </script>
 
 <style scoped></style>

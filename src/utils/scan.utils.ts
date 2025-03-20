@@ -95,6 +95,33 @@ export const SCAN_TABLE_COLUMNS: QTableColumn[] = [
   }
 ];
 
+export const SCAN_TABLE_SCHEDULE_COLUMNS: QTableColumn[] = [
+  {
+    name: 'ID',
+    label: 'ID',
+    align: 'left',
+    field: 'id'
+  },
+  {
+    name: 'Host',
+    label: 'Host',
+    align: 'left',
+    field: 'host'
+  },
+  {
+    name: 'Scan Date',
+    label: 'ScanDate',
+    align: 'left',
+    field: 'scheduled_date'
+  },
+  {
+    name: 'Frequency',
+    label: 'Frequency',
+    align: 'left',
+    field: 'frequency'
+  }
+];
+
 export const SCAN_TABLE_ACTIONS: ScanTableAction[] = [
   {
     name: ScanActions.insight,
