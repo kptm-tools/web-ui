@@ -25,6 +25,17 @@ export interface Host {
   picked?: boolean;
 }
 
+export interface HostSchedule extends Host {
+  scanDateTime: {
+    date: string | null;
+    time: string | null;
+  };
+  repeat_frequency: {
+    quantity: number;
+    unit_of_frequency: string;
+  };
+}
+
 export interface HostCreateBody {
   name?: string;
   value?: string;

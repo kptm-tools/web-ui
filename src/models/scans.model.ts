@@ -159,6 +159,16 @@ export interface ScanScoreTrend {
   latest_score_grade: string;
 }
 
+
+export interface CreateScanBody {
+  host_id: number;
+  schedule_at: string | null;
+  repeat_frequency: {
+    quantity: number;
+    unit_of_frequency: string;
+  };
+}
+
 export interface VendorComment {
   organization: string;
   comment: string;

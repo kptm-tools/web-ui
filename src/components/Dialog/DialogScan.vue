@@ -17,7 +17,7 @@
       <template v-if="step === 1">
         <scan-schedule-step
           :hosts="pickedHosts"
-          @submit-time="scanSetTimeHandler()"
+          @submit-time="scanSetTimeHandler($event)"
         />
       </template>
 
@@ -32,7 +32,11 @@
 
 <script setup lang="ts">
   import { useDialogPluginComponent } from 'quasar';
-  import { Host, ValidateHostAuth } from 'src/models/hosts.models';
+  import {
+    Host,
+    HostSchedule,
+    ValidateHostAuth
+  } from 'src/models/hosts.models';
   import { computed, onMounted, Ref, ref } from 'vue';
   import {
     ScanPickHostsStep,
@@ -51,6 +55,7 @@
 
   const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
   const pickedHosts: Ref<Host[]> = ref([]);
+  const scheduleHostScan: Ref<HostSchedule[]> = ref([]);
   const validatedHost: Ref<ValidateHostAuth[]> = ref([]);
   const step: Ref<number> = ref(0);
 
@@ -65,8 +70,9 @@
     step.value++;
   }
 
-  function scanSetTimeHandler(): void {
-    step.value++;
+  function scanSetTimeHandler(data: HostSchedule[]): void {
+    scheduleHostScan.value = data;
+    onDialogOK(scheduleHostScan.value);
   }
 
   const modalTitle = computed(() => {
@@ -76,7 +82,7 @@
   });
 
   function submit() {
-    onDialogOK(pickedHosts.value);
+    onDialogOK(scheduleHostScan.value);
   }
 
   onMounted(() => {

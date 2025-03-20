@@ -1,6 +1,11 @@
 import { AxiosResponse } from 'axios';
 import { fusionAuthApi } from 'boot/axios';
-import { Scan, ScanInsight, ScanScoreTrend } from 'src/models/scans.model';
+import {
+  Scan,
+  ScanInsight,
+  ScanScoreTrend,
+  CreateScanBody
+} from 'src/models/scans.model';
 
 export class ScanService {
   private static readonly BASE_PATH = '/api/scans';
@@ -18,6 +23,10 @@ export class ScanService {
 
   static async createScans(host_ids: string[]): Promise<AxiosResponse<Scan>> {
     return await fusionAuthApi.post(`${this.BASE_PATH}`, { host_ids });
+  }
+
+  static async createScan(body: CreateScanBody): Promise<AxiosResponse<Scan>> {
+    return await fusionAuthApi.post(`${this.BASE_PATH}`, body);
   }
 
   static async cancelScan(scanId: string): Promise<AxiosResponse> {
