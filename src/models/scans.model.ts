@@ -111,7 +111,7 @@ export interface ScanVulnerability {
   privileges: string;
   exploitability: string;
   comment: string;
-  recommendation?: string;
+  vendor_comments?: VendorComment[];
   references: string[];
   description?: string;
   port?: {
@@ -157,4 +157,10 @@ export interface ScanScoreTrend {
   oldest_score: number | null;
   latest_score: number;
   latest_score_grade: string;
+}
+
+export interface VendorComment {
+  organization: string;
+  comment: string;
+  last_modified: string;
 }
