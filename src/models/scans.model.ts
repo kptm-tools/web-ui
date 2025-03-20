@@ -111,7 +111,7 @@ export interface ScanVulnerability {
   privileges: string;
   exploitability: string;
   comment: string;
-  recommendation?: string;
+  vendor_comments?: VendorComment[];
   references: string[];
   description?: string;
   port?: {
@@ -166,4 +166,10 @@ export interface CreateScanBody {
     quantity: number;
     unit_of_frequency: string;
   };
+}
+
+export interface VendorComment {
+  organization: string;
+  comment: string;
+  last_modified: string;
 }

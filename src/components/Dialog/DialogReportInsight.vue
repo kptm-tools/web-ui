@@ -175,7 +175,10 @@
       name: 'Count',
       type: 'line',
       data: insightInformation.value.vulnerability_trends.time_periods.map(
-        period => period.vulnerability_count.toFixed(2)
+        period =>
+          period.vulnerability_count == null
+            ? null
+            : period.vulnerability_count.toFixed(2)
       )
     },
     {

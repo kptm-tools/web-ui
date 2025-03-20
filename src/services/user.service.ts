@@ -1,8 +1,7 @@
 import { AxiosResponse } from 'axios';
 import {
   CreateUserBody,
-  SuccessAuthLoginUser,
-  VerifyEmailBody
+  SuccessAuthLoginUser
 } from 'src/models/fusion-auth.models';
 import { fusionAuthApi } from 'boot/axios';
 
@@ -22,16 +21,11 @@ export class UserService {
   }
 
   static async verifyEmail(
-    userId: string,
-    tenantId: string,
-    body: VerifyEmailBody
+    verificationId: string,
+    tenantId: string
   ): Promise<AxiosResponse> {
-    return fusionAuthApi.post(
-      `${this.BASE_PATH}/${userId}/verify-email`,
-      body,
-      {
-        headers: { 'X-TenantId': tenantId }
-      }
+    return fusionAuthApi.get(
+      `${this.BASE_PATH}/verify?verificationId=${verificationId}&tenantId=${tenantId}`
     );
   }
 }
