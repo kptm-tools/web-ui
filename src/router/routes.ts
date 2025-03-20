@@ -104,7 +104,6 @@ const routes: RouteRecordRaw[] = [
         },
         component: () => import('pages/auth/VerifyEmailPage.vue')
       }
-
     ]
   },
 

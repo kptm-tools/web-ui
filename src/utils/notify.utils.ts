@@ -18,7 +18,7 @@ export function successQuasarNotify(
   message: string,
   icon = 'check_circle',
   position: QNotifyPosition = 'top-right'
-) : void {
+): void {
   Notify.create({
     message,
     color: 'positive',

@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios';
 import {
   CreateUserBody,
-  SuccessAuthLoginUser,
+  SuccessAuthLoginUser
 } from 'src/models/fusion-auth.models';
 import { fusionAuthApi } from 'boot/axios';
 
@@ -25,7 +25,7 @@ export class UserService {
     tenantId: string
   ): Promise<AxiosResponse> {
     return fusionAuthApi.get(
-      `${this.BASE_PATH}/verify?verificationId=${verificationId}&tenantId=${tenantId}`,
+      `${this.BASE_PATH}/verify?verificationId=${verificationId}&tenantId=${tenantId}`
     );
   }
 }
