@@ -23,6 +23,9 @@
     >
       <template #column="{ column, row }">
         <template v-if="column.field === 'id'"> </template>
+        <template v-if="column.field === 'scanDate'">
+          {{ formatTableDate(column.value) }}
+        </template>
         <template v-else-if="column.field === 'status'">
           <scan-table-progress-bar :status="column.value" />
         </template>
@@ -63,6 +66,9 @@
     >
       <template #column="{ column, row }">
         <template v-if="column.field === 'id'"> </template>
+        <template v-if="column.field === 'scheduled_date'">
+          {{ formatTableDate(column.value) }}</template
+        >
         <template v-else-if="column.field === 'actions'">
           <template v-for="action in SCAN_TABLE_ACTIONS" :key="action.name">
             <q-btn
@@ -157,14 +163,25 @@
     timeFormat: string | null = ''
   ): string | null {
     if (dateFormat && timeFormat) {
+      const [year, month, day] = dateFormat.split('/').map(Number);
+      const [hours, minutes] = timeFormat.split(':').map(Number);
       const date =
-        dateFormat !== '' && dateFormat ? new Date(dateFormat) : new Date();
-      const formattedDate = date.toISOString().split('T')[0];
-      const finalDate = new Date(`${formattedDate}T${timeFormat}:00.000Z`);
-      return finalDate.toUTCString();
+        dateFormat !== '' && dateFormat
+          ? new Date(year, month - 1, day, hours, minutes, 0, 0)
+          : new Date();
+      const formattedDate = date.toISOString();
+      return formattedDate;
+      return '';
     } else {
       return null;
     }
+  }
+
+  function formatTableDate(date: string): string {
+    const now = new Date(date);
+    const formattedDate =
+      now.toISOString().slice(0, 10) + ' ' + now.toTimeString().slice(0, 5);
+    return formattedDate;
   }
 
   watch(tab, () => {

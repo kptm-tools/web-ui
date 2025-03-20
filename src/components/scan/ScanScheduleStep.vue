@@ -190,7 +190,7 @@
   const pickedHost: Ref<Host> = ref(allOptionHost as Host);
   const shouldStartScanNow = ref(true);
   const shouldRunOnce = ref(true);
-  const timePeriodOptions = ['Day', 'Week', 'Month', 'Year'];
+  const timePeriodOptions = ['day', 'week', 'month', 'year'];
 
   const hostPickedOptions: Ref<HostSchedule[]> = ref([]);
 
@@ -203,7 +203,7 @@
         hostPickedOptions.value = hostsAux.map(val => ({
           ...val,
           scanDateTime: { date: null, time: null },
-          repeat_frequency: { quantity: 1, unit_of_frequency: 'Day' }
+          repeat_frequency: { quantity: 1, unit_of_frequency: 'day' }
         })) as HostSchedule[];
       }
     },
