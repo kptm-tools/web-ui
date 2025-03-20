@@ -1,8 +1,13 @@
 <template>
   <Teleport v-if="isMounted" to="#header">
     <div class="q-py-sm">
-      <q-btn :label="`DOMAIN: ${vulnerabilities.alias}`" size="lg" flat icon="arrow_back"
-        @click="$router.push({ name: ROUTES_NAMES.reports })"></q-btn>
+      <q-btn
+        :label="`DOMAIN: ${vulnerabilities.alias}`"
+        size="lg"
+        flat
+        icon="arrow_back"
+        @click="$router.push({ name: ROUTES_NAMES.reports })"
+      ></q-btn>
     </div>
   </Teleport>
   <Teleport v-if="isMounted" to="#aux-sidebar">
@@ -44,120 +49,132 @@
     </div>
   </Teleport>
   <div class="row q-col-gutter-md q-px-md container">
-    <q-select v-model="sort" borderless dense :options="['Vulnerability', 'Cvss', 'Risk']"
-      @update:model-value="sortList"></q-select>
-    <div v-for="vul in vulnerabilities.vulnerabilities" :key="vul.id" class="col-12">
+    <q-select
+      v-model="sort"
+      borderless
+      dense
+      :options="['Vulnerability', 'Cvss', 'Risk']"
+      @update:model-value="sortList"
+    ></q-select>
+    <div
+      v-for="vul in vulnerabilities.vulnerabilities"
+      :key="vul.id"
+      class="col-12"
+    >
       <vulnerability-card :vul="vul" @comment-updated="handleCommentUpdated" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ScanVulnerabilitesResponse, ScanVulnerability } from 'src/models';
-import { ReportService } from 'src/services';
-import { computed, onMounted, Ref, ref } from 'vue';
-import { useRoute } from 'vue-router';
-import { ROUTES_NAMES } from 'src/router/routes-names';
-import { useQuasar } from 'quasar';
-import VulnerabilityCard from 'src/components/report/VulnerabilityCard.vue';
+  import { ScanVulnerabilitesResponse, ScanVulnerability } from 'src/models';
+  import { ReportService } from 'src/services';
+  import { computed, onMounted, Ref, ref } from 'vue';
+  import { useRoute } from 'vue-router';
+  import { ROUTES_NAMES } from 'src/router/routes-names';
+  import { useQuasar } from 'quasar';
+  import VulnerabilityCard from 'src/components/report/VulnerabilityCard.vue';
 
-const route = useRoute();
-const scanId = route.params.id as string;
-const vulnerabilities: Ref<ScanVulnerabilitesResponse> = ref(
-  {} as ScanVulnerabilitesResponse
-);
-const sort = ref('Vulnerability');
-const isMounted = ref(false);
-const $q = useQuasar();
-
-const totalSeverity = computed(() => {
-  return Object.values(vulnerabilities.value.severity_counts).reduce(
-    (aux = 0, item) => (aux = aux + item)
+  const route = useRoute();
+  const scanId = route.params.id as string;
+  const vulnerabilities: Ref<ScanVulnerabilitesResponse> = ref(
+    {} as ScanVulnerabilitesResponse
   );
-});
+  const sort = ref('Vulnerability');
+  const isMounted = ref(false);
+  const $q = useQuasar();
 
-function handleCommentUpdated(payload: { vulID: number; newComment: string }) {
-  const vulnerabilityToUpdate = vulnerabilities.value.vulnerabilities.find(
-    (vul) => vul.id === payload.vulID
-  );
-
-  if (vulnerabilityToUpdate) {
-    vulnerabilityToUpdate.comment = payload.newComment;
-  } else {
-    console.warn(`Vulnerability with ID ${payload.vulID} not found.`)
-  }
-}
-
-function sortList(type: string): void {
-  let updatedList: ScanVulnerability[] = vulnerabilities.value.vulnerabilities;
-  if (type === 'Vulnerability') {
-    updatedList = vulnerabilities.value.vulnerabilities.sort((a, b) =>
-      b.name.localeCompare(a.name)
+  const totalSeverity = computed(() => {
+    return Object.values(vulnerabilities.value.severity_counts).reduce(
+      (aux = 0, item) => (aux = aux + item)
     );
-  }
-  if (type === 'Cvss') {
-    updatedList = vulnerabilities.value.vulnerabilities.sort(
-      (a, b) => b.max_cvss - a.max_cvss
-    );
-  }
-  if (type === 'Risk') {
-    updatedList = vulnerabilities.value.vulnerabilities.sort(
-      (a, b) => b.risk_score - a.risk_score
-    );
-  }
-  vulnerabilities.value.vulnerabilities = updatedList;
-}
+  });
 
-onMounted(async () => {
-  $q.loading.show();
-  vulnerabilities.value = (
-    await ReportService.getReportsVulnerabilities(scanId)
-  ).data;
-  $q.loading.hide();
-  sortList('Vulnerability');
-  isMounted.value = true;
-});
+  function handleCommentUpdated(payload: {
+    vulID: number;
+    newComment: string;
+  }) {
+    const vulnerabilityToUpdate = vulnerabilities.value.vulnerabilities.find(
+      vul => vul.id === payload.vulID
+    );
+
+    if (vulnerabilityToUpdate) {
+      vulnerabilityToUpdate.comment = payload.newComment;
+    } else {
+      console.warn(`Vulnerability with ID ${payload.vulID} not found.`);
+    }
+  }
+
+  function sortList(type: string): void {
+    let updatedList: ScanVulnerability[] =
+      vulnerabilities.value.vulnerabilities;
+    if (type === 'Vulnerability') {
+      updatedList = vulnerabilities.value.vulnerabilities.sort((a, b) =>
+        b.name.localeCompare(a.name)
+      );
+    }
+    if (type === 'Cvss') {
+      updatedList = vulnerabilities.value.vulnerabilities.sort(
+        (a, b) => b.max_cvss - a.max_cvss
+      );
+    }
+    if (type === 'Risk') {
+      updatedList = vulnerabilities.value.vulnerabilities.sort(
+        (a, b) => b.risk_score - a.risk_score
+      );
+    }
+    vulnerabilities.value.vulnerabilities = updatedList;
+  }
+
+  onMounted(async () => {
+    $q.loading.show();
+    vulnerabilities.value = (
+      await ReportService.getReportsVulnerabilities(scanId)
+    ).data;
+    $q.loading.hide();
+    sortList('Vulnerability');
+    isMounted.value = true;
+  });
 </script>
 
 <style lang="scss" scoped>
-.container {
-  max-height: 100%;
-  overflow: auto;
-}
-
-.card {
-
-  &-red,
-  &-orange,
-  &-yellow,
-  &-green {
-    border-radius: 4px;
-    width: fit-content;
-    padding: 2px 5px;
+  .container {
+    max-height: 100%;
+    overflow: auto;
   }
 
-  &-red {
-    border: 1px solid #e5494d;
-    background-color: #fa556a33;
-    color: #e5494d;
-  }
+  .card {
+    &-red,
+    &-orange,
+    &-yellow,
+    &-green {
+      border-radius: 4px;
+      width: fit-content;
+      padding: 2px 5px;
+    }
 
-  &-orange {
-    border: 1px solid #f3a488;
-    background: #f3a48833;
-    color: #f3a488;
-  }
+    &-red {
+      border: 1px solid #e5494d;
+      background-color: #fa556a33;
+      color: #e5494d;
+    }
 
-  &-yellow {
-    border: 1px solid #eaa237;
-    background: #f6be6333;
-    color: #eaa237;
-  }
+    &-orange {
+      border: 1px solid #f3a488;
+      background: #f3a48833;
+      color: #f3a488;
+    }
 
-  &-green {
-    border: 1px solid #46a758;
-    background: #46a75833;
-    color: #46a758;
+    &-yellow {
+      border: 1px solid #eaa237;
+      background: #f6be6333;
+      color: #eaa237;
+    }
+
+    &-green {
+      border: 1px solid #46a758;
+      background: #46a75833;
+      color: #46a758;
+    }
   }
-}
 </style>
