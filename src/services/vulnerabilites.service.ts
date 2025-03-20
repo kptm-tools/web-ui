@@ -18,7 +18,7 @@ export class VulnerabilitesService {
     return await fusionAuthApi.post(`${this.BASE_PATH}/${id}/comment`, { comment });
   }
 
-  static async pathVulnerabilityComment(
+  static async patchVulnerabilityComment(
     id: string,
     comment: string
   ): Promise<AxiosResponse> {
