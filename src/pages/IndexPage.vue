@@ -6,8 +6,8 @@
           <div class="col-6">
             <div class="relative-position" style="width: 350px">
               <apexchart
-                :options="donutOptions"
-                :series="donut"
+                :options="OVERALL_DONUT_OPTIONS"
+                :series="[33, 33, 33]"
                 type="donut"
               ></apexchart>
               <img
@@ -41,7 +41,7 @@
           <div class="col-6">
             <apexchart
               type="heatmap"
-              :options="heatmapOptions"
+              :options="heatMapOptions"
               :series="heatMapSeries"
             ></apexchart>
           </div>
@@ -50,7 +50,7 @@
             <div style="max-width: 700px">
               <apexchart
                 type="area"
-                :options="vulenrabilityTrendsOptions"
+                :options="vulnerabilityTrendsOptions"
                 :series="trendSeries"
               ></apexchart>
             </div>
@@ -64,7 +64,7 @@
           <div class="full-width">
             <apexchart
               :options="SCAN_INSIGHT_VULNERABILITY_OPTIONS"
-              :series="donutCountSeries"
+              :series="donutSeverityCountsSeries"
             ></apexchart>
           </div>
         </div>
@@ -72,14 +72,14 @@
           <div
             class="col-6 flex items-center justify-center text-weight-bold protection-score"
           >
-            {{ dashboardData?.last_scan.total_vulnerabilities }}
+            {{ dashboardData?.last_scan?.total_vulnerabilities }}
           </div>
           <div class="col-6">
             <p class="q-ma-none protection-host">
-              {{ dashboardData?.last_scan.host_alias }}
+              {{ dashboardData?.last_scan?.host_alias }}
             </p>
             <p class="q-ma-none protection-variation">
-              {{ dashboardData?.last_scan.total_vulnerabilities_variation }}
+              {{ dashboardData?.last_scan?.total_vulnerabilities_variation }}
               <i :class="variationIcon"></i>
               Variation
             </p>
@@ -106,225 +106,70 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ref } from 'vue';
-  import { DashboardService } from 'src/services/dashboard';
-  import { onMounted } from 'vue';
-  import { SCAN_INSIGHT_VULNERABILITY_OPTIONS } from 'src/constants/apexcharts.constants';
+  import { computed, ref, onMounted, Ref, ComputedRef } from 'vue';
+  import { DashboardService, MainDashboard } from 'src/services/dashboard';
+  import {
+    SCAN_INSIGHT_VULNERABILITY_OPTIONS,
+    HEATMAP_CHART_OPTIONS,
+    OVERALL_DONUT_OPTIONS
+  } from 'src/constants/apexcharts.constants';
   import { getVariationIcon } from 'src/utils';
+  import {
+    HostVulnerability,
+    iMainDashboard,
+    iSerieDashboard
+  } from 'src/models/dashboard.models';
 
-  const dashboardData = ref();
-  const heatMapSeries = ref(
-    [] as { name: string; data: (number | null | undefined)[] }[]
-  );
-  const vulenrabilityTrendsOptions = ref({
+  const dashboardData: Ref<iMainDashboard> = ref({} as iMainDashboard);
+  const hostVulnerabilites: Ref<HostVulnerability[]> = ref([]);
+  const trendSeries: Ref<iSerieDashboard[]> = ref([]);
+  const donutSeverityCountsSeries: Ref<number[]> = ref([]);
+  const actualRotation: Ref<number> = ref(0);
+  const heatMapSeries: Ref<iSerieDashboard[]> = ref([]);
+  const heatMapOptions = ref({ ...HEATMAP_CHART_OPTIONS });
+  const vulnerabilityTrendsOptions = ref({
     xaxis: {
-      categories: []
+      categories: [] as string[]
     },
     title: {
       text: 'Vulnerability Trends'
     }
   });
-  const hostVulnerabilites = ref(
-    [] as { alias: string; vulnerability_count: number }[]
+
+  const variationIcon: ComputedRef<string> = computed(() =>
+    getVariationIcon(
+      dashboardData.value?.overall_security_posture?.variation || 0
+    )
   );
-  const trendSeries = ref([{ name: 'serie', data: [] }]);
-  const donutCountSeries = ref([]);
 
-  const heatmapOptions = ref({
-    chart: {
-      height: 350,
-      type: 'heatmap'
-    },
-    xaxis: {
-      type: 'category',
-      categories: []
-    },
-    plotOptions: {
-      heatmap: {
-        shadeIntensity: 0.5,
-        radius: 0,
-        useFillColorAsStroke: true,
-        colorScale: {
-          ranges: [
-            {
-              from: 0,
-              to: 1,
-              name: 'low',
-              color: '#00A100'
-            }
-          ],
-          inverse: true
-        }
+  function setDashboardData(data: iMainDashboard): void {
+    const dashboard = new MainDashboard(data);
+
+    dashboardData.value = data;
+    heatMapSeries.value = dashboard.heatmapSeries;
+    heatMapOptions.value = {
+      ...heatMapOptions.value,
+      xaxis: { categories: dashboard.heatmapCategories, type: 'category' }
+    };
+    hostVulnerabilites.value = dashboard.listHostsWithGreatestVulnerabilities;
+    donutSeverityCountsSeries.value = dashboard.donutSeverityCountsSeries;
+    vulnerabilityTrendsOptions.value = {
+      ...vulnerabilityTrendsOptions.value,
+      xaxis: {
+        categories: dashboard.trendVulnerabilityCategories
       }
-    },
-    dataLabels: {
-      enabled: false
-    },
-    stroke: {
-      width: 1
-    },
-    title: {
-      text: 'Vulnerability Heat Map'
-    }
-  });
-
-  const donut = [44, 55, 41, 17, 15];
-
-  const donutOptions = {
-    chart: {
-      type: 'donut',
-      width: '100%'
-    },
-    dataLabels: {
-      enabled: false,
-      offsetX: 500,
-      offsetY: 200
-    },
-    legend: {
-      show: true,
-      fontSize: '0px',
-      markers: {
-        size: 0
+    };
+    trendSeries.value = [
+      {
+        name: 'serie',
+        data: dashboard.trendVulnerabilitySeries
       }
-    },
-    colors: ['#E5494D', '#FBBF65', '#46A758'],
-    plotOptions: {
-      pie: {
-        startAngle: -90,
-        endAngle: 90,
-        offsetY: 10
-      }
-    }
-  };
-
-  const actualRotation = ref(0);
+    ];
+  }
 
   onMounted(() => {
-    DashboardService.getDashboard().then(res => {
-      dashboardData.value = res.data;
-      const totalLow = dashboardData.value.host_severit_heat_map.reduce(
-        (acc: number, val: { severity_count: { low: number } }) =>
-          acc + val.severity_count.low,
-        0
-      );
-      const totalMedium = dashboardData.value.host_severit_heat_map.reduce(
-        (acc: number, val: { severity_count: { medium: number } }) =>
-          acc + val.severity_count.medium,
-        0
-      );
-      const totalHigh = dashboardData.value.host_severit_heat_map.reduce(
-        (acc: number, val: { severity_count: { high: number } }) =>
-          acc + val.severity_count.high,
-        0
-      );
-      const totalCritical = dashboardData.value.host_severit_heat_map.reduce(
-        (acc: number, val: { severity_count: { critical: number } }) =>
-          acc + val.severity_count.critical,
-        0
-      );
-      const totalVulnerabilities =
-        totalLow + totalMedium + totalHigh + totalCritical;
-      const listTotal = [
-        { value: totalLow, name: 'low', color: '#4CAF50' },
-        { value: totalMedium, name: 'medium', color: '#FFC107' },
-        { value: totalHigh, name: 'high', color: '#FF5722' },
-        { value: totalCritical, name: 'critical', color: '#D32F2F' }
-      ];
-      const step = totalVulnerabilities / 4;
-      const rangeColor = listTotal.map(
-        (
-          val: { value: number; name: string; color: string },
-          index: number
-        ) => ({
-          from: 1 + step * index,
-          to: 1 + step * index + step,
-          name: val.name,
-          color: val.color
-        })
-      );
-      heatmapOptions.value = {
-        ...heatmapOptions.value,
-        xaxis: {
-          type: 'category',
-          categories: res.data.host_severit_heat_map.map(
-            (val: { alias: string }) => val.alias
-          )
-        },
-        plotOptions: {
-          heatmap: {
-            shadeIntensity: 0.5,
-            radius: 0,
-            useFillColorAsStroke: true,
-            colorScale: {
-              ranges: rangeColor,
-              inverse: true
-            }
-          }
-        }
-      };
-      heatMapSeries.value = [
-        {
-          name: 'Low',
-          data: res.data.host_severit_heat_map.map(
-            (val: { severity_count: { low: number } }) => val.severity_count.low
-          )
-        },
-        {
-          name: 'Medium',
-          data: res.data.host_severit_heat_map.map(
-            (val: { severity_count: { medium: number } }) =>
-              val.severity_count.medium
-          )
-        },
-        {
-          name: 'High',
-          data: res.data.host_severit_heat_map.map(
-            (val: { severity_count: { high: number } }) =>
-              val.severity_count.high
-          )
-        },
-        {
-          name: 'Critical',
-          data: res.data.host_severit_heat_map.map(
-            (val: { severity_count: { critical: number } }) =>
-              val.severity_count.critical
-          )
-        }
-      ];
-
-      // res.data.host_severit_heat_map.map(
-      //   (val: { alias: string; severity_count: Record<string, number> }) => ({
-      //     name: val.alias,
-      //     data: Object.values(val.severity_count)
-      //   })
-      // );
-      vulenrabilityTrendsOptions.value = {
-        ...vulenrabilityTrendsOptions.value,
-        xaxis: {
-          categories: res.data.vulnerability_trends.map(
-            (val: { time_period: string }) => val.time_period
-          )
-        }
-      };
-
-      hostVulnerabilites.value = res.data.hosts_with_greatest_vulnerabilities;
-      trendSeries.value = [
-        {
-          name: 'serie',
-          data: res.data.vulnerability_trends.map(
-            (val: { vulnerability_count: number }) => val.vulnerability_count
-          )
-        }
-      ];
-      donutCountSeries.value = Object.values(
-        res.data.last_scan.severity_counts
-      );
-    });
+    DashboardService.getDashboard().then(res => setDashboardData(res.data));
   });
-
-  const variationIcon = computed(() =>
-    getVariationIcon(dashboardData.value?.total_vulnerabilities_variation || 0)
-  );
 </script>
 
 <style lang="scss">
