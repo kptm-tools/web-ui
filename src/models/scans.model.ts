@@ -159,7 +159,6 @@ export interface ScanScoreTrend {
   latest_score_grade: string;
 }
 
-
 export interface CreateScanBody {
   host_id: number;
   schedule_at: string | null;
