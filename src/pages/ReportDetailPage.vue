@@ -2,7 +2,7 @@
   <Teleport v-if="isMounted" to="#header">
     <div class="q-py-sm">
       <q-btn
-        :label="`DOMAIN: ${vulnerabilites.alias}`"
+        :label="`DOMAIN: ${vulnerabilities.alias}`"
         size="lg"
         flat
         icon="arrow_back"
@@ -18,7 +18,7 @@
           <span class="card-red">CRITICAL</span>
         </div>
         <div class="col-2 text-white text-weight-bold">
-          {{ vulnerabilites.severity_counts.critical }}
+          {{ vulnerabilities.severity_counts.critical }}
         </div>
       </div>
       <div class="row q-mb-sm">
@@ -26,19 +26,19 @@
           <span class="card-orange">HIGH</span>
         </div>
         <div class="col-2 text-white text-weight-bold">
-          {{ vulnerabilites.severity_counts.high }}
+          {{ vulnerabilities.severity_counts.high }}
         </div>
       </div>
       <div class="row q-mb-sm">
         <div class="col-10"><span class="card-yellow">MEDIUM</span></div>
         <div class="col-2 text-white text-weight-bold">
-          {{ vulnerabilites.severity_counts.medium }}
+          {{ vulnerabilities.severity_counts.medium }}
         </div>
       </div>
       <div class="row">
         <div class="col-10"><span class="card-green">LOW</span></div>
         <div class="col-2 text-white text-weight-bold">
-          {{ vulnerabilites.severity_counts.low }}
+          {{ vulnerabilities.severity_counts.low }}
         </div>
       </div>
       <q-separator class="q-my-sm text-white bg-white" />
@@ -57,11 +57,11 @@
       @update:model-value="sortList"
     ></q-select>
     <div
-      v-for="vul in vulnerabilites.vulnerabilities"
+      v-for="vul in vulnerabilities.vulnerabilities"
       :key="vul.id"
       class="col-12"
     >
-      <vulnerability-card :vul="vul" />
+      <vulnerability-card :vul="vul" @comment-updated="handleCommentUpdated" />
     </div>
   </div>
 </template>
@@ -77,7 +77,7 @@
 
   const route = useRoute();
   const scanId = route.params.id as string;
-  const vulnerabilites: Ref<ScanVulnerabilitesResponse> = ref(
+  const vulnerabilities: Ref<ScanVulnerabilitesResponse> = ref(
     {} as ScanVulnerabilitesResponse
   );
   const sort = ref('Vulnerability');
@@ -85,34 +85,50 @@
   const $q = useQuasar();
 
   const totalSeverity = computed(() => {
-    return Object.values(vulnerabilites.value.severity_counts).reduce(
+    return Object.values(vulnerabilities.value.severity_counts).reduce(
       (aux = 0, item) => (aux = aux + item)
     );
   });
 
+  function handleCommentUpdated(payload: {
+    vulID: number;
+    newComment: string;
+  }) {
+    const vulnerabilityToUpdate = vulnerabilities.value.vulnerabilities.find(
+      vul => vul.id === payload.vulID
+    );
+
+    if (vulnerabilityToUpdate) {
+      vulnerabilityToUpdate.comment = payload.newComment;
+    } else {
+      console.warn(`Vulnerability with ID ${payload.vulID} not found.`);
+    }
+  }
+
   function sortList(type: string): void {
-    let updatedList: ScanVulnerability[] = vulnerabilites.value.vulnerabilities;
+    let updatedList: ScanVulnerability[] =
+      vulnerabilities.value.vulnerabilities;
     if (type === 'Vulnerability') {
-      updatedList = vulnerabilites.value.vulnerabilities.sort((a, b) =>
+      updatedList = vulnerabilities.value.vulnerabilities.sort((a, b) =>
         b.name.localeCompare(a.name)
       );
     }
     if (type === 'Cvss') {
-      updatedList = vulnerabilites.value.vulnerabilities.sort(
+      updatedList = vulnerabilities.value.vulnerabilities.sort(
         (a, b) => b.max_cvss - a.max_cvss
       );
     }
     if (type === 'Risk') {
-      updatedList = vulnerabilites.value.vulnerabilities.sort(
+      updatedList = vulnerabilities.value.vulnerabilities.sort(
         (a, b) => b.risk_score - a.risk_score
       );
     }
-    vulnerabilites.value.vulnerabilities = updatedList;
+    vulnerabilities.value.vulnerabilities = updatedList;
   }
 
   onMounted(async () => {
     $q.loading.show();
-    vulnerabilites.value = (
+    vulnerabilities.value = (
       await ReportService.getReportsVulnerabilities(scanId)
     ).data;
     $q.loading.hide();
@@ -136,6 +152,7 @@
       width: fit-content;
       padding: 2px 5px;
     }
+
     &-red {
       border: 1px solid #e5494d;
       background-color: #fa556a33;

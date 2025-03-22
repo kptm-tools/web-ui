@@ -10,4 +10,26 @@ export class VulnerabilitesService {
   ): Promise<AxiosResponse<ScanVulnerability>> {
     return await fusionAuthApi.get(`${this.BASE_PATH}/${id}`);
   }
+
+  static async postVulnerabilityComment(
+    id: string,
+    comment: string
+  ): Promise<AxiosResponse> {
+    return await fusionAuthApi.post(`${this.BASE_PATH}/${id}/comment`, {
+      comment
+    });
+  }
+
+  static async patchVulnerabilityComment(
+    id: string,
+    comment: string
+  ): Promise<AxiosResponse> {
+    return await fusionAuthApi.patch(`${this.BASE_PATH}/${id}/comment`, {
+      comment
+    });
+  }
+
+  static async deleteVulnerabilityComment(id: string): Promise<AxiosResponse> {
+    return await fusionAuthApi.delete(`${this.BASE_PATH}/${id}/comment`);
+  }
 }
