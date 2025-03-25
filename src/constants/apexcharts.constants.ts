@@ -73,25 +73,25 @@ export const HEATMAP_CHART_OPTIONS = {
             from: 0,
             to: 0.25,
             name: 'Low Proportion',
-            color: '#4CAF50'
+            color: '#F46d6D'
           },
           {
             from: 0.26,
             to: 0.5,
             name: 'Medium Proportion',
-            color: '#FFC107'
+            color: '#F44C4C'
           },
           {
             from: 0.51,
             to: 0.75,
             name: 'High Proportion',
-            color: '#FF9800'
+            color: '#F93030'
           },
           {
             from: 0.76,
             to: 1,
             name: 'Very High Proportion',
-            color: '#F44336'
+            color: '#FF0000'
           }
         ],
         inverse: true
