@@ -89,6 +89,15 @@
         <div class="title">Hosts with the most vulnerabilities</div>
 
         <q-list>
+          <q-item>
+            <q-item-section avatar></q-item-section>
+            <q-item-section class="text-weight-bold label-table"
+              >TOP 5</q-item-section
+            >
+            <q-item-section class="text-weight-bold label-table">
+              # OF VULNERABILITIES</q-item-section
+            >
+          </q-item>
           <template v-for="i in hostVulnerabilites" :key="i">
             <q-item v-ripple clickable>
               <q-item-section avatar>
@@ -242,5 +251,10 @@
     margin-right: auto;
     left: -40px;
     right: 0;
+  }
+
+  .label-table {
+    color: var(--text, #313541);
+    font-size: 0.8em;
   }
 </style>
