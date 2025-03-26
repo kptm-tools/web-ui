@@ -88,11 +88,14 @@
 
         <div class="title">Hosts with the most vulnerabilities</div>
 
-        <q-list bordered>
+        <q-list>
           <template v-for="i in hostVulnerabilites" :key="i">
             <q-item v-ripple clickable>
               <q-item-section avatar>
-                <i class="fa-solid fa-square q-mx-sm text-red"></i>
+                <i
+                  class="fa-solid fa-square q-mx-sm"
+                  :style="`color:${i.color};font-size:2em`"
+                ></i>
               </q-item-section>
 
               <q-item-section>{{ i.alias }}</q-item-section>
