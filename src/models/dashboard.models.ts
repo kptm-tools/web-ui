@@ -33,13 +33,14 @@ export interface LastScan {
 export interface HostVulnerability {
   alias: string;
   vulnerability_count: number;
+  color?: string;
 }
 
 export interface iMainDashboard {
   overall_security_posture: SecurityPosture;
   host_severity_heat_map: HostSeverity[];
   vulnerability_trends: VulnerabilityTrend[];
-  last_scan: LastScan;
+  last_scan: LastScan | null;
   hosts_with_greatest_vulnerabilities: HostVulnerability[];
 }
 
