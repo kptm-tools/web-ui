@@ -77,7 +77,7 @@
           <div class="full-width">
             <template v-if="lastScanEmpty">
               <div class="subtitle" style="color: #5c7288">
-                No vulnerabilities are found
+                No scan data to display. Please run a scan to see details.
               </div>
             </template>
             <template v-else>
