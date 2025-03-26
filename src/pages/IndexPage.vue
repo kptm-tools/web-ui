@@ -70,15 +70,22 @@
             </div>
             <div class="subtitle" style="color: #5c7288">
               <span style="font-weight: 500"> Date :</span>
-              {{ dashboardData.last_scan.scan_date.slice(0, 10) }}
+              {{ dashboardData.last_scan?.scan_date.slice(0, 10) || '' }}
             </div>
           </div>
 
           <div class="full-width">
-            <apexchart
-              :options="SCAN_INSIGHT_VULNERABILITY_OPTIONS"
-              :series="donutSeverityCountsSeries"
-            ></apexchart>
+            <template v-if="lastScanEmpty">
+              <div class="subtitle" style="color: #5c7288">
+                No vulnerabilities are found
+              </div>
+            </template>
+            <template v-else>
+              <apexchart
+                :options="SCAN_INSIGHT_VULNERABILITY_OPTIONS"
+                :series="donutSeverityCountsSeries"
+              ></apexchart>
+            </template>
           </div>
         </div>
         <div class="row flex items-center q-mb-md protection">
@@ -175,6 +182,10 @@
     getVariationIcon(
       dashboardData.value?.overall_security_posture?.variation || 0
     )
+  );
+
+  const lastScanEmpty = computed(() =>
+    donutSeverityCountsSeries.value.every(val => val === 0)
   );
 
   function setDashboardData(data: iMainDashboard): void {

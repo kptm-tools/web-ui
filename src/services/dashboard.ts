@@ -88,7 +88,9 @@ export class MainDashboard {
   }
 
   get donutSeverityCountsSeries(): number[] {
-    return Object.values(this._dashboard.last_scan.severity_counts);
+    return Object.values(
+      this._dashboard.last_scan?.severity_counts || {}
+    ) as number[];
   }
 
   get listHostsWithGreatestVulnerabilities(): HostVulnerability[] {
