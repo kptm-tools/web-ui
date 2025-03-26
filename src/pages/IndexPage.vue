@@ -86,7 +86,7 @@
           </div>
         </div>
 
-        <div class="title">Host with the greatest vulnerabilities</div>
+        <div class="title">Hosts with the most vulnerabilities</div>
 
         <q-list bordered>
           <template v-for="i in hostVulnerabilites" :key="i">
