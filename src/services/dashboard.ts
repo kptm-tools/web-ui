@@ -84,7 +84,7 @@ export class MainDashboard {
   }
 
   get heatmapCategories(): string[] {
-    return this._dashboard.host_severity_heat_map.map(val => val.alias);
+    return (this._dashboard.host_severity_heat_map || []).map(val => val.alias);
   }
 
   get donutSeverityCountsSeries(): number[] {
@@ -108,20 +108,20 @@ export class MainDashboard {
   }
 
   get totalByAliasVulnerabilities(): number[] {
-    return this._dashboard.host_severity_heat_map.map(val =>
+    return (this._dashboard.host_severity_heat_map || []).map(val =>
       Object.values(val.severity_count).reduce((acc, val) => acc + val)
     );
   }
 
   private getTotalValuesHeatmap(level: SeverityCountLevels): number {
-    return this._dashboard.host_severity_heat_map.reduce(
+    return (this._dashboard.host_severity_heat_map || []).reduce(
       (acc: number, val: HostSeverity) => acc + val.severity_count[level],
       0
     );
   }
 
   private getListValuesHeatmap(level: SeverityCountLevels): number[] {
-    return this._dashboard.host_severity_heat_map.map(
+    return (this._dashboard.host_severity_heat_map || []).map(
       (val: HostSeverity, index: number) => {
         const value = this.totalByAliasVulnerabilities[index];
         const divider = value === 0 ? 1 : value;
