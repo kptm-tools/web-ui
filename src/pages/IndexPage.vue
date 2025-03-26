@@ -149,6 +149,16 @@
     },
     title: {
       text: 'Vulnerability Trends'
+    },
+    colors: ['#ED273D'],
+    legend: {
+      show: true,
+      showForSingleSeries: true,
+      showForNullSeries: true,
+      position: 'bottom',
+      horizontalAlign: 'right',
+      floating: true,
+      offsetY: -5
     }
   });
 
@@ -177,7 +187,7 @@
     };
     trendSeries.value = [
       {
-        name: 'serie',
+        name: 'Vulnerabilities',
         data: dashboard.trendVulnerabilitySeries
       }
     ];
