@@ -5,6 +5,10 @@
         <div class="row">
           <div class="col-6">
             <div class="relative-position" style="width: 350px">
+              <div class="title">Overall Security Posture</div>
+              <div class="subtitle" style="color: #5c7288">
+                General security status of the clients environment
+              </div>
               <apexchart
                 :options="OVERALL_DONUT_OPTIONS"
                 :series="[33, 33, 33]"
@@ -59,13 +63,29 @@
       </div>
       <div class="col-4">
         <div class="row q-mb-md">
-          <div class="title">Vulnerability Count</div>
+          <div class="col-12">
+            <div class="title">Latest Scan</div>
+            <div class="subtitle" style="color: #5c7288">
+              Vulnerability Count
+            </div>
+            <div class="subtitle" style="color: #5c7288">
+              <span style="font-weight: 500"> Date :</span>
+              {{ dashboardData.last_scan?.scan_date.slice(0, 10) || '' }}
+            </div>
+          </div>
 
           <div class="full-width">
-            <apexchart
-              :options="SCAN_INSIGHT_VULNERABILITY_OPTIONS"
-              :series="donutSeverityCountsSeries"
-            ></apexchart>
+            <template v-if="lastScanEmpty">
+              <div class="subtitle" style="color: #5c7288">
+                No vulnerabilities are found
+              </div>
+            </template>
+            <template v-else>
+              <apexchart
+                :options="SCAN_INSIGHT_VULNERABILITY_OPTIONS"
+                :series="donutSeverityCountsSeries"
+              ></apexchart>
+            </template>
           </div>
         </div>
         <div class="row flex items-center q-mb-md protection">
@@ -86,13 +106,25 @@
           </div>
         </div>
 
-        <div class="title">Host with the greatest vulnerabilities</div>
+        <div class="title">Hosts with the most vulnerabilities</div>
 
-        <q-list bordered>
+        <q-list>
+          <q-item>
+            <q-item-section avatar></q-item-section>
+            <q-item-section class="text-weight-bold label-table"
+              >TOP 5</q-item-section
+            >
+            <q-item-section class="text-weight-bold label-table">
+              # OF VULNERABILITIES</q-item-section
+            >
+          </q-item>
           <template v-for="i in hostVulnerabilites" :key="i">
             <q-item v-ripple clickable>
               <q-item-section avatar>
-                <i class="fa-solid fa-square q-mx-sm text-red"></i>
+                <i
+                  class="fa-solid fa-square q-mx-sm"
+                  :style="`color:${i.color};font-size:2em`"
+                ></i>
               </q-item-section>
 
               <q-item-section>{{ i.alias }}</q-item-section>
@@ -133,6 +165,16 @@
     },
     title: {
       text: 'Vulnerability Trends'
+    },
+    colors: ['#ED273D'],
+    legend: {
+      show: true,
+      showForSingleSeries: true,
+      showForNullSeries: true,
+      position: 'bottom',
+      horizontalAlign: 'right',
+      floating: true,
+      offsetY: -5
     }
   });
 
@@ -140,6 +182,10 @@
     getVariationIcon(
       dashboardData.value?.overall_security_posture?.variation || 0
     )
+  );
+
+  const lastScanEmpty = computed(() =>
+    donutSeverityCountsSeries.value.every(val => val === 0)
   );
 
   function setDashboardData(data: iMainDashboard): void {
@@ -161,7 +207,7 @@
     };
     trendSeries.value = [
       {
-        name: 'serie',
+        name: 'Vulnerabilities',
         data: dashboard.trendVulnerabilitySeries
       }
     ];
@@ -239,5 +285,10 @@
     margin-right: auto;
     left: -40px;
     right: 0;
+  }
+
+  .label-table {
+    color: var(--text, #313541);
+    font-size: 0.8em;
   }
 </style>
