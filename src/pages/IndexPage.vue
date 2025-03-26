@@ -5,6 +5,10 @@
         <div class="row">
           <div class="col-6">
             <div class="relative-position" style="width: 350px">
+              <div class="title">Overall Security Posture</div>
+              <div class="subtitle" style="color: #5c7288">
+                General security status of the clients environment
+              </div>
               <apexchart
                 :options="OVERALL_DONUT_OPTIONS"
                 :series="[33, 33, 33]"
