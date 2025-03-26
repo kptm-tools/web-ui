@@ -63,7 +63,16 @@
       </div>
       <div class="col-4">
         <div class="row q-mb-md">
-          <div class="title">Vulnerability Count</div>
+          <div class="col-12">
+            <div class="title">Latest Scan</div>
+            <div class="subtitle" style="color: #5c7288">
+              Vulnerability Count
+            </div>
+            <div class="subtitle" style="color: #5c7288">
+              <span style="font-weight: 500"> Date :</span>
+              {{ dashboardData.last_scan.scan_date.slice(0, 10) }}
+            </div>
+          </div>
 
           <div class="full-width">
             <apexchart
