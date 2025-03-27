@@ -92,7 +92,16 @@ export class MainDashboard {
   }
 
   get listHostsWithGreatestVulnerabilities(): HostVulnerability[] {
-    return this._dashboard.hosts_with_greatest_vulnerabilities;
+    const colors: string[] = [
+      '#ED273D',
+      '#F6BE63',
+      '#55C9C6',
+      '#4E96F9',
+      '#4E96F9'
+    ];
+    return this._dashboard.hosts_with_greatest_vulnerabilities.map(
+      (val, index) => ({ ...val, color: colors[index] || '' })
+    );
   }
 
   get trendVulnerabilityCategories(): string[] {
