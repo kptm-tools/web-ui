@@ -4,8 +4,6 @@ import { fusionAuthApi } from 'boot/axios';
 import {
   FusionAuthLoginBody,
   FusionAuthLoginResponse,
-  FusionAuthLogout,
-  FusionAuthLogoutHeaders,
   SuccessAuthLoginUser
 } from 'src/models/fusion-auth.models';
 import { AxiosRequestHeaders, AxiosResponse } from 'axios';
@@ -67,11 +65,6 @@ describe('FusionAuth API Service', () => {
 
   describe('logoutUser', () => {
     it('should call the /api/logout endpoint with the correct parameters', async () => {
-      // Arrange
-      const body: FusionAuthLogout = {};
-      const headers: FusionAuthLogoutHeaders = {
-        Authorization: process.env.FUSION_APP_TOKEN
-      } as AxiosRequestHeaders;
       const mockResponse: AxiosResponse<void> = {
         data: undefined,
         status: 200,
@@ -87,9 +80,7 @@ describe('FusionAuth API Service', () => {
       const response = await logoutUser();
 
       // Assert
-      expect(fusionAuthApi.post).toHaveBeenCalledWith('/api/logout', body, {
-        headers
-      });
+      expect(fusionAuthApi.post).toHaveBeenCalledWith('/api/logout');
       expect(response).toEqual(mockResponse);
     });
 
@@ -110,11 +101,7 @@ describe('FusionAuth API Service', () => {
       const response = await logoutUser();
 
       // Assert
-      expect(fusionAuthApi.post).toHaveBeenCalledWith(
-        '/api/logout',
-        undefined,
-        { headers: undefined }
-      );
+      expect(fusionAuthApi.post).toHaveBeenCalledWith('/api/logout');
       expect(response).toEqual(mockResponse);
     });
   });
