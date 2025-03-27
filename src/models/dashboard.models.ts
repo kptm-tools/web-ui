@@ -31,9 +31,9 @@ export interface LastScan {
 }
 
 export interface HostVulnerability {
+  color?: string;
   alias: string;
   vulnerability_count: number;
-  color?: string;
 }
 
 export interface iMainDashboard {

@@ -10,6 +10,7 @@
 
 import { defineConfig } from '#q-app/wrappers';
 import { fileURLToPath } from 'node:url';
+import dotenv from 'dotenv';
 
 export default defineConfig(ctx => {
   return {
@@ -51,8 +52,7 @@ export default defineConfig(ctx => {
         // extendTsConfig (tsConfig) {}
       },
 
-      vueRouterMode: 'hash',
-      env: require('dotenv').config().parsed,
+      env: dotenv.config().parsed,
 
       vueRouterMode: 'hash', // available values: 'hash', 'history'
       // vueRouterBase,
@@ -100,7 +100,12 @@ export default defineConfig(ctx => {
           },
           { server: false }
         ]
-      ]
+      ],
+      extendWebpack(cfg) {
+        cfg.resolve.alias = {
+          ...cfg.resolve.alias // This adds the existing alias
+        };
+      }
     },
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#devServer

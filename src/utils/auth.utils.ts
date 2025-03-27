@@ -105,7 +105,7 @@ export function decodeJwt(token: string) {
 
   try {
     // Decode and parse the payload
-    return JSON.parse(base64UrlDecode(payload));
+    return JSON.parse(base64UrlDecode(payload || ''));
   } catch (error) {
     throw new Error('Failed to decode payload: ' + error);
   }

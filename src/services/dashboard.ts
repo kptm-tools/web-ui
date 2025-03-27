@@ -102,7 +102,7 @@ export class MainDashboard {
       '#4E96F9'
     ];
     return this._dashboard.hosts_with_greatest_vulnerabilities.map(
-      (val, index) => ({ ...val, color: colors[index] })
+      (val, index) => ({ ...val, color: colors[index] || '' })
     );
   }
 
@@ -136,7 +136,7 @@ export class MainDashboard {
       (val: HostSeverity, index: number) => {
         const value = this.totalByAliasVulnerabilities[index];
         const divider = value === 0 ? 1 : value;
-        return Number((val.severity_count[level] / divider).toFixed(2));
+        return Number((val.severity_count[level] / (divider || 1)).toFixed(2));
       },
       0
     );

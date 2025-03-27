@@ -167,11 +167,10 @@
       const [hours, minutes] = timeFormat.split(':').map(Number);
       const date =
         dateFormat !== '' && dateFormat
-          ? new Date(year, month - 1, day, hours, minutes, 0, 0)
+          ? new Date(year || 0, (month || 0) - 1, day, hours, minutes, 0, 0)
           : new Date();
       const formattedDate = date.toISOString();
       return formattedDate;
-      return '';
     } else {
       return null;
     }

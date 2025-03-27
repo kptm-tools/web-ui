@@ -245,7 +245,7 @@
     const currentFilter = { ...hostStore.filter };
     hostStore.setFilter({
       ...currentFilter,
-      searchText: searchText?.toString()
+      searchText: searchText?.toString() || ''
     });
   }
 
