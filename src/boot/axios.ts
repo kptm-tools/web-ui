@@ -11,7 +11,9 @@ declare module 'vue' {
   }
 }
 
-const fusionAuthApi = axios.create({ baseURL: process.env.FUSION_SERVER_URL });
+const fusionAuthApi = axios.create({
+  baseURL: process.env.FUSION_SERVER_URL || ''
+});
 
 const isUnprotected = (url: string): boolean => {
   return UNPROTECTED_PATHS.some(endpoint => url.includes(endpoint));

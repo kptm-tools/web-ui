@@ -125,7 +125,7 @@ export class MainDashboard {
       (val: HostSeverity, index: number) => {
         const value = this.totalByAliasVulnerabilities[index];
         const divider = value === 0 ? 1 : value;
-        return Number((val.severity_count[level] / divider).toFixed(2));
+        return Number((val.severity_count[level] / (divider || 1)).toFixed(2));
       },
       0
     );

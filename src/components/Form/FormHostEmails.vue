@@ -133,7 +133,7 @@
   function addReporterToHost() {
     if (pickedHost.value.alias === 'All') {
       hostsRegister.value.forEach((val, i) => {
-        hostsRegister.value[i].rapporteurs.push({
+        hostsRegister.value[i]?.rapporteurs.push({
           name: name.value,
           email: email.value,
           is_principal: false
@@ -143,7 +143,7 @@
       const index = hostsRegister.value.findIndex(
         host => host.alias === pickedHost.value.alias
       );
-      hostsRegister.value[index].rapporteurs.push({
+      hostsRegister.value[index]?.rapporteurs.push({
         name: name.value,
         email: email.value,
         is_principal: false
@@ -176,7 +176,9 @@
         credentials: []
       });
     } else {
-      hostsRegister.value[0].rapporteurs = props.rapporteurs;
+      if (hostsRegister.value[0]) {
+        hostsRegister.value[0].rapporteurs = props.rapporteurs;
+      }
     }
 
     pickedHost.value = hostOptions.value[0];

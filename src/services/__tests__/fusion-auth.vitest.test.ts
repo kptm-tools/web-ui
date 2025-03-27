@@ -84,7 +84,7 @@ describe('FusionAuth API Service', () => {
       );
 
       // Act
-      const response = await logoutUser(body, headers);
+      const response = await logoutUser();
 
       // Assert
       expect(fusionAuthApi.post).toHaveBeenCalledWith('/api/logout', body, {

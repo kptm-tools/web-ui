@@ -3,9 +3,7 @@ import {
   ChangePasswordBody,
   ForgotPasswordBody,
   FusionAuthLoginBody,
-  FusionAuthLoginResponse,
-  FusionAuthLogout,
-  FusionAuthLogoutHeaders
+  FusionAuthLoginResponse
 } from 'src/models/fusion-auth.models';
 import { AxiosResponse } from 'axios';
 
@@ -15,11 +13,8 @@ export function authenticateUser(
   return fusionAuthApi.post<FusionAuthLoginResponse>('/api/login', body);
 }
 
-export function logoutUser(
-  body?: FusionAuthLogout,
-  headers?: FusionAuthLogoutHeaders
-): Promise<AxiosResponse<void>> {
-  return fusionAuthApi.post<void>('/api/logout', body, { headers });
+export function logoutUser(): Promise<AxiosResponse> {
+  return fusionAuthApi.post('/api/logout');
 }
 
 export function changePassword(

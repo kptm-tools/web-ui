@@ -28,6 +28,7 @@
     "web-ui": "file:"
   },
   "devDependencies": {
+    "@intlify/unplugin-vue-i18n": "^6.0.5",
     "@intlify/vite-plugin-vue-i18n": "^6.0.3",
     "@intlify/vue-i18n-loader": "^4.2.0",
     "@quasar/app-vite": "^2.2.0",

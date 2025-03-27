@@ -101,10 +101,10 @@
 
   async function hostCreationHandler(hostsList: Host[]): Promise<void> {
     const data: HostCreateBody[] = hostsList.map(h => ({
-      name: h.alias,
+      name: h.alias || '',
       credentials: h.credentials,
       rapporteurs: h.rapporteurs,
-      value: h.host,
+      value: h.host || '',
       value_type: 'Domain'
     }));
     await registerHosts(data);
