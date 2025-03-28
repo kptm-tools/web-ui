@@ -1,22 +1,18 @@
-import {
-  authenticateUser,
-  changePassword,
-  forgotPassword
-} from 'src/services/auth.service';
+import { authenticateUser, changePassword, forgotPassword } from 'src/services/auth.service';
 import { UserService } from 'src/services';
 import { defineStore } from 'pinia';
-import {
+import type {
   ChangePasswordBody,
   CreateUserBody,
   ForgotPasswordBody,
   FusionAuthLoginBody,
-  SuccessAuthLogin
+  SuccessAuthLogin,
 } from 'src/models/fusion-auth.models';
 import {
   clearSessionStorageUserInfo,
   isTokenExpired,
   setSessionStorageUserInfo,
-  successLoginResponseHandler
+  successLoginResponseHandler,
 } from 'src/utils/auth.utils';
 
 type AuthStore = {
@@ -30,8 +26,8 @@ export const useFusionAuthStore = defineStore('fusion-auth', {
     ({
       userInfo: undefined,
       token: '',
-      tokenExpirationInstant: 0
-    } as AuthStore),
+      tokenExpirationInstant: 0,
+    }) as AuthStore,
 
   getters: {
     isAuthenticated(state): boolean {
@@ -40,7 +36,7 @@ export const useFusionAuthStore = defineStore('fusion-auth', {
     },
     getUserInfo(state): SuccessAuthLogin | undefined {
       return state.userInfo;
-    }
+    },
   },
 
   actions: {
@@ -77,21 +73,18 @@ export const useFusionAuthStore = defineStore('fusion-auth', {
     setUserInfo(userInfo: SuccessAuthLogin | undefined): void {
       this.userInfo = userInfo;
       if (this.userInfo) {
-        setSessionStorageUserInfo(
-          this.userInfo.token,
-          this.userInfo.tokenExpirationInstant
-        );
+        setSessionStorageUserInfo(this.userInfo.token, this.userInfo.tokenExpirationInstant);
       }
     },
     setTokenInfo(token: string, expirationInstant: number): void {
       this.token = token;
       this.tokenExpirationInstant = expirationInstant;
     },
-    async logoutUser(): Promise<void> {
+    logoutUser(): void {
       clearSessionStorageUserInfo();
       this.token = '';
       this.tokenExpirationInstant = 0;
       this.userInfo = undefined;
-    }
-  }
+    },
+  },
 });

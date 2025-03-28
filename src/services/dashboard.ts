@@ -1,6 +1,6 @@
-import { AxiosResponse } from 'axios';
+import type { AxiosResponse } from 'axios';
 import { fusionAuthApi } from 'boot/axios';
-import {
+import type {
   HostSeverity,
   HostVulnerability,
   iMainDashboard,

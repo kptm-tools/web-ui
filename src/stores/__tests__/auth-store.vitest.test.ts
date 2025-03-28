@@ -1,10 +1,12 @@
-import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
+import type { Mock } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
 import { useFusionAuthStore } from '../auth-store';
-import { SuccessAuthLoginUser } from 'src/models/fusion-auth.models';
+import type { SuccessAuthLoginUser } from 'src/models/fusion-auth.models';
 
 vi.mock('src/services/fusion-auth.service', () => ({
-  authenticateUser: vi.fn() as Mock
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+  authenticateUser: vi.fn() as Mock,
 }));
 
 describe('FusionAuth Store', () => {
@@ -28,7 +30,7 @@ describe('FusionAuth Store', () => {
     store.setUserInfo({
       token: 'mock-token',
       tokenExpirationInstant: now.getTime(),
-      user: {} as SuccessAuthLoginUser
+      user: {} as SuccessAuthLoginUser,
     });
     expect(store.isAuthenticated).toBe(false);
   });
@@ -37,7 +39,7 @@ describe('FusionAuth Store', () => {
     const mockUser = {
       token: 'mock-token',
       tokenExpirationInstant: Date.now() + 3600 * 1000,
-      user: {} as SuccessAuthLoginUser
+      user: {} as SuccessAuthLoginUser,
     };
 
     // Call the setUserInfo method

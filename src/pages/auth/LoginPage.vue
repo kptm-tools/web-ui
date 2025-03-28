@@ -26,10 +26,11 @@
   import FormRegular from 'src/components/Form/FormRegular.vue';
   import { inputForms } from 'src/constants/form.constants';
   import { useFusionAuthStore } from 'stores/auth-store';
-  import { FusionAuthLoginBody } from 'src/models/fusion-auth.models';
+  import type { FusionAuthLoginBody } from 'src/models/fusion-auth.models';
   import { useRouter } from 'vue-router';
-  import { ref, Ref } from 'vue';
-  import { BodyForm } from 'src/models/form.models';
+  import type { Ref } from 'vue';
+import { ref } from 'vue';
+  import type { BodyForm } from 'src/models/form.models';
   import { ROUTES_NAMES } from 'src/router/routes-names';
 
   const fusionAuthStore = useFusionAuthStore();

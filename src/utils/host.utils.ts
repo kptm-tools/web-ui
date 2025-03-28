@@ -1,13 +1,13 @@
-import { Host, Rapporteur } from 'src/models/hosts.models';
+import type { Host, Rapporteur } from 'src/models/hosts.models';
 import { HostService } from 'src/services/host.service';
 import { useHosthStore } from 'src/stores/host-store';
 
 export function formatHostForTable(hosts: Host[]): Host[] {
-  return hosts.map(host => ({
+  return hosts.map((host) => ({
     ...host,
     hostName: host.name,
     creationDate: host.created_at,
-    email: getPrincipalRapporteur(host.rapporteurs)
+    email: getPrincipalRapporteur(host.rapporteurs),
   })) as Host[];
 }
 
@@ -25,7 +25,7 @@ export async function getInitalDataForHostTable(): Promise<Host[]> {
 
 export async function setInitalDataToStore(): Promise<void> {
   const store = useHosthStore();
-  await store.setInitialList(await getInitalDataForHostTable());
+  store.setInitialList(await getInitalDataForHostTable());
 }
 
 export function getPrincipalRapporteur(rapporteurs: Rapporteur[]): string {
