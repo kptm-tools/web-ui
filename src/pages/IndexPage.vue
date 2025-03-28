@@ -138,7 +138,7 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ref, onMounted, Ref, ComputedRef } from 'vue';
+  import { computed, ref, onMounted, Ref, ComputedRef, watchEffect } from 'vue';
   import { DashboardService, MainDashboard } from 'src/services/dashboard';
   import {
     SCAN_INSIGHT_VULNERABILITY_OPTIONS,
@@ -213,6 +213,13 @@
     ];
   }
 
+  watchEffect(() => {
+    setTimeout(() => {
+      actualRotation.value =
+        dashboardData.value?.overall_security_posture?.score * 180;
+    }, 300);
+  });
+
   onMounted(() => {
     DashboardService.getDashboard().then(res => setDashboardData(res.data));
   });
@@ -264,8 +271,8 @@
 
   .needle {
     position: absolute;
-    bottom: 130px;
-    left: 110px;
+    bottom: 150px;
+    left: 130px;
     transform-origin: center;
     transition: transform 0.5s ease-in-out;
   }
