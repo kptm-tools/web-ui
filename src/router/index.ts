@@ -10,7 +10,7 @@ import { useFusionAuthStore } from 'stores/auth-store';
 import routes from './routes';
 import { UserService } from 'src/services';
 import { decodeJwt } from 'src/utils/auth.utils';
-import { AxiosError } from 'axios';
+import type { AxiosError } from 'axios';
 
 /*
  * If not building with SSR mode, you can

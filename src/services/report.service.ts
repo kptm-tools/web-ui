@@ -1,11 +1,13 @@
-import { AxiosResponse } from 'axios';
+import type { AxiosResponse } from 'axios';
 import { fusionAuthApi } from 'boot/axios';
-import {
+import type {
   Report,
   ReportSummary,
-  ReportSummaryTimeRange,
   ReportSummaryTimeRangeTypes,
   ScanVulnerabilitesResponse
+} from 'src/models';
+import {
+  ReportSummaryTimeRange
 } from 'src/models';
 
 export class ReportService {

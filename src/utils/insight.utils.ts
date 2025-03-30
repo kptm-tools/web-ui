@@ -1,4 +1,4 @@
-import { SeverityPerType, VulnerabilityItem } from 'src/models/scans.model';
+import type { SeverityPerType, VulnerabilityItem } from 'src/models/scans.model';
 
 export function getVariationIcon(variation: number): string {
   let iconClass = 'fa-solid q-mx-sm ';

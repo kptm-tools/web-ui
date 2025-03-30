@@ -32,12 +32,13 @@
 
 <script setup lang="ts">
   import { useDialogPluginComponent } from 'quasar';
-  import {
+  import type {
     Host,
     HostSchedule,
     ValidateHostAuth
   } from 'src/models/hosts.models';
-  import { computed, onMounted, Ref, ref } from 'vue';
+  import type { Ref} from 'vue';
+import { computed, onMounted, ref } from 'vue';
   import {
     ScanPickHostsStep,
     ScanScheduleStep,

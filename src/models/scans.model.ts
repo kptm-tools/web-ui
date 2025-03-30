@@ -62,20 +62,20 @@ export enum ScanStatus {
   inProgress = 'InProgress',
   completed = 'Completed',
   pending = 'Pending',
-  cancelled = 'Cancelled'
+  cancelled = 'Cancelled',
 }
 
 export type ScanStatusType = keyof ScanStatus;
 
 export enum ScanActions {
   insight = 'insight',
-  cancel = 'cancel'
+  cancel = 'cancel',
 }
 
 export interface ScanTableAction {
-  name: string;
+  name: ScanActions;
   icon: string;
-  show: (value: string) => boolean;
+  show: (value: ScanStatus) => boolean;
 }
 
 export interface ScanTableEventAction {

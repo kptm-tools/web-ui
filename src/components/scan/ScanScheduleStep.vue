@@ -169,8 +169,9 @@
 </template>
 
 <script setup lang="ts">
-  import { Host, HostSchedule } from 'src/models';
-  import { Ref, ref, watch } from 'vue';
+  import type { Host, HostSchedule } from 'src/models';
+  import type { Ref} from 'vue';
+import { ref, watch } from 'vue';
 
   const emit = defineEmits(['submitTime']);
 
@@ -198,7 +199,7 @@
     props.hosts,
     () => {
       if (props.hosts.length) {
-        let hostsAux: Host[] = [...props.hosts];
+        const hostsAux: Host[] = [...props.hosts];
         hostsAux.unshift(allOptionHost);
         hostPickedOptions.value = hostsAux.map(val => ({
           ...val,

@@ -2,24 +2,10 @@
   <q-form @submit.prevent="registerHosts">
     <div v-if="!edit" class="row q-col-gutter-md flex items-center">
       <div class="col-5">
-        <q-select
-          v-model="pickedHost"
-          outlined
-          :options="hostOptions"
-          option-label="alias"
-          label="Host"
-          dense
-        />
+        <q-select v-model="pickedHost" outlined :options="hostOptions" option-label="alias" label="Host" dense />
       </div>
       <div class="col-1">
-        <q-btn
-          square
-          color="primary"
-          icon="add"
-          dense
-          :disable="disabledAdd"
-          @click="addReporterToHost"
-        />
+        <q-btn square color="primary" icon="add" dense :disable="disabledAdd" @click="addReporterToHost" />
       </div>
     </div>
 
@@ -31,14 +17,7 @@
         <q-input v-model="email" outlined label="Email" dense />
       </div>
       <div v-if="edit" class="col-2">
-        <q-btn
-          square
-          color="primary"
-          icon="add"
-          dense
-          :disable="disabledAdd"
-          @click="addReporterToHost"
-        />
+        <q-btn square color="primary" icon="add" dense :disable="disabledAdd" @click="addReporterToHost" />
       </div>
     </div>
 
@@ -49,25 +28,13 @@
             <q-input v-model="rep.name" outlined label="Name" dense readonly />
           </div>
           <div class="col-5">
-            <q-input
-              v-model="rep.email"
-              outlined
-              label="Email"
-              dense
-              readonly
-            />
+            <q-input v-model="rep.email" outlined label="Email" dense readonly />
           </div>
           <div class="col-2">
-            <q-btn
-              :icon="rep.is_principal ? 'fas fa-heart' : 'far fa-heart'"
-              dense
-              flat
-              color="grey"
-              @click="
-                host.rapporteurs.map(val => (val.is_principal = false));
-                rep.is_principal = !rep.is_principal;
-              "
-            ></q-btn>
+            <q-btn :icon="rep.is_principal ? 'fas fa-heart' : 'far fa-heart'" dense flat color="grey" @click="
+              host.rapporteurs.map(val => (val.is_principal = false));
+            rep.is_principal = !rep.is_principal;
+            "></q-btn>
             <q-btn icon="fas fa-pen-to-square" dense flat color="grey"></q-btn>
             <q-btn icon="fas fa-trash" dense flat color="grey"></q-btn>
           </div>
@@ -76,113 +43,109 @@
     </div>
 
     <div v-if="!edit" class="row q-pt-md justify-end">
-      <q-btn
-        :disabled="!hostsWithEmails.length"
-        color="primary"
-        label="Save"
-        type="submit"
-      />
+      <q-btn :disabled="!hostsWithEmails.length" color="primary" label="Save" type="submit" />
     </div>
   </q-form>
 </template>
 
 <script setup lang="ts">
-  import { computed, ComputedRef, onMounted, ref, Ref } from 'vue';
-  import { Host, ValidateHostAuth, Rapporteur } from 'src/models/hosts.models';
+import type { ComputedRef, Ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
+import type { Host, ValidateHostAuth, Rapporteur } from 'src/models/hosts.models';
 
-  defineExpose({ registerHosts });
+defineExpose({ registerHosts });
 
-  const props = defineProps({
-    hosts: {
-      type: Array as () => ValidateHostAuth[],
-      required: true
-    },
-    rapporteurs: {
-      type: Array as () => Rapporteur[],
-      required: false,
-      default: () => []
-    },
-    edit: {
-      type: Boolean as () => boolean,
-      required: false,
-      default: false
-    }
-  });
+const props = defineProps({
+  hosts: {
+    type: Array as () => ValidateHostAuth[],
+    required: true
+  },
+  rapporteurs: {
+    type: Array as () => Rapporteur[],
+    required: false,
+    default: () => []
+  },
+  edit: {
+    type: Boolean as () => boolean,
+    required: false,
+    default: false
+  }
+});
 
-  const emits = defineEmits(['registerHost']);
+const emits = defineEmits(['registerHost']);
 
-  const pickedHost = ref();
-  const name = ref('');
-  const email = ref('');
-  const hostOptions: Ref<ValidateHostAuth[]> = ref([] as ValidateHostAuth[]);
-  const hostsRegister: Ref<Host[]> = ref([] as Host[]);
+const pickedHost = ref();
+const name = ref('');
+const email = ref('');
+const hostOptions: Ref<ValidateHostAuth[]> = ref([] as ValidateHostAuth[]);
+const hostsRegister: Ref<Host[]> = ref([] as Host[]);
 
-  const hostsWithEmails: ComputedRef<Host[]> = computed(() => {
-    return hostsRegister.value.filter(
-      host =>
-        host.rapporteurs.length > 0 &&
-        (host.alias === pickedHost.value.alias ||
-          pickedHost.value.alias === 'All')
-    );
-  });
+const hostsWithEmails: ComputedRef<Host[]> = computed(() => {
+  return hostsRegister.value.filter(
+    host =>
+      host.rapporteurs.length > 0 &&
+      (host.alias === pickedHost.value.alias ||
+        pickedHost.value.alias === 'All')
+  );
+});
 
-  const disabledAdd = computed(() => {
-    return !name.value || !email.value;
-  });
+const disabledAdd = computed(() => {
+  return !name.value || !email.value;
+});
 
-  function addReporterToHost() {
-    if (pickedHost.value.alias === 'All') {
-      hostsRegister.value.forEach((val, i) => {
-        hostsRegister.value[i]?.rapporteurs.push({
-          name: name.value,
-          email: email.value,
-          is_principal: false
-        });
-      });
-    } else {
-      const index = hostsRegister.value.findIndex(
-        host => host.alias === pickedHost.value.alias
-      );
-      hostsRegister.value[index]?.rapporteurs.push({
+function addReporterToHost() {
+  if (pickedHost.value.alias === 'All') {
+    hostsRegister.value.forEach((val, i) => {
+      hostsRegister.value[i]?.rapporteurs.push({
         name: name.value,
         email: email.value,
         is_principal: false
       });
-    }
-
-    name.value = '';
-    email.value = '';
-  }
-
-  function registerHosts() {
-    emits('registerHost', hostsRegister.value);
-  }
-
-  onMounted(async () => {
-    hostOptions.value = await props.hosts;
-    hostsRegister.value = await hostOptions.value.map(host => {
-      return {
-        alias: host.alias,
-        host: host.hostname,
-        credentials: host.credentials,
-        rapporteurs: []
-      };
     });
-    if (!props.edit) {
-      await hostOptions.value.unshift({
-        alias: 'All',
-        hostname: 'All',
-        ip: 'All',
-        credentials: []
-      });
-    } else {
-      if (hostsRegister.value[0]) {
-        hostsRegister.value[0].rapporteurs = props.rapporteurs;
-      }
-    }
+  } else {
+    const index = hostsRegister.value.findIndex(
+      host => host.alias === pickedHost.value.alias
+    );
+    hostsRegister.value[index]?.rapporteurs.push({
+      name: name.value,
+      email: email.value,
+      is_principal: false
+    });
+  }
 
-    pickedHost.value = hostOptions.value[0];
+  name.value = '';
+  email.value = '';
+}
+
+function registerHosts() {
+  emits('registerHost', hostsRegister.value);
+}
+
+onMounted(() => {
+  hostOptions.value = props.hosts;
+  hostsRegister.value = hostOptions.value.map(host => {
+    return {
+      alias: host.alias,
+      host: host.hostname,
+      credentials: host.credentials,
+      rapporteurs: []
+    };
   });
+  if (!props.edit) {
+    hostOptions.value.unshift({
+      alias: 'All',
+      hostname: 'All',
+      ip: 'All',
+      credentials: []
+    });
+  } else {
+    if (hostsRegister.value[0]) {
+      hostsRegister.value[0].rapporteurs = props.rapporteurs;
+    }
+  }
+
+  pickedHost.value = hostOptions.value[0];
+});
 </script>
 
 <style scoped></style>

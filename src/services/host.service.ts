@@ -1,6 +1,6 @@
-import { AxiosResponse } from 'axios';
+import type { AxiosResponse } from 'axios';
 import { fusionAuthApi } from 'boot/axios';
-import { Host, HostCreateBody } from 'src/models/hosts.models';
+import type { Host, HostCreateBody } from 'src/models/hosts.models';
 
 const BASE_PATH = '/api/hosts';
 

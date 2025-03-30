@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { Host } from 'src/models/hosts.models';
+import type { Host } from 'src/models/hosts.models';
 
 interface HostFilter {
   created_at?: string;

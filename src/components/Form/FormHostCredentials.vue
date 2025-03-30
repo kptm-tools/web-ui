@@ -120,12 +120,13 @@
 </template>
 
 <script setup lang="ts">
-  import {
+  import type {
     ValidatedHost,
     ValidateHostAuth,
     Credential
   } from 'src/models/hosts.models';
-  import { ref, Ref, ComputedRef, computed, onMounted } from 'vue';
+  import type { Ref, ComputedRef} from 'vue';
+import { ref, computed, onMounted } from 'vue';
   import { requiredRules } from 'src/utils/auth.utils';
   import { QForm } from 'quasar';
 

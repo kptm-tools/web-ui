@@ -1,11 +1,11 @@
 import { fusionAuthApi } from 'src/boot/axios';
-import {
+import type {
   ChangePasswordBody,
   ForgotPasswordBody,
   FusionAuthLoginBody,
   FusionAuthLoginResponse
 } from 'src/models/fusion-auth.models';
-import { AxiosResponse } from 'axios';
+import type { AxiosResponse } from 'axios';
 
 export function authenticateUser(
   body: FusionAuthLoginBody
