@@ -120,12 +120,13 @@
 </template>
 
 <script setup lang="ts">
-  import {
+  import type {
     ValidatedHost,
     ValidateHostAuth,
     Credential
   } from 'src/models/hosts.models';
-  import { ref, Ref, ComputedRef, computed, onMounted } from 'vue';
+  import type { Ref, ComputedRef} from 'vue';
+import { ref, computed, onMounted } from 'vue';
   import { requiredRules } from 'src/utils/auth.utils';
   import { QForm } from 'quasar';
 
@@ -183,10 +184,10 @@
       ({ alias }) => alias === pickedHost.value.alias
     );
 
-    if (!rawHosts.value[indexHost].credentials) {
+    if (rawHosts.value[indexHost] && !rawHosts.value[indexHost]?.credentials) {
       rawHosts.value[indexHost].credentials = [];
     }
-    rawHosts.value[indexHost].credentials.push({
+    rawHosts.value[indexHost]?.credentials.push({
       username: credentialForm.value.username,
       password: credentialForm.value.password
     });
@@ -199,12 +200,12 @@
     const indexHost = rawHosts.value.findIndex(
       ({ alias }) => alias === pickedHost.value.alias
     );
-    rawHosts.value[indexHost].credentials.splice(index, 1);
+    rawHosts.value[indexHost]?.credentials.splice(index, 1);
   }
 
   onMounted(() => {
     rawHosts.value = props.hosts.map(host => ({ ...host, credentials: [] }));
-    if (props.credentials) {
+    if (props.credentials && rawHosts.value[0]) {
       rawHosts.value[0].credentials = props.credentials;
     }
   });

@@ -78,9 +78,9 @@
 
 <script lang="ts" setup>
   import { onMounted, ref } from 'vue';
-  import { AxiosError } from 'axios';
+  import type { AxiosError } from 'axios';
   import { useDialogPluginComponent } from 'quasar';
-  import {
+  import type {
     ValidatedHost,
     Host,
     ValidateHostAuth,
@@ -90,6 +90,7 @@
   import FormHostEmails from 'components/Form/FormHostEmails.vue';
   import { validateHost } from 'src/services/host.service';
   import { errorQuasarNotify } from 'src/utils';
+  import type { Rapporteur } from 'src/models';
 
   defineEmits([...useDialogPluginComponent.emits]);
 
@@ -123,7 +124,7 @@
 
       const body: HostCreateBody = {
         value,
-        name,
+        name: name || '',
         value_type: valueType.value,
         credentials,
         rapporteurs
@@ -144,11 +145,12 @@
   }
 
   function hostEmailsHandler(hostsList: Host[]) {
-    hostForm.value.rapporteurs = hostsList[0].rapporteurs;
+    hostForm.value.rapporteurs =
+      hostsList[0]?.rapporteurs || ([] as Rapporteur[]);
   }
 
   function hostCredentialsHandler(hostsList: ValidateHostAuth[]) {
-    hostForm.value.credentials = hostsList[0].credentials;
+    hostForm.value.credentials = hostsList[0]?.credentials || [];
   }
 
   function setInitialData(): void {

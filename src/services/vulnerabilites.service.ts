@@ -1,6 +1,6 @@
-import { AxiosResponse } from 'axios';
+import type { AxiosResponse } from 'axios';
 import { fusionAuthApi } from 'boot/axios';
-import { ScanVulnerability } from 'src/models';
+import type { ScanVulnerability } from 'src/models';
 
 export class VulnerabilitesService {
   private static readonly BASE_PATH = '/api/vulnerabilities';

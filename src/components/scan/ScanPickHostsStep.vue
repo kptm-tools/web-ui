@@ -62,9 +62,10 @@
 </template>
 
 <script setup lang="ts">
-  import { QTableColumn } from 'quasar';
-  import { Host } from 'src/models';
-  import { Ref, ref, toValue } from 'vue';
+  import type { QTableColumn } from 'quasar';
+  import type { Host } from 'src/models';
+  import type { Ref} from 'vue';
+import { ref, toValue } from 'vue';
 
   defineProps({
     hosts: {

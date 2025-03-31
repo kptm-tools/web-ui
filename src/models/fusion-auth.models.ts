@@ -1,4 +1,4 @@
-import { AxiosHeaders } from 'axios';
+import type { AxiosHeaders } from 'axios';
 
 export interface FusionAuthLoginBody {
   application_id?: string;

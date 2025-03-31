@@ -80,8 +80,9 @@
 
 <script setup lang="ts">
   import { useDialogPluginComponent } from 'quasar';
-  import { ScanInsight } from 'src/models/scans.model';
-  import { computed, onMounted, PropType, watchEffect, ref, Ref } from 'vue';
+  import type { ScanInsight } from 'src/models/scans.model';
+  import type { PropType, Ref } from 'vue';
+import { computed, onMounted, watchEffect, ref } from 'vue';
   import TableVulnerabilities from 'src/components/insight/TableVulnerabilities.vue';
   import {
     SCAN_INSIGHT_VULNERABILITY_OPTIONS,

@@ -67,9 +67,10 @@
 </template>
 
 <script setup lang="ts">
-  import { ScanVulnerabilitesResponse, ScanVulnerability } from 'src/models';
+  import type { ScanVulnerabilitesResponse, ScanVulnerability } from 'src/models';
   import { ReportService } from 'src/services';
-  import { computed, onMounted, Ref, ref } from 'vue';
+  import type { Ref} from 'vue';
+import { computed, onMounted, ref } from 'vue';
   import { useRoute } from 'vue-router';
   import { ROUTES_NAMES } from 'src/router/routes-names';
   import { useQuasar } from 'quasar';

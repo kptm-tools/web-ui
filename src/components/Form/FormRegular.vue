@@ -39,9 +39,10 @@
 
 <script setup lang="ts">
   import { QForm } from 'quasar';
-  import { reactive, Reactive, ref, Ref } from 'vue';
+  import type { Reactive, Ref } from 'vue';
+import { reactive, ref } from 'vue';
   import { requiredRules } from 'src/utils/auth.utils';
-  import { BodyForm, FormContainerBody } from 'src/models/form.models';
+  import type { BodyForm, FormContainerBody } from 'src/models/form.models';
 
   const props = defineProps<{
     formBody: FormContainerBody;

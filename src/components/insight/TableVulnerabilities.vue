@@ -33,8 +33,9 @@
 </template>
 
 <script lang="ts" setup>
-  import { SeverityPerType, VulnerabilityItem } from 'src/models/scans.model';
-  import { onMounted, PropType, ref, Ref } from 'vue';
+  import type { SeverityPerType, VulnerabilityItem } from 'src/models/scans.model';
+  import type { PropType, Ref } from 'vue';
+import { onMounted, ref } from 'vue';
   import { SeverityChip } from 'src/components';
   import { getVulnerabilityList } from 'src/utils';
 

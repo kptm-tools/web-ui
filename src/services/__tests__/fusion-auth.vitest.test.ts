@@ -1,20 +1,19 @@
+/* eslint-disable @typescript-eslint/unbound-method */
 import { describe, expect, it, vi } from 'vitest';
 import { authenticateUser, logoutUser } from '../auth.service'; // Adjust path as needed
 import { fusionAuthApi } from 'boot/axios';
-import {
+import type {
   FusionAuthLoginBody,
   FusionAuthLoginResponse,
-  FusionAuthLogout,
-  FusionAuthLogoutHeaders,
-  SuccessAuthLoginUser
+  SuccessAuthLoginUser,
 } from 'src/models/fusion-auth.models';
-import { AxiosRequestHeaders, AxiosResponse } from 'axios';
+import type { AxiosRequestHeaders, AxiosResponse } from 'axios';
 
 // Mock the axios instance
 vi.mock('src/boot/axios', () => ({
   fusionAuthApi: {
-    post: vi.fn()
-  }
+    post: vi.fn(),
+  },
 }));
 
 describe('FusionAuth API Service', () => {
@@ -24,27 +23,26 @@ describe('FusionAuth API Service', () => {
       const body: FusionAuthLoginBody = {
         application_id: 'appId',
         loginId: 'testuser',
-        password: 'testpassword'
+        password: 'testpassword',
       };
       const mockResponse: AxiosResponse<FusionAuthLoginResponse> = {
         data: {
           token: 'mockToken',
           tokenExpirationInstant: 1,
-          user: {} as SuccessAuthLoginUser
+          user: {} as SuccessAuthLoginUser,
         },
         status: 200,
         statusText: 'OK',
         headers: {},
-        config: { headers: {} as AxiosRequestHeaders }
+        config: { headers: {} as AxiosRequestHeaders },
       };
-      (fusionAuthApi.post as ReturnType<typeof vi.fn>).mockResolvedValue(
-        mockResponse
-      );
+      (fusionAuthApi.post as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
 
       // Act
       const response = await authenticateUser(body);
 
       // Assert
+
       expect(fusionAuthApi.post).toHaveBeenCalledWith('/api/login', body);
       expect(response).toEqual(mockResponse);
     });
@@ -53,12 +51,10 @@ describe('FusionAuth API Service', () => {
       // Arrange
       const body: FusionAuthLoginBody = {
         loginId: 'testuser',
-        password: 'wrongpassword'
+        password: 'wrongpassword',
       };
       const mockError = new Error('Login failed');
-      (fusionAuthApi.post as ReturnType<typeof vi.fn>).mockRejectedValue(
-        mockError
-      );
+      (fusionAuthApi.post as ReturnType<typeof vi.fn>).mockRejectedValue(mockError);
 
       // Act & Assert
       await expect(authenticateUser(body)).rejects.toThrow('Login failed');
@@ -67,29 +63,20 @@ describe('FusionAuth API Service', () => {
 
   describe('logoutUser', () => {
     it('should call the /api/logout endpoint with the correct parameters', async () => {
-      // Arrange
-      const body: FusionAuthLogout = {};
-      const headers: FusionAuthLogoutHeaders = {
-        Authorization: process.env.FUSION_APP_TOKEN
-      } as AxiosRequestHeaders;
       const mockResponse: AxiosResponse<void> = {
         data: undefined,
         status: 200,
         statusText: 'OK',
         headers: {},
-        config: { headers: {} as AxiosRequestHeaders }
+        config: { headers: {} as AxiosRequestHeaders },
       };
-      (fusionAuthApi.post as ReturnType<typeof vi.fn>).mockResolvedValue(
-        mockResponse
-      );
+      (fusionAuthApi.post as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
 
       // Act
-      const response = await logoutUser(body, headers);
+      const response = await logoutUser();
 
       // Assert
-      expect(fusionAuthApi.post).toHaveBeenCalledWith('/api/logout', body, {
-        headers
-      });
+      expect(fusionAuthApi.post).toHaveBeenCalledWith('/api/logout');
       expect(response).toEqual(mockResponse);
     });
 
@@ -100,21 +87,15 @@ describe('FusionAuth API Service', () => {
         status: 200,
         statusText: 'OK',
         headers: {},
-        config: { headers: {} as AxiosRequestHeaders }
+        config: { headers: {} as AxiosRequestHeaders },
       };
-      (fusionAuthApi.post as ReturnType<typeof vi.fn>).mockResolvedValue(
-        mockResponse
-      );
+      (fusionAuthApi.post as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
 
       // Act
       const response = await logoutUser();
 
       // Assert
-      expect(fusionAuthApi.post).toHaveBeenCalledWith(
-        '/api/logout',
-        undefined,
-        { headers: undefined }
-      );
+      expect(fusionAuthApi.post).toHaveBeenCalledWith('/api/logout');
       expect(response).toEqual(mockResponse);
     });
   });

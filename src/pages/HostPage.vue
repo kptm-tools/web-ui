@@ -11,7 +11,7 @@
 <script setup lang="ts">
   import TableHost from 'src/components/Table/TableHost.vue';
   import { onMounted } from 'vue';
-  import { Host } from 'src/models/hosts.models';
+  import type { Host } from 'src/models/hosts.models';
   import { useHosthStore } from 'src/stores/host-store';
   import {
     setInitalDataToStore,

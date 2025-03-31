@@ -1,8 +1,6 @@
-import axios, { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
-import {
-  AUTH_TOKEN_NAMES,
-  UNPROTECTED_PATHS
-} from 'src/constants/fusion-auth.constants';
+import type { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
+import axios from 'axios';
+import { AUTH_TOKEN_NAMES, UNPROTECTED_PATHS } from 'src/constants/fusion-auth.constants';
 
 declare module 'vue' {
   interface ComponentCustomProperties {
@@ -11,10 +9,12 @@ declare module 'vue' {
   }
 }
 
-const fusionAuthApi = axios.create({ baseURL: process.env.FUSION_SERVER_URL });
+const fusionAuthApi = axios.create({
+  baseURL: process.env.FUSION_SERVER_URL || '',
+});
 
 const isUnprotected = (url: string): boolean => {
-  return UNPROTECTED_PATHS.some(endpoint => url.includes(endpoint));
+  return UNPROTECTED_PATHS.some((endpoint) => url.includes(endpoint));
 };
 
 fusionAuthApi.interceptors.request.use(
@@ -27,17 +27,17 @@ fusionAuthApi.interceptors.request.use(
     }
     return config;
   },
-  error => Promise.reject(error)
+  (error) => Promise.reject(new Error(error)),
 );
 
 // Add a response interceptor
 fusionAuthApi.interceptors.response.use(
-  response => {
+  (response) => {
     return response;
   },
-  error => {
-    return Promise.reject(error);
-  }
+  (error) => {
+    return Promise.reject(new Error(error));
+  },
 );
 
 export { fusionAuthApi };

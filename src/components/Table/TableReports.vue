@@ -28,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-  import { QTableColumn } from 'quasar';
+  import type { QTableColumn } from 'quasar';
   import TableRegular from './TableRegular.vue';
 
   defineProps<{

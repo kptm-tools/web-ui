@@ -1,4 +1,4 @@
-import { InputFormContainer } from 'src/models/form.models';
+import type { InputFormContainer } from 'src/models/form.models';
 
 export const inputForms: InputFormContainer = {
   loginForm: {

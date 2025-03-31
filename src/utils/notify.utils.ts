@@ -1,5 +1,5 @@
 import { Notify } from 'quasar';
-import { QNotifyPosition } from 'src/models/notify.models';
+import type { QNotifyPosition } from 'src/models/notify.models';
 
 export function errorQuasarNotify(
   message: string,
