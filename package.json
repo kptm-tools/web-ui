@@ -20,6 +20,7 @@
     "@quasar/extras": "^1.16.4",
     "apexcharts": "^4.5.0",
     "axios": "^1.2.1",
+    "chart.js": "^4.4.8",
     "pinia": "^3.0.1",
     "quasar": "^2.16.0",
     "vue": "^3.4.18",

@@ -9,24 +9,25 @@
               <div class="subtitle" style="color: #5c7288">
                 General security status of the clients environment
               </div>
-              <apexchart :options="OVERALL_DONUT_OPTIONS" :series="[33, 33, 33]" type="donut"></apexchart>
-              <img src="../assets/needle.svg" width="40" alt="needle" class="needle"
-                :style="{ transform: `rotate(${actualRotation}deg)` }" />
+              <apexchart
+                :options="OVERALL_DONUT_OPTIONS"
+                :series="[33, 33, 33]"
+                type="donut"
+              ></apexchart>
+              <img
+                src="../assets/needle.svg"
+                width="40"
+                alt="needle"
+                class="needle"
+                :style="{ transform: `rotate(${actualRotation}deg)` }"
+              />
               <div class="porcentaje">
-                {{
-                  (
-                    dashboardData?.overall_security_posture?.score * 100
-                  ).toFixed(0)
-                }}%
+                {{ (dashboardData?.overall_security_posture?.score * 100).toFixed(0) }}%
               </div>
 
               <div class="protection-score-variation">
                 <span class="q-ma-none text">
-                  {{
-                    (
-                      dashboardData?.overall_security_posture?.variation * 100
-                    ).toFixed(0)
-                  }}%
+                  {{ (dashboardData?.overall_security_posture?.variation * 100).toFixed(0) }}%
                   <i class="fa-solid fa-caret-up q-mx-sm text-red"></i>
                   Variation
                 </span>
@@ -39,7 +40,7 @@
 
           <div class="col-12">
             <div style="max-width: 700px">
-              <apexchart type="area" :options="vulnerabilityTrendsOptions" :series="trendSeries"></apexchart>
+              <div style="width: 700px"><canvas id="acquisitions"></canvas></div>
             </div>
           </div>
         </div>
@@ -48,9 +49,7 @@
         <div class="row q-mb-md">
           <div class="col-12">
             <div class="title">Latest Scan</div>
-            <div class="subtitle" style="color: #5c7288">
-              Vulnerability Count
-            </div>
+            <div class="subtitle" style="color: #5c7288">Vulnerability Count</div>
             <div class="subtitle" style="color: #5c7288">
               <span style="font-weight: 500"> Date :</span>
               {{ dashboardData.last_scan?.scan_date.slice(0, 10) || '' }}
@@ -64,7 +63,10 @@
               </div>
             </template>
             <template v-else>
-              <apexchart :options="SCAN_INSIGHT_VULNERABILITY_OPTIONS" :series="donutSeverityCountsSeries"></apexchart>
+              <apexchart
+                :options="SCAN_INSIGHT_VULNERABILITY_OPTIONS"
+                :series="donutSeverityCountsSeries"
+              ></apexchart>
             </template>
           </div>
         </div>
@@ -91,7 +93,8 @@
             <q-item-section avatar></q-item-section>
             <q-item-section class="text-weight-bold label-table">TOP 5</q-item-section>
             <q-item-section class="text-weight-bold label-table">
-              # OF VULNERABILITIES</q-item-section>
+              # OF VULNERABILITIES</q-item-section
+            >
           </q-item>
           <template v-for="i in hostVulnerabilites" :key="i">
             <q-item v-ripple clickable>
@@ -110,165 +113,168 @@
 </template>
 
 <script setup lang="ts">
-import type { Ref, ComputedRef } from 'vue';
-import { computed, ref, onMounted, watchEffect } from 'vue';
-import { DashboardService, MainDashboard } from 'src/services/dashboard';
-import {
-  SCAN_INSIGHT_VULNERABILITY_OPTIONS,
-  HEATMAP_CHART_OPTIONS,
-  OVERALL_DONUT_OPTIONS
-} from 'src/constants/apexcharts.constants';
-import { getVariationIcon } from 'src/utils';
-import type {
-  HostVulnerability,
-  iMainDashboard,
-  iSerieDashboard
-} from 'src/models/dashboard.models';
+  import type { Ref, ComputedRef } from 'vue';
+  import { computed, ref, onMounted, watchEffect } from 'vue';
+  import { DashboardService, MainDashboard } from 'src/services/dashboard';
+  import {
+    SCAN_INSIGHT_VULNERABILITY_OPTIONS,
+    HEATMAP_CHART_OPTIONS,
+    OVERALL_DONUT_OPTIONS
+  } from 'src/constants/apexcharts.constants';
+  import { getVariationIcon } from 'src/utils';
+  import type {
+    HostVulnerability,
+    iMainDashboard,
+    iSerieDashboard
+  } from 'src/models/dashboard.models';
+  import Chart from 'chart.js/auto';
 
-const dashboardData: Ref<iMainDashboard> = ref({} as iMainDashboard);
-const hostVulnerabilites: Ref<HostVulnerability[]> = ref([]);
-const trendSeries: Ref<iSerieDashboard[]> = ref([]);
-const donutSeverityCountsSeries: Ref<number[]> = ref([]);
-const actualRotation: Ref<number> = ref(0);
-const heatMapSeries: Ref<iSerieDashboard[]> = ref([]);
-const heatMapOptions = ref({ ...HEATMAP_CHART_OPTIONS });
-const vulnerabilityTrendsOptions = ref({
-  xaxis: {
-    categories: [] as string[]
-  },
-  title: {
-    text: 'Vulnerability Trends'
-  },
-  colors: ['#ED273D'],
-  legend: {
-    show: true,
-    showForSingleSeries: true,
-    showForNullSeries: true,
-    position: 'bottom',
-    horizontalAlign: 'right',
-    floating: true,
-    offsetY: -5
+  const dashboardData: Ref<iMainDashboard> = ref({} as iMainDashboard);
+  const hostVulnerabilites: Ref<HostVulnerability[]> = ref([]);
+  const donutSeverityCountsSeries: Ref<number[]> = ref([]);
+  const actualRotation: Ref<number> = ref(0);
+  const heatMapSeries: Ref<iSerieDashboard[]> = ref([]);
+  const heatMapOptions = ref({ ...HEATMAP_CHART_OPTIONS });
+
+  const variationIcon: ComputedRef<string> = computed(() =>
+    getVariationIcon(dashboardData.value?.overall_security_posture?.variation || 0)
+  );
+
+  const lastScanEmpty = computed(() => donutSeverityCountsSeries.value.every(val => val === 0));
+
+  function setDashboardData(data: iMainDashboard): void {
+    const dashboard = new MainDashboard(data);
+
+    dashboardData.value = data;
+    heatMapSeries.value = dashboard.heatmapSeries;
+    heatMapOptions.value = {
+      ...heatMapOptions.value,
+      xaxis: { categories: dashboard.heatmapCategories, type: 'category' }
+    };
+    hostVulnerabilites.value = dashboard.listHostsWithGreatestVulnerabilities;
+    donutSeverityCountsSeries.value = dashboard.donutSeverityCountsSeries;
+
+    const trendData: { year: number; count: number | null | undefined }[] =
+      dashboard.trendVulnerabilityCategories.map((category, index) => ({
+        year: category,
+        count: dashboard.trendVulnerabilitySeries[index]
+      })) as unknown as { year: number; count: number | null | undefined }[];
+
+    const item = document.getElementById('acquisitions');
+    if (item) {
+      const aux = item as HTMLCanvasElement;
+      new Chart(aux, {
+        type: 'line',
+        data: {
+          labels: trendData.map(row => row.year),
+          datasets: [
+            {
+              label: 'Vulnerabilities',
+              data: trendData.map(row => row.count),
+              fill: true,
+              backgroundColor: '#E5494D'
+            }
+          ]
+        },
+        options: {
+          spanGaps: true,
+          plugins: {
+            filler: {
+              propagate: false
+            }
+          },
+          elements: {
+            line: {
+              tension: 0.4
+            }
+          }
+        }
+      });
+    }
   }
-});
 
-const variationIcon: ComputedRef<string> = computed(() =>
-  getVariationIcon(
-    dashboardData.value?.overall_security_posture?.variation || 0
-  )
-);
+  watchEffect(() => {
+    setTimeout(() => {
+      actualRotation.value = dashboardData.value?.overall_security_posture?.score * 180;
+    }, 300);
+  });
 
-const lastScanEmpty = computed(() =>
-  donutSeverityCountsSeries.value.every(val => val === 0)
-);
-
-function setDashboardData(data: iMainDashboard): void {
-  const dashboard = new MainDashboard(data);
-
-  dashboardData.value = data;
-  heatMapSeries.value = dashboard.heatmapSeries;
-  heatMapOptions.value = {
-    ...heatMapOptions.value,
-    xaxis: { categories: dashboard.heatmapCategories, type: 'category' }
-  };
-  hostVulnerabilites.value = dashboard.listHostsWithGreatestVulnerabilities;
-  donutSeverityCountsSeries.value = dashboard.donutSeverityCountsSeries;
-  vulnerabilityTrendsOptions.value = {
-    ...vulnerabilityTrendsOptions.value,
-    xaxis: {
-      categories: dashboard.trendVulnerabilityCategories
-    }
-  };
-  trendSeries.value = [
-    {
-      name: 'Vulnerabilities',
-      data: dashboard.trendVulnerabilitySeries
-    }
-  ];
-}
-
-watchEffect(() => {
-  setTimeout(() => {
-    actualRotation.value =
-      dashboardData.value?.overall_security_posture?.score * 180;
-  }, 300);
-});
-
-onMounted(async () => {
-  await DashboardService.getDashboard().then(res => setDashboardData(res.data));
-});
+  onMounted(async () => {
+    await DashboardService.getDashboard().then(res => setDashboardData(res.data));
+  });
 </script>
 
 <style lang="scss">
-.protection {
-  border-radius: 8px;
-  background: #f6f7fc;
-  padding: 0.5em 0em;
+  .protection {
+    border-radius: 8px;
+    background: #f6f7fc;
+    padding: 0.5em 0em;
 
-  &-score {
-    font-size: 32px;
-    font-weight: 800;
-    line-height: 37.92px;
-    letter-spacing: -0.02em;
-    text-align: left;
-    text-underline-position: from-font;
-    text-decoration-skip-ink: none;
+    &-score {
+      font-size: 32px;
+      font-weight: 800;
+      line-height: 37.92px;
+      letter-spacing: -0.02em;
+      text-align: left;
+      text-underline-position: from-font;
+      text-decoration-skip-ink: none;
+    }
+
+    &-host {
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 24px;
+      text-align: left;
+      text-underline-position: from-font;
+      text-decoration-skip-ink: none;
+    }
+
+    &-variation {
+      color: #5c7288;
+    }
   }
 
-  &-host {
-    font-size: 16px;
-    font-weight: 700;
-    line-height: 24px;
-    text-align: left;
-    text-underline-position: from-font;
-    text-decoration-skip-ink: none;
+  .protection-score-variation {
+    position: absolute;
+    bottom: 70px;
+    margin-left: auto;
+    margin-right: auto;
+    left: -20px;
+    right: 0;
+    width: fit-content;
+
+    .text {
+      color: #5c7288;
+    }
   }
 
-  &-variation {
-    color: #5c7288;
+  .needle {
+    position: absolute;
+    bottom: 150px;
+    left: 130px;
+    transform-origin: center;
+    transition: transform 0.5s ease-in-out;
   }
-}
 
-.protection-score-variation {
-  position: absolute;
-  bottom: 70px;
-  margin-left: auto;
-  margin-right: auto;
-  left: -20px;
-  right: 0;
-  width: fit-content;
-
-  .text {
-    color: #5c7288;
+  .porcentaje {
+    color: var(--text, #313541);
+    text-align: center;
+    font-family: Rubik;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 33.356px;
+    /* 208.475% */
+    position: absolute;
+    bottom: 160px;
+    margin-left: auto;
+    margin-right: auto;
+    left: -40px;
+    right: 0;
   }
-}
 
-.needle {
-  position: absolute;
-  bottom: 150px;
-  left: 130px;
-  transform-origin: center;
-  transition: transform 0.5s ease-in-out;
-}
-
-.porcentaje {
-  color: var(--text, #313541);
-  text-align: center;
-  font-family: Rubik;
-  font-size: 20px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: 33.356px;
-  /* 208.475% */
-  position: absolute;
-  bottom: 160px;
-  margin-left: auto;
-  margin-right: auto;
-  left: -40px;
-  right: 0;
-}
-
-.label-table {
-  color: var(--text, #313541);
-  font-size: 0.8em;
-}
+  .label-table {
+    color: var(--text, #313541);
+    font-size: 0.8em;
+  }
 </style>
