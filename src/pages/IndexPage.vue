@@ -194,9 +194,7 @@
   }
 
   watchEffect(() => {
-    setTimeout(() => {
-      actualRotation.value = dashboardData.value?.overall_security_posture?.score * 180;
-    }, 300);
+    actualRotation.value = dashboardData.value?.overall_security_posture?.score * 180;
   });
 
   onMounted(async () => {

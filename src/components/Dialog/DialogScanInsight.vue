@@ -2,9 +2,7 @@
   <q-dialog ref="dialogRef" class="dialog-scan-insight" @hide="onDialogHide">
     <q-card class="q-dialog-plugin full-width">
       <q-card-section class="q-mb-md">
-        <div class="title q-mb-md">
-          Domain : {{ insight.metadata?.host_alias }}
-        </div>
+        <div class="title q-mb-md">Domain : {{ insight.metadata?.host_alias }}</div>
         <div class="scan-date">SCAN DATE {{ dateFormated }}</div>
       </q-card-section>
 
@@ -22,9 +20,7 @@
               </div>
             </div>
             <div class="row flex items-center q-mb-md protection">
-              <div
-                class="col-6 flex items-center justify-center text-weight-bold protection-score"
-              >
+              <div class="col-6 flex items-center justify-center text-weight-bold protection-score">
                 {{ insight.total_vulnerabilities }}
               </div>
               <div class="col-6">
@@ -53,9 +49,7 @@
                   :style="{ transform: `rotate(${actualRotation}deg)` }"
                 />
 
-                <div class="porcentaje">
-                  {{ (insight.protection_score * 100).toFixed(0) }}%
-                </div>
+                <div class="porcentaje">{{ (insight.protection_score * 100).toFixed(0) }}%</div>
 
                 <div class="protection-score-variation">
                   <span class="q-ma-none text">
@@ -69,9 +63,7 @@
           </div>
           <div class="col-6">
             <div class="title">List of vulnerabilities</div>
-            <table-vulnerabilities
-              :vulnerabilities="insight.severity_per_type"
-            />
+            <table-vulnerabilities :vulnerabilities="insight.severity_per_type" />
           </div>
         </div>
       </q-card-section> </q-card
@@ -82,7 +74,7 @@
   import { useDialogPluginComponent } from 'quasar';
   import type { ScanInsight } from 'src/models/scans.model';
   import type { PropType, Ref } from 'vue';
-import { computed, onMounted, watchEffect, ref } from 'vue';
+  import { computed, onMounted, watchEffect, ref } from 'vue';
   import TableVulnerabilities from 'src/components/insight/TableVulnerabilities.vue';
   import {
     SCAN_INSIGHT_VULNERABILITY_OPTIONS,
@@ -113,9 +105,7 @@ import { computed, onMounted, watchEffect, ref } from 'vue';
   const variationIcon = computed(() => getVariationIcon(variation.value));
 
   watchEffect(() => {
-    setTimeout(() => {
-      actualRotation.value = props.insight.protection_score * 180;
-    }, 300);
+    actualRotation.value = props.insight.protection_score * 180;
   });
 
   onMounted(() => {
