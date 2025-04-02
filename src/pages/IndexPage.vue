@@ -4,158 +4,40 @@
       <div class="col-8">
         <div class="row">
           <div class="col-6">
-            <div class="relative-position" style="width: 350px">
-              <div class="title">Overall Security Posture</div>
-              <div class="subtitle" style="color: #5c7288">
-                General security status of the clients environment
-              </div>
-              <apexchart
-                :options="OVERALL_DONUT_OPTIONS"
-                :series="[33, 33, 33]"
-                type="donut"
-              ></apexchart>
-              <img
-                src="../assets/needle.svg"
-                width="40"
-                alt="needle"
-                class="needle"
-                :style="{ transform: `rotate(${actualRotation}deg)` }"
-              />
-              <div class="porcentaje">
-                {{ (dashboardData?.overall_security_posture?.score * 100).toFixed(0) }}%
-              </div>
-
-              <div class="protection-score-variation">
-                <span class="q-ma-none text">
-                  {{ (dashboardData?.overall_security_posture?.variation * 100).toFixed(0) }}%
-                  <i class="fa-solid fa-caret-up q-mx-sm text-red"></i>
-                  Variation
-                </span>
-              </div>
-            </div>
+            <overall-security-posture-chart :dashboard="dashboardData" />
           </div>
           <div class="col-6">
-            <apexchart type="heatmap" :options="heatMapOptions" :series="heatMapSeries"></apexchart>
+            <vulnerability-heat-map :dashboard="dashboardData" />
           </div>
-
           <div class="col-12">
             <vulnerability-trend-chart :dashboard="dashboardData" @update-filter="filterHandler" />
           </div>
         </div>
       </div>
       <div class="col-4">
-        <div class="row q-mb-md">
-          <div class="col-12">
-            <div class="title">Latest Scan</div>
-            <div class="subtitle" style="color: #5c7288">Vulnerability Count</div>
-            <div class="subtitle" style="color: #5c7288">
-              <span style="font-weight: 500"> Date :</span>
-              {{ dashboardData.last_scan?.scan_date.slice(0, 10) || '' }}
-            </div>
-          </div>
-
-          <div class="full-width">
-            <template v-if="lastScanEmpty">
-              <div class="subtitle" style="color: #5c7288">
-                No scan data to display. Please run a scan to see details.
-              </div>
-            </template>
-            <template v-else>
-              <apexchart
-                :options="SCAN_INSIGHT_VULNERABILITY_OPTIONS"
-                :series="donutSeverityCountsSeries"
-              ></apexchart>
-            </template>
-          </div>
-        </div>
-        <div class="row flex items-center q-mb-md protection">
-          <div class="col-6 flex items-center justify-center text-weight-bold protection-score">
-            {{ dashboardData?.last_scan?.total_vulnerabilities }}
-          </div>
-          <div class="col-6">
-            <p class="q-ma-none protection-host">
-              {{ dashboardData?.last_scan?.host_alias }}
-            </p>
-            <p class="q-ma-none protection-variation">
-              {{ dashboardData?.last_scan?.total_vulnerabilities_variation }}
-              <i :class="variationIcon"></i>
-              Variation
-            </p>
-          </div>
-        </div>
-
-        <div class="title">Hosts with the most vulnerabilities</div>
-
-        <q-list>
-          <q-item>
-            <q-item-section avatar></q-item-section>
-            <q-item-section class="text-weight-bold label-table">TOP 5</q-item-section>
-            <q-item-section class="text-weight-bold label-table">
-              # OF VULNERABILITIES</q-item-section
-            >
-          </q-item>
-          <template v-for="i in hostVulnerabilites" :key="i">
-            <q-item v-ripple clickable>
-              <q-item-section avatar>
-                <i class="fa-solid fa-square q-mx-sm" :style="`color:${i.color};font-size:2em`"></i>
-              </q-item-section>
-
-              <q-item-section>{{ i.alias }}</q-item-section>
-              <q-item-section>{{ i.vulnerability_count }}</q-item-section>
-            </q-item>
-          </template>
-        </q-list>
+        <latest-scan-chart :dashboard="dashboardData" />
+        <host-most-vulnerabilities-list :dashboard="dashboardData" />
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-  import type { Ref, ComputedRef } from 'vue';
-  import { computed, ref, onMounted, watchEffect } from 'vue';
-  import { DashboardService, MainDashboard } from 'src/services/dashboard';
-  import {
-    SCAN_INSIGHT_VULNERABILITY_OPTIONS,
-    HEATMAP_CHART_OPTIONS,
-    OVERALL_DONUT_OPTIONS
-  } from 'src/constants/apexcharts.constants';
-  import { getVariationIcon } from 'src/utils';
+  import type { Ref } from 'vue';
+  import type { iMainDashboard } from 'src/models/dashboard.models';
+  import { ref, onMounted } from 'vue';
+  import { DashboardService } from 'src/services/dashboard';
   import VulnerabilityTrendChart from 'src/components/home/VulnerabilityTrendChart.vue';
-  import type {
-    HostVulnerability,
-    iMainDashboard,
-    iSerieDashboard
-  } from 'src/models/dashboard.models';
+  import HostMostVulnerabilitiesList from 'src/components/home/HostMostVulnerabilitiesList.vue';
+  import LatestScanChart from 'src/components/home/LatestScanChart.vue';
+  import OverallSecurityPostureChart from 'src/components/home/OverallSecurityPostureChart.vue';
+  import VulnerabilityHeatMap from 'src/components/home/VulnerabilityHeatMap.vue';
 
   const dashboardData: Ref<iMainDashboard> = ref({} as iMainDashboard);
-  const hostVulnerabilites: Ref<HostVulnerability[]> = ref([]);
-  const donutSeverityCountsSeries: Ref<number[]> = ref([]);
-  const actualRotation: Ref<number> = ref(0);
-  const heatMapSeries: Ref<iSerieDashboard[]> = ref([]);
-  const heatMapOptions = ref({ ...HEATMAP_CHART_OPTIONS });
-
-  const variationIcon: ComputedRef<string> = computed(() =>
-    getVariationIcon(dashboardData.value?.overall_security_posture?.variation || 0)
-  );
-
-  const lastScanEmpty = computed(() => donutSeverityCountsSeries.value.every(val => val === 0));
-
-  function setDashboardData(data: iMainDashboard): void {
-    const dashboard = new MainDashboard(data);
-
-    dashboardData.value = data;
-    heatMapSeries.value = dashboard.heatmapSeries;
-    heatMapOptions.value = {
-      ...heatMapOptions.value,
-      xaxis: { categories: dashboard.heatmapCategories, type: 'category' }
-    };
-    hostVulnerabilites.value = dashboard.listHostsWithGreatestVulnerabilities;
-    donutSeverityCountsSeries.value = dashboard.donutSeverityCountsSeries;
-  }
 
   async function fetchDashboardData(timePeriod?: string, severities?: string): Promise<void> {
-    await DashboardService.getDashboard(timePeriod, severities).then(res =>
-      setDashboardData(res.data)
+    await DashboardService.getDashboard(timePeriod, severities).then(
+      res => (dashboardData.value = res.data)
     );
   }
 
@@ -163,86 +45,7 @@
     await fetchDashboardData(data.period, data.severities);
   }
 
-  watchEffect(() => {
-    actualRotation.value = dashboardData.value?.overall_security_posture?.score * 180;
-  });
-
   onMounted(async () => {
     await fetchDashboardData();
   });
 </script>
-
-<style lang="scss">
-  .protection {
-    border-radius: 8px;
-    background: #f6f7fc;
-    padding: 0.5em 0em;
-
-    &-score {
-      font-size: 32px;
-      font-weight: 800;
-      line-height: 37.92px;
-      letter-spacing: -0.02em;
-      text-align: left;
-      text-underline-position: from-font;
-      text-decoration-skip-ink: none;
-    }
-
-    &-host {
-      font-size: 16px;
-      font-weight: 700;
-      line-height: 24px;
-      text-align: left;
-      text-underline-position: from-font;
-      text-decoration-skip-ink: none;
-    }
-
-    &-variation {
-      color: #5c7288;
-    }
-  }
-
-  .protection-score-variation {
-    position: absolute;
-    bottom: 70px;
-    margin-left: auto;
-    margin-right: auto;
-    left: -20px;
-    right: 0;
-    width: fit-content;
-
-    .text {
-      color: #5c7288;
-    }
-  }
-
-  .needle {
-    position: absolute;
-    bottom: 150px;
-    left: 130px;
-    transform-origin: center;
-    transition: transform 0.5s ease-in-out;
-  }
-
-  .porcentaje {
-    color: var(--text, #313541);
-    text-align: center;
-    font-family: Rubik;
-    font-size: 20px;
-    font-style: normal;
-    font-weight: 600;
-    line-height: 33.356px;
-    /* 208.475% */
-    position: absolute;
-    bottom: 160px;
-    margin-left: auto;
-    margin-right: auto;
-    left: -40px;
-    right: 0;
-  }
-
-  .label-table {
-    color: var(--text, #313541);
-    font-size: 0.8em;
-  }
-</style>
