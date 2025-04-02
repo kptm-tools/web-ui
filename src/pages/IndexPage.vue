@@ -39,31 +39,7 @@
           </div>
 
           <div class="col-12">
-            <div style="max-width: 800px; position: relative">
-              <div class="button-time flex">
-                <q-select
-                  dense
-                  outlined
-                  :options="severityOptions"
-                  v-model="severitySelect"
-                  multiple
-                  class="q-mr-md"
-                  style="width: 150px"
-                  @update:model-value="fetchDashboardData"
-                />
-                <template v-for="time in timePeriodOptions" :key="time">
-                  <q-btn
-                    :label="time"
-                    @click="setTimePeriod(time)"
-                    dense
-                    flat
-                    :class="{ 'time-selected': timePeriodSelect == time }"
-                  ></q-btn>
-                </template>
-              </div>
-
-              <div style="width: 100%"><canvas id="acquisitions"></canvas></div>
-            </div>
+            <vulnerability-trend-chart :dashboard="dashboardData" @update-filter="filterHandler" />
           </div>
         </div>
       </div>
@@ -144,12 +120,12 @@
     OVERALL_DONUT_OPTIONS
   } from 'src/constants/apexcharts.constants';
   import { getVariationIcon } from 'src/utils';
+  import VulnerabilityTrendChart from 'src/components/home/VulnerabilityTrendChart.vue';
   import type {
     HostVulnerability,
     iMainDashboard,
     iSerieDashboard
   } from 'src/models/dashboard.models';
-  import Chart from 'chart.js/auto';
 
   const dashboardData: Ref<iMainDashboard> = ref({} as iMainDashboard);
   const hostVulnerabilites: Ref<HostVulnerability[]> = ref([]);
@@ -164,11 +140,6 @@
 
   const lastScanEmpty = computed(() => donutSeverityCountsSeries.value.every(val => val === 0));
 
-  const timePeriodSelect = ref('Month');
-  const timePeriodOptions = ['Month', 'Quarter', 'Semester'];
-  const severitySelect = ref(['Low', 'Medium', 'High', 'Critical']);
-  const severityOptions = ['Low', 'Medium', 'High', 'Critical'];
-
   function setDashboardData(data: iMainDashboard): void {
     const dashboard = new MainDashboard(data);
 
@@ -180,75 +151,16 @@
     };
     hostVulnerabilites.value = dashboard.listHostsWithGreatestVulnerabilities;
     donutSeverityCountsSeries.value = dashboard.donutSeverityCountsSeries;
-
-    const trendData: { year: string; count: number | null | undefined }[] =
-      dashboard.trendVulnerabilityCategories.map((category, index) => ({
-        year: category,
-        count: dashboard.trendVulnerabilitySeries[index]
-      })) as unknown as { year: string; count: number | null | undefined }[];
-
-    const existingChart = Chart.getChart('acquisitions');
-    if (existingChart) {
-      existingChart.destroy();
-    }
-    const item = document.getElementById('acquisitions');
-
-    if (item) {
-      const aux = item as HTMLCanvasElement;
-      new Chart(aux, {
-        type: 'line',
-        data: {
-          labels: trendData.map(row => row.year.slice(0, 3)),
-          datasets: [
-            {
-              label: 'Vulnerabilities',
-              data: trendData.map(row => row.count),
-              fill: true,
-              backgroundColor: 'rgba(229, 73, 77, 0.7)'
-            }
-          ]
-        },
-        options: {
-          spanGaps: true,
-          plugins: {
-            title: {
-              display: true,
-              text: 'Vulnerability Trends',
-              align: 'start',
-              font: {
-                size: 20
-              },
-              padding: 30,
-              color: '#313541'
-            },
-            legend: {
-              align: 'end',
-              position: 'bottom'
-            },
-            filler: {
-              propagate: false
-            }
-          },
-          elements: {
-            line: {
-              tension: 0.4
-            }
-          }
-        }
-      });
-    }
   }
 
-  async function setTimePeriod(time: string): Promise<void> {
-    timePeriodSelect.value = time;
-    await fetchDashboardData();
+  async function fetchDashboardData(timePeriod?: string, severities?: string): Promise<void> {
+    await DashboardService.getDashboard(timePeriod, severities).then(res =>
+      setDashboardData(res.data)
+    );
   }
 
-  async function fetchDashboardData(): Promise<void> {
-    await DashboardService.getDashboard(
-      timePeriodSelect.value,
-      severitySelect.value.join(',')
-    ).then(res => setDashboardData(res.data));
+  async function filterHandler(data: { severities: string; period: string }): Promise<void> {
+    await fetchDashboardData(data.period, data.severities);
   }
 
   watchEffect(() => {
@@ -332,18 +244,5 @@
   .label-table {
     color: var(--text, #313541);
     font-size: 0.8em;
-  }
-
-  .time-selected {
-    .block {
-      color: rgb(237, 39, 61);
-      border-bottom: 2px solid rgb(237, 39, 61);
-    }
-  }
-
-  .button-time {
-    position: absolute;
-    right: 0;
-    top: 25px;
   }
 </style>

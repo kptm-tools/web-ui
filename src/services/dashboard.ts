@@ -104,7 +104,9 @@ export class MainDashboard {
   }
 
   get trendVulnerabilityCategories(): string[] {
-    return this._dashboard.vulnerability_trends.map((val: VulnerabilityTrend) => val.time_period);
+    return (this._dashboard.vulnerability_trends || []).map(
+      (val: VulnerabilityTrend) => val.time_period
+    );
   }
 
   get trendVulnerabilitySeries(): number[] {
