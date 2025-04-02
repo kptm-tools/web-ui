@@ -39,9 +39,7 @@
           </div>
 
           <div class="col-12">
-            <div style="max-width: 700px">
-              <div style="width: 700px"><canvas id="acquisitions"></canvas></div>
-            </div>
+            <vulnerability-trend-chart :dashboard="dashboardData" @update-filter="filterHandler" />
           </div>
         </div>
       </div>
@@ -122,12 +120,12 @@
     OVERALL_DONUT_OPTIONS
   } from 'src/constants/apexcharts.constants';
   import { getVariationIcon } from 'src/utils';
+  import VulnerabilityTrendChart from 'src/components/home/VulnerabilityTrendChart.vue';
   import type {
     HostVulnerability,
     iMainDashboard,
     iSerieDashboard
   } from 'src/models/dashboard.models';
-  import Chart from 'chart.js/auto';
 
   const dashboardData: Ref<iMainDashboard> = ref({} as iMainDashboard);
   const hostVulnerabilites: Ref<HostVulnerability[]> = ref([]);
@@ -153,44 +151,16 @@
     };
     hostVulnerabilites.value = dashboard.listHostsWithGreatestVulnerabilities;
     donutSeverityCountsSeries.value = dashboard.donutSeverityCountsSeries;
+  }
 
-    const trendData: { year: number; count: number | null | undefined }[] =
-      dashboard.trendVulnerabilityCategories.map((category, index) => ({
-        year: category,
-        count: dashboard.trendVulnerabilitySeries[index]
-      })) as unknown as { year: number; count: number | null | undefined }[];
+  async function fetchDashboardData(timePeriod?: string, severities?: string): Promise<void> {
+    await DashboardService.getDashboard(timePeriod, severities).then(res =>
+      setDashboardData(res.data)
+    );
+  }
 
-    const item = document.getElementById('acquisitions');
-    if (item) {
-      const aux = item as HTMLCanvasElement;
-      new Chart(aux, {
-        type: 'line',
-        data: {
-          labels: trendData.map(row => row.year),
-          datasets: [
-            {
-              label: 'Vulnerabilities',
-              data: trendData.map(row => row.count),
-              fill: true,
-              backgroundColor: '#E5494D'
-            }
-          ]
-        },
-        options: {
-          spanGaps: true,
-          plugins: {
-            filler: {
-              propagate: false
-            }
-          },
-          elements: {
-            line: {
-              tension: 0.4
-            }
-          }
-        }
-      });
-    }
+  async function filterHandler(data: { severities: string; period: string }): Promise<void> {
+    await fetchDashboardData(data.period, data.severities);
   }
 
   watchEffect(() => {
@@ -198,7 +168,7 @@
   });
 
   onMounted(async () => {
-    await DashboardService.getDashboard().then(res => setDashboardData(res.data));
+    await fetchDashboardData();
   });
 </script>
 

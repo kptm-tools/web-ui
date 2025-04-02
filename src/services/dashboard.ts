@@ -11,8 +11,12 @@ import type {
 export class DashboardService {
   private static readonly BASE_PATH = '/api/dashboard';
 
-  static async getDashboard(): Promise<AxiosResponse<iMainDashboard>> {
-    return await fusionAuthApi.get(`${this.BASE_PATH}`);
+  static async getDashboard(
+    timePeriod = 'Month',
+    severity = 'Low,Medium,High,Critical'
+  ): Promise<AxiosResponse<iMainDashboard>> {
+    const url = `${this.BASE_PATH}?trends_time_period=${timePeriod}&trends_severity=${severity}`;
+    return await fusionAuthApi.get(url);
   }
 }
 
@@ -88,26 +92,19 @@ export class MainDashboard {
   }
 
   get donutSeverityCountsSeries(): number[] {
-    return Object.values(
-      this._dashboard.last_scan?.severity_counts || {}
-    ) as number[];
+    return Object.values(this._dashboard.last_scan?.severity_counts || {}) as number[];
   }
 
   get listHostsWithGreatestVulnerabilities(): HostVulnerability[] {
-    const colors: string[] = [
-      '#ED273D',
-      '#F6BE63',
-      '#55C9C6',
-      '#4E96F9',
-      '#4E96F9'
-    ];
-    return this._dashboard.hosts_with_greatest_vulnerabilities.map(
-      (val, index) => ({ ...val, color: colors[index] || '' })
-    );
+    const colors: string[] = ['#ED273D', '#F6BE63', '#55C9C6', '#4E96F9', '#4E96F9'];
+    return this._dashboard.hosts_with_greatest_vulnerabilities.map((val, index) => ({
+      ...val,
+      color: colors[index] || ''
+    }));
   }
 
   get trendVulnerabilityCategories(): string[] {
-    return this._dashboard.vulnerability_trends.map(
+    return (this._dashboard.vulnerability_trends || []).map(
       (val: VulnerabilityTrend) => val.time_period
     );
   }
