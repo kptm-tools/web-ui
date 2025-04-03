@@ -97,7 +97,7 @@ export class MainDashboard {
 
   get listHostsWithGreatestVulnerabilities(): HostVulnerability[] {
     const colors: string[] = ['#ED273D', '#F6BE63', '#55C9C6', '#4E96F9', '#4E96F9'];
-    return this._dashboard.hosts_with_greatest_vulnerabilities.map((val, index) => ({
+    return (this._dashboard.hosts_with_greatest_vulnerabilities || []).map((val, index) => ({
       ...val,
       color: colors[index] || ''
     }));
