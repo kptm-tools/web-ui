@@ -5,15 +5,15 @@ import { fusionAuthApi } from 'boot/axios';
 import type {
   FusionAuthLoginBody,
   FusionAuthLoginResponse,
-  SuccessAuthLoginUser,
+  SuccessAuthLoginUser
 } from 'src/models/fusion-auth.models';
 import type { AxiosRequestHeaders, AxiosResponse } from 'axios';
 
 // Mock the axios instance
 vi.mock('src/boot/axios', () => ({
   fusionAuthApi: {
-    post: vi.fn(),
-  },
+    post: vi.fn()
+  }
 }));
 
 describe('FusionAuth API Service', () => {
@@ -24,17 +24,20 @@ describe('FusionAuth API Service', () => {
         application_id: 'appId',
         loginId: 'testuser',
         password: 'testpassword',
+        otp: 'otp'
       };
       const mockResponse: AxiosResponse<FusionAuthLoginResponse> = {
         data: {
           token: 'mockToken',
           tokenExpirationInstant: 1,
           user: {} as SuccessAuthLoginUser,
+          otp: 'otp',
+          tenantId: ''
         },
         status: 200,
         statusText: 'OK',
         headers: {},
-        config: { headers: {} as AxiosRequestHeaders },
+        config: { headers: {} as AxiosRequestHeaders }
       };
       (fusionAuthApi.post as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
 
@@ -52,6 +55,7 @@ describe('FusionAuth API Service', () => {
       const body: FusionAuthLoginBody = {
         loginId: 'testuser',
         password: 'wrongpassword',
+        otp: 'otp'
       };
       const mockError = new Error('Login failed');
       (fusionAuthApi.post as ReturnType<typeof vi.fn>).mockRejectedValue(mockError);
@@ -68,7 +72,7 @@ describe('FusionAuth API Service', () => {
         status: 200,
         statusText: 'OK',
         headers: {},
-        config: { headers: {} as AxiosRequestHeaders },
+        config: { headers: {} as AxiosRequestHeaders }
       };
       (fusionAuthApi.post as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
 
@@ -87,7 +91,7 @@ describe('FusionAuth API Service', () => {
         status: 200,
         statusText: 'OK',
         headers: {},
-        config: { headers: {} as AxiosRequestHeaders },
+        config: { headers: {} as AxiosRequestHeaders }
       };
       (fusionAuthApi.post as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
 
