@@ -6,7 +6,7 @@ import type { SuccessAuthLoginUser } from 'src/models/fusion-auth.models';
 
 vi.mock('src/services/fusion-auth.service', () => ({
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-  authenticateUser: vi.fn() as Mock,
+  authenticateUser: vi.fn() as Mock
 }));
 
 describe('FusionAuth Store', () => {
@@ -31,6 +31,8 @@ describe('FusionAuth Store', () => {
       token: 'mock-token',
       tokenExpirationInstant: now.getTime(),
       user: {} as SuccessAuthLoginUser,
+      otp: 'otp',
+      tenantId: ''
     });
     expect(store.isAuthenticated).toBe(false);
   });
@@ -40,6 +42,8 @@ describe('FusionAuth Store', () => {
       token: 'mock-token',
       tokenExpirationInstant: Date.now() + 3600 * 1000,
       user: {} as SuccessAuthLoginUser,
+      otp: 'otp',
+      tenantId: ''
     };
 
     // Call the setUserInfo method

@@ -3,7 +3,7 @@ import type {
   FusionAuthLoginResponse,
   SuccessAuthLogin,
   SuccessAuthLoginChangePassword,
-  SuccessAuthLoginTwoFactor,
+  SuccessAuthLoginTwoFactor
 } from 'src/models/fusion-auth.models';
 import { useFusionAuthStore } from 'stores/auth-store';
 import { isAxiosError } from 'axios';
@@ -12,13 +12,18 @@ import { Notify } from 'quasar';
 
 export function successLoginResponseHandler(
   status: number,
-  response: FusionAuthLoginResponse,
+  response: FusionAuthLoginResponse
 ): void {
   const store = useFusionAuthStore();
   if (AUTH_STATUS_CODES.LOGIN.SUCCESS_CODES.includes(status)) {
     const responseAuthLogin = response as SuccessAuthLogin;
     store.setUserInfo(responseAuthLogin);
-    store.setTokenInfo(responseAuthLogin.token, responseAuthLogin.tokenExpirationInstant);
+    store.setTokenInfo(
+      responseAuthLogin.token,
+      responseAuthLogin.tokenExpirationInstant,
+      responseAuthLogin.otp,
+      responseAuthLogin.tenantId
+    );
   } else if (status === AUTH_STATUS_CODES.LOGIN.CHANGE_PASSWORD_CODE) {
     console.log('Need to change password', response as SuccessAuthLoginChangePassword);
   } else if (status === AUTH_STATUS_CODES.LOGIN.TWO_FACTOR_CODE) {
@@ -30,20 +35,27 @@ export function errorLoginResponseHandler(error: unknown): void {
   if (isAxiosError(error)) {
     if (
       [AUTH_STATUS_CODES.LOGIN.PREVENT_LOGIN_CODE, AUTH_STATUS_CODES.LOGIN.MALFORMED_CODE].includes(
-        error.status!,
+        error.status!
       )
     ) {
       Notify.create({
         message: error.response?.data.error,
-        color: 'negative',
+        color: 'negative'
       });
     }
   }
 }
 
-export function setSessionStorageUserInfo(accessToken: string, expirationInstant: number): void {
+export function setSessionStorageUserInfo(
+  accessToken: string,
+  expirationInstant: number,
+  otp: string,
+  tenantId: string
+): void {
   sessionStorage.setItem(AUTH_TOKEN_NAMES.ACCESS_TOKEN, accessToken);
   sessionStorage.setItem(AUTH_TOKEN_NAMES.TOKEN_EXPIRATION_INSTANT, expirationInstant.toString());
+  sessionStorage.setItem(AUTH_TOKEN_NAMES.OTP, otp);
+  sessionStorage.setItem(AUTH_TOKEN_NAMES.TENANT_ID, tenantId);
 }
 
 export function clearSessionStorageUserInfo(): void {
@@ -80,8 +92,8 @@ export function decodeJwt(token: string) {
     return decodeURIComponent(
       atob(base64)
         .split('')
-        .map((c) => `%${c.charCodeAt(0).toString(16).padStart(2, '0')}`)
-        .join(''),
+        .map(c => `%${c.charCodeAt(0).toString(16).padStart(2, '0')}`)
+        .join('')
     );
   }
 
