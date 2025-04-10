@@ -23,7 +23,7 @@
   const $q = useQuasar();
 
   const rows = computed(() => formatScansForTable(scans.value));
-  const connection = ref({});
+  const connection = ref<WebSocket | null>(null);
 
   // const interval = setInterval(() => {
   //   setScansData().catch(err => new Error(err));
@@ -75,6 +75,9 @@
     const otp = sessionStorage.getItem(AUTH_TOKEN_NAMES.OTP);
     const tenantId = sessionStorage.getItem(AUTH_TOKEN_NAMES.TENANT_ID);
     connection.value = new WebSocket(`ws://localhost:8000/ws/scan?tenantId=${tenantId}&otp=${otp}`);
+    connection.value.onmessage = (data: { data: string }) => {
+      scans.value = JSON.parse(data.data);
+    };
   });
 
   onUnmounted(() => {
