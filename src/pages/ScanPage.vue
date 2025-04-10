@@ -74,7 +74,9 @@
   onMounted(() => {
     const otp = sessionStorage.getItem(AUTH_TOKEN_NAMES.OTP);
     const tenantId = sessionStorage.getItem(AUTH_TOKEN_NAMES.TENANT_ID);
-    connection.value = new WebSocket(`ws://localhost:8000/ws/scan?tenantId=${tenantId}&otp=${otp}`);
+    connection.value = new WebSocket(
+      `${process.env.BE_SERVER_WSS}/ws/scan?tenantId=${tenantId}&otp=${otp}`
+    );
     connection.value.onmessage = (data: { data: string }) => {
       scans.value = JSON.parse(data.data);
     };
