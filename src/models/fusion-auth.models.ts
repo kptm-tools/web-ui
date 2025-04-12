@@ -8,6 +8,8 @@ export interface FusionAuthLoginBody {
   noJWT?: boolean;
   password: string;
   twoFactorTrustId?: string;
+  otp: string;
+  tenantId?: string;
 }
 
 export type FusionAuthLoginResponse =
@@ -62,6 +64,8 @@ export interface SuccessAuthLogin {
   token: string;
   tokenExpirationInstant: number;
   user: SuccessAuthLoginUser;
+  otp: string;
+  tenantId: string;
 }
 
 export interface SuccessAuthLoginUser {
@@ -172,11 +176,7 @@ interface FusionAuthAction {
   reasonCode: string;
 }
 
-type ChangePasswordReason =
-  | 'Administrative'
-  | 'Breached'
-  | 'Expired'
-  | 'Validation';
+type ChangePasswordReason = 'Administrative' | 'Breached' | 'Expired' | 'Validation';
 
 type FusionAuthDeviceType =
   | 'BROWSER'

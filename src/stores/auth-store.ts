@@ -6,19 +6,21 @@ import type {
   CreateUserBody,
   ForgotPasswordBody,
   FusionAuthLoginBody,
-  SuccessAuthLogin,
+  SuccessAuthLogin
 } from 'src/models/fusion-auth.models';
 import {
   clearSessionStorageUserInfo,
   isTokenExpired,
   setSessionStorageUserInfo,
-  successLoginResponseHandler,
+  successLoginResponseHandler
 } from 'src/utils/auth.utils';
 
 type AuthStore = {
   userInfo: SuccessAuthLogin | undefined;
   token: string;
   tokenExpirationInstant: number;
+  otp: string;
+  tenantId: string;
 };
 
 export const useFusionAuthStore = defineStore('fusion-auth', {
@@ -27,6 +29,7 @@ export const useFusionAuthStore = defineStore('fusion-auth', {
       userInfo: undefined,
       token: '',
       tokenExpirationInstant: 0,
+      tenantId: ''
     }) as AuthStore,
 
   getters: {
@@ -36,7 +39,7 @@ export const useFusionAuthStore = defineStore('fusion-auth', {
     },
     getUserInfo(state): SuccessAuthLogin | undefined {
       return state.userInfo;
-    },
+    }
   },
 
   actions: {
@@ -73,18 +76,25 @@ export const useFusionAuthStore = defineStore('fusion-auth', {
     setUserInfo(userInfo: SuccessAuthLogin | undefined): void {
       this.userInfo = userInfo;
       if (this.userInfo) {
-        setSessionStorageUserInfo(this.userInfo.token, this.userInfo.tokenExpirationInstant);
+        setSessionStorageUserInfo(
+          this.userInfo.token,
+          this.userInfo.tokenExpirationInstant,
+          this.userInfo.otp,
+          this.userInfo.tenantId
+        );
       }
     },
-    setTokenInfo(token: string, expirationInstant: number): void {
+    setTokenInfo(token: string, expirationInstant: number, otp: string, tenantId: string): void {
       this.token = token;
       this.tokenExpirationInstant = expirationInstant;
+      this.otp = otp;
+      this.tenantId = tenantId;
     },
     logoutUser(): void {
       clearSessionStorageUserInfo();
       this.token = '';
       this.tokenExpirationInstant = 0;
       this.userInfo = undefined;
-    },
-  },
+    }
+  }
 });

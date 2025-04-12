@@ -25,8 +25,8 @@ export default route(function (/* { store, ssrContext } */) {
   const createHistory = process.env.SERVER
     ? createMemoryHistory
     : process.env.VUE_ROUTER_MODE === 'history'
-    ? createWebHistory
-    : createWebHashHistory;
+      ? createWebHistory
+      : createWebHashHistory;
 
   const Router = createRouter({
     scrollBehavior: () => ({ left: 0, top: 0 }),
@@ -42,22 +42,23 @@ export default route(function (/* { store, ssrContext } */) {
 
   Router.beforeEach(async (to, from, next) => {
     const accessToken = sessionStorage.getItem('access_token') || '';
-    const tokenExpirationInstant =
-      Number(sessionStorage.getItem('token_expiration_instant')) || 0;
+    const otp = sessionStorage.getItem('otp') || '';
+    const tokenExpirationInstant = Number(sessionStorage.getItem('token_expiration_instant')) || 0;
+    const tenantId = sessionStorage.getItem('tenant_id') || '';
 
-    authStore.setTokenInfo(accessToken, tokenExpirationInstant);
+    authStore.setTokenInfo(accessToken, tokenExpirationInstant, otp, tenantId);
     if (to.matched.some(record => record.meta.requiresAuth)) {
       if (!authStore.isAuthenticated) {
         next({ name: 'Login' });
       } else {
         try {
-          const response = await UserService.getUser(
-            decodeJwt(accessToken).sub
-          );
+          const response = await UserService.getUser(decodeJwt(accessToken).sub);
           authStore.setUserInfo({
             token: accessToken,
             tokenExpirationInstant,
-            user: response.data
+            user: response.data,
+            otp,
+            tenantId
           });
           return next();
         } catch (error) {
