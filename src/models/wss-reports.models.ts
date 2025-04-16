@@ -23,21 +23,35 @@ export type WebSocketReportMessageRequest =
       payload: object;
     };
 
+export interface WebSocketInitialResponse {
+  type: WebSocketMessageType.INITIAL_DATA_RESPONSE;
+  payload: {
+    vulnerability_types: {
+      name: string;
+      highest_cvss: number;
+      count: number;
+      percentage: number;
+      available_cvss_values: number[];
+    }[];
+    global_cvss_score: number;
+    global_total_vulnerabilities: number;
+  };
+}
+
+export interface WebSocketInitialPayloadResponse {
+  vulnerability_types: {
+    name: string;
+    highest_cvss: number;
+    count: number;
+    percentage: number;
+    available_cvss_values: number[];
+  }[];
+  global_cvss_score: number;
+  global_total_vulnerabilities: number;
+}
+
 export type WebSocketReportIncomingMessage =
-  | {
-      type: WebSocketMessageType.INITIAL_DATA_RESPONSE;
-      payload: {
-        vulnerability_types: {
-          name: string;
-          highest_cvss: number;
-          count: number;
-          percentage: number;
-          available_cvss_values: number[]; // assuming it's a list of numbers
-        }[];
-        global_cvss_score: number;
-        global_total_vulnerabilities: number;
-      };
-    }
+  | WebSocketInitialResponse
   | {
       type: WebSocketMessageType.VECTOR_UPDATE_RESPONSE;
       payload: {
@@ -86,5 +100,6 @@ export enum WebSocketMessageRequest {
   INITIAL_DATA_REQUEST = 'initial_data_request',
   VECTOR_UPDATE_REQUEST = 'vector_update',
   VECTOR_SELECT_REQUEST = 'select_vector',
-  VECTOR_APPLY_REQUEST = 'apply_vectors_request'
+  VECTOR_APPLY_REQUEST = 'apply_vectors_request',
+  ERROR = 'error'
 }

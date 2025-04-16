@@ -1,7 +1,7 @@
 <template>
   <div style="height: 80vh; overflow-y: auto">
     <table-regular
-      :actions="['insight', 'search']"
+      :actions="['insight', 'search', 'detail']"
       :columns="columns"
       :rows="rows"
       @action="handlerEmitter($event)"
@@ -13,12 +13,7 @@
           >{{ formatDate(column.value) }}
         </template>
         <template v-else-if="column.field === 'comment_status'">
-          <q-chip
-            square
-            color="secondary"
-            text-color="white"
-            :label="column.value"
-          />
+          <q-chip square color="secondary" text-color="white" :label="column.value" />
         </template>
 
         <template v-else> {{ column.value }} </template>
