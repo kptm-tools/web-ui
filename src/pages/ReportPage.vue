@@ -84,13 +84,13 @@
               <span>Privileges Required : </span><span>{{ vectorData.privileges_required }}</span>
             </div>
             <div>
-              <span>Classification : </span><span>{{ vectorData.classification }}</span>
+              <span>Attack Vector Classification : </span><span>{{ vectorData.classification }}</span>
             </div>
             <div>
-              <span>Integrity : </span><span>{{ vectorData.integrity }}</span>
+              <span>Integrity Impact : </span><span>{{ vectorData.integrity }}</span>
             </div>
             <div>
-              <span>Availability : </span><span>{{ vectorData.availability }}</span>
+              <span>Availability Impact : </span><span>{{ vectorData.availability }}</span>
             </div>
           </q-card-section>
 
