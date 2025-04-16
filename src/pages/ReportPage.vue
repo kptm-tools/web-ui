@@ -4,17 +4,25 @@
   </Teleport>
 
   <template v-if="showDetail">
-    <div class="row q-col-gutter-md">
+    <div class="row q-col-gutter-md flex items-stretch q-pa-md">
       <template v-for="type in detailInitialResponse.vulnerability_types" :key="type">
-        <div class="col-2">
-          <q-card>
-            <q-card-section style="font-size: 12px">
-              <div class="row">
-                <div class="col-10">
-                  <div>{{ type.name }}</div>
-                  <div>CVSS: {{ type.highest_cvss }}</div>
+        <div class="col-2 flex">
+          <q-card style="flex: 1">
+            <q-card-section style="font-size: 12px; display: flex; height: 100%">
+              <div class="row" style="flex: 1">
+                <div class="col-10 flex column">
+                  <div style="flex: 1" class="text-weight-semibold">{{ type.name }}</div>
+                  <div>
+                    CVSS:
+                    <span
+                      :class="`card-${cardColor(type.highest_cvss)}`"
+                      style="padding: 0 20px; margin-left: 5px"
+                    >
+                      {{ type.highest_cvss }}
+                    </span>
+                  </div>
                 </div>
-                <div class="col-2 text-center">
+                <div class="col-2 text-center text-weight-bold">
                   {{ type.count }}
                 </div>
               </div>
@@ -35,7 +43,10 @@
           <div class="col-6">
             <q-card>
               <q-card-section class="text-center text-weight-bold"> Actual </q-card-section>
-              <q-card-section class="text-center">
+              <q-card-section
+                class="text-center"
+                :class="`card-${cardColor(detailInitialResponse.global_cvss_score)}`"
+              >
                 CVSS : {{ detailInitialResponse.global_cvss_score }}
               </q-card-section>
               <q-card-section class="text-center">
@@ -52,7 +63,10 @@
           >
             <q-card>
               <q-card-section class="text-center text-weight-bold"> Anticipated </q-card-section>
-              <q-card-section class="text-center">
+              <q-card-section
+                class="text-center"
+                :class="`card-${cardColor(totalUpdated.expected_global_cvss_score)}`"
+              >
                 CVSS : {{ totalUpdated.expected_global_cvss_score }}
               </q-card-section>
               <q-card-section class="text-center">
@@ -337,4 +351,37 @@
       payload: {}
     });
   }
+
+  const cardColor = cvss => {
+    let color = '';
+    if (cvss >= 0 && cvss < 3.9) color = 'green';
+    else if (cvss > 3.9 && cvss < 6.9) color = 'yellow';
+    else if (cvss > 6.9 && cvss < 9) color = 'orange';
+    else if (cvss >= 9) color = 'red';
+    return color;
+  };
 </script>
+
+<style lang="scss">
+  .card {
+    &-yellow {
+      background-color: #fbbf65;
+      color: white;
+    }
+
+    &-red {
+      background-color: #e5494d;
+      color: white;
+    }
+
+    &-green {
+      background-color: #97b951;
+      color: white;
+    }
+
+    &-orange {
+      background-color: #f3a488;
+      color: white;
+    }
+  }
+</style>
