@@ -32,8 +32,8 @@
       </template>
     </div>
     <div class="row q-col-gutter-md q-pa-md">
-      <div class="col-6">
-        <Radar :data="dataRadar" :options="options" />
+      <div class="col-6" style="max-height: 550px">
+        <Radar :data="dataRadar" :options="options" :key="radarKey" />
       </div>
       <div class="col-6">
         <div class="row">
@@ -78,7 +78,7 @@
 
         <q-card v-if="showData">
           <q-card-actions align="right">
-            <q-btn icon="close" flat dense @click="showData = false"></q-btn>
+            <q-btn icon="close" flat dense @click="closeDetail()"></q-btn>
           </q-card-actions>
           <q-card-section>
             <div>
@@ -98,7 +98,8 @@
               <span>Privileges Required : </span><span>{{ vectorData.privileges_required }}</span>
             </div>
             <div>
-              <span>Attack Vector Classification : </span><span>{{ vectorData.classification }}</span>
+              <span>Attack Vector Classification : </span
+              ><span>{{ vectorData.classification }}</span>
             </div>
             <div>
               <span>Integrity Impact : </span><span>{{ vectorData.integrity }}</span>
@@ -173,6 +174,9 @@
   const filteredResponse = ref([]);
   const currentCvss = ref(0);
   // const sliderValue = ref();
+  const applyClicked = ref(true);
+  const lastValue = ref([0, 0]);
+  const radarKey = ref(0);
 
   const auxValue = ref({});
   const totalUpdated = ref({
@@ -243,7 +247,12 @@
       dragData: {
         round: 1,
         showTooltip: false,
-        onDragStart: function (e, element, index) {
+        onDragStart: function (e, element, index, val) {
+          applyClicked.value = false;
+          if (lastValue.value[1] !== index) {
+            restartLastValue();
+          }
+          lastValue.value = [val, index];
           showData.value = true;
           wssConnection.value?.send({
             type: WebSocketMessageRequest.VECTOR_SELECT_REQUEST,
@@ -321,6 +330,7 @@
       }
 
       if (data.type === WebSocketMessageType.VECTOR_DETAILS_RESPONSE) {
+        applyClicked.value = true;
         vectorData.value = data.payload.vulnerability_details;
       }
 
@@ -360,6 +370,22 @@
     else if (cvss >= 9) color = 'red';
     return color;
   };
+
+  function closeDetail() {
+    showData.value = false;
+    if (!applyClicked.value) {
+      restartLastValue();
+    }
+  }
+
+  function restartLastValue() {
+    const index = lastValue.value[1];
+    const originalValue = dataRadar.value.datasets[0].data[index];
+    const aux = { ...dataRadar.value };
+    aux.datasets[1].data[index] = originalValue;
+    dataRadar.value = { ...aux };
+    radarKey.value++;
+  }
 </script>
 
 <style lang="scss">
