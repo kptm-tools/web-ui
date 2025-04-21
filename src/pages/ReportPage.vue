@@ -80,41 +80,47 @@
           <q-card-actions align="right">
             <q-btn icon="close" flat dense @click="closeDetail()"></q-btn>
           </q-card-actions>
-          <q-card-section>
-            <div>
+          <div style="height: 200px; overflow-y: auto; overflow-x: hidden; padding: 1em">
+            <div class="text-weight-bold">
               {{ vectorData.name }}
             </div>
             <div><q-slider v-model="currentCvss" marker-labels :min="0" :max="10" disable /></div>
             <div>
-              <span>Type : </span><span>{{ vectorData.type }}</span>
+              <span class="text-weight-bold">Type : </span
+              ><span class="overflow-content">{{ vectorData.type }}</span>
             </div>
             <div>
-              <span>Severity : </span><span>{{ vectorData.severity }}</span>
+              <span class="text-weight-bold">Severity : </span
+              ><span class="overflow-content">{{ vectorData.severity }}</span>
             </div>
             <div>
-              <span>Description : </span><span>{{ vectorData.description }}</span>
+              <span class="text-weight-bold">Description : </span>
+              <span class="overflow-content">{{ vectorData.description }}</span>
             </div>
             <div>
-              <span>Privileges Required : </span><span>{{ vectorData.privileges_required }}</span>
+              <span class="text-weight-bold">Privileges Required : </span
+              ><span class="overflow-content">{{ vectorData.privileges_required }}</span>
             </div>
             <div>
-              <span>Attack Vector Classification : </span
-              ><span>{{ vectorData.classification }}</span>
+              <span class="text-weight-bold">Attack Vector Classification : </span
+              ><span class="overflow-content">{{ vectorData.classification }}</span>
             </div>
             <div>
-              <span>Integrity Impact : </span><span>{{ vectorData.integrity }}</span>
+              <span class="text-weight-bold">Integrity Impact : </span
+              ><span class="overflow-content">{{ vectorData.integrity }}</span>
             </div>
             <div>
-              <span>Availability Impact : </span><span>{{ vectorData.availability }}</span>
+              <span class="text-weight-bold">Availability Impact : </span
+              ><span class="overflow-content">{{ vectorData.availability }}</span>
             </div>
-          </q-card-section>
+          </div>
 
           <q-card-actions align="right">
             <q-btn label="Apply" color="primary" @click="updateVector()"></q-btn>
           </q-card-actions>
         </q-card>
 
-        <div class="row">
+        <div class="row" v-if="!showData">
           <q-btn label="Next" color="primary" @click="confirmVector()"></q-btn>
         </div>
       </div>
@@ -409,5 +415,13 @@
       background-color: #f3a488;
       color: white;
     }
+  }
+
+  .overflow-content {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    white-space: normal;
   }
 </style>
