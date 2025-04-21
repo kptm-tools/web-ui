@@ -254,10 +254,10 @@
         round: 1,
         showTooltip: false,
         onDragStart: function (e, element, index, val) {
-          applyClicked.value = false;
-          if (lastValue.value[1] !== index) {
+          if (!applyClicked.value && lastValue.value[1] !== index) {
             restartLastValue();
           }
+          applyClicked.value = false;
           lastValue.value = [val, index];
           showData.value = true;
           wssConnection.value?.send({
@@ -336,11 +336,12 @@
       }
 
       if (data.type === WebSocketMessageType.VECTOR_DETAILS_RESPONSE) {
-        applyClicked.value = true;
         vectorData.value = data.payload.vulnerability_details;
       }
 
       if (data.type === WebSocketMessageType.VECTOR_UPDATE_RESPONSE) {
+        console.log('updated');
+        applyClicked.value = true;
         totalUpdated.value = data.payload;
       }
 
