@@ -2,18 +2,16 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="q-dialog-plugin full-width" style="max-width: 800px">
       <q-card-section class="text-h6">
-        <p class="text-h6 q-mb-none">Edit Host</p>
+        <div class="flex justify-between">
+          <p class="text-h6 q-mb-none">Edit Host</p>
+          <q-btn icon="close" flat dense @click="onDialogCancel"></q-btn>
+        </div>
       </q-card-section>
       <q-card-section>
         <q-form class="q-mb-md">
           <div class="row q-col-gutter-md q-mb-md">
             <div class="col-5">
-              <q-input
-                v-model="hostForm.name"
-                outlined
-                dense
-                label="Hostname"
-              ></q-input>
+              <q-input v-model="hostForm.name" outlined dense label="Hostname"></q-input>
             </div>
           </div>
 
@@ -29,20 +27,10 @@
 
           <div class="row q-col-gutter-md">
             <div v-if="valueType === 'Domain'" class="col-5">
-              <q-input
-                v-model="hostForm.domain"
-                outlined
-                dense
-                label="Domain"
-              ></q-input>
+              <q-input v-model="hostForm.domain" outlined dense label="Domain"></q-input>
             </div>
             <div v-if="valueType === 'IP'" class="col-5">
-              <q-input
-                v-model="hostForm.ip"
-                outlined
-                dense
-                label="Ip"
-              ></q-input>
+              <q-input v-model="hostForm.ip" outlined dense label="Ip"></q-input>
             </div>
           </div>
         </q-form>
@@ -65,12 +53,7 @@
           @register-host="hostEmailsHandler"
         />
 
-        <q-btn
-          class="q-mt-md"
-          color="primary"
-          label="Submit"
-          @click="submitEdit"
-        />
+        <q-btn class="q-mt-md" color="primary" label="Submit" @click="submitEdit" />
       </q-card-section>
     </q-card>
   </q-dialog>
@@ -101,13 +84,11 @@
     }
   });
 
-  const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
+  const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginComponent();
   const hostForm = ref({} as Host);
   const hostCredentials = ref([] as ValidatedHost[]);
   const hostEmails = ref([] as ValidateHostAuth[]);
-  const formCredentials = ref<InstanceType<typeof FormHostCredentials> | null>(
-    null
-  );
+  const formCredentials = ref<InstanceType<typeof FormHostCredentials> | null>(null);
   const formEmails = ref<InstanceType<typeof FormHostEmails> | null>(null);
   const valueType = ref<'Domain' | 'IP'>('Domain');
 
@@ -145,8 +126,7 @@
   }
 
   function hostEmailsHandler(hostsList: Host[]) {
-    hostForm.value.rapporteurs =
-      hostsList[0]?.rapporteurs || ([] as Rapporteur[]);
+    hostForm.value.rapporteurs = hostsList[0]?.rapporteurs || ([] as Rapporteur[]);
   }
 
   function hostCredentialsHandler(hostsList: ValidateHostAuth[]) {
