@@ -151,7 +151,6 @@
   import { useRouter } from 'vue-router';
   import ScoredcardTrendsDialog from 'src/components/report/ScoredcardTrendsDialog.vue';
   import WebSocketReports from 'src/services/wss-reports.service';
-  // import { SCAN_INSIGHT_VULNERABILITY_OPTIONS } from 'src/constants/apexcharts.constants';
   import {
     Chart as ChartJS,
     RadialLinearScale,
@@ -254,18 +253,7 @@
         round: 1,
         showTooltip: false,
         onDragStart: function (e, element, index, val) {
-          if (!applyClicked.value && lastValue.value[1] !== index) {
-            restartLastValue();
-          }
-          applyClicked.value = false;
-          lastValue.value = [val, index];
-          showData.value = true;
-          wssConnection.value?.send({
-            type: WebSocketMessageRequest.VECTOR_SELECT_REQUEST,
-            payload: {
-              vulnerability_type_name: filteredResponse.value[index]?.name || ''
-            }
-          });
+          onDragStartEventHandler(index, val);
         },
         onDrag: function (e, datasetIndex, index, value) {
           if (!filteredResponse.value[index].available_cvss_values.includes(value)) {
@@ -284,14 +272,10 @@
   onMounted(async () => {
     const otp = sessionStorage.getItem(AUTH_TOKEN_NAMES.OTP);
     const tenantId = sessionStorage.getItem(AUTH_TOKEN_NAMES.TENANT_ID);
-    // setChart();
-    await ReportService.getReports().then(response => {
-      reports.value = response.data;
-      reportsRow.value = response.data.map(data => ({
-        ...data
-      }));
-    });
     isMounted.value = true;
+
+    await fillReportData();
+
     wssConnection.value = new WebSocketReports(
       `${process.env.BE_SERVER_WSS}/ws/report/?tenantId=${tenantId}&otp=${otp}`
     );
@@ -299,56 +283,7 @@
     wssConnection.value.connect();
 
     wssConnection.value.onMessage(data => {
-      if (data.type === WebSocketMessageType.INITIAL_DATA_RESPONSE) {
-        detailInitialResponse.value = data.payload;
-        auxValue.value = data;
-        const vulTypes = detailInitialResponse.value.vulnerability_types;
-        filteredResponse.value = vulTypes.filter(({ highest_cvss }) => highest_cvss > 0);
-        dataRadar.value = {
-          labels: filteredResponse.value.map(({ name }) => name),
-          datasets: [
-            {
-              label: 'Original',
-              backgroundColor: 'rgba(179,181,198,0.2)',
-              borderColor: 'rgba(179,181,198,1)',
-              pointBackgroundColor: 'rgba(179,181,198,1)',
-              pointBorderColor: '#fff',
-              pointHoverBackgroundColor: '#fff',
-              pointHoverBorderColor: 'rgba(179,181,198,1)',
-              data: filteredResponse.value.map(({ highest_cvss }) => highest_cvss),
-              dragData: false,
-              pointRadius: 0
-            },
-            {
-              label: 'Updated',
-              backgroundColor: 'rgba(255,99,132,0.2)',
-              borderColor: 'rgba(255,99,132,1)',
-              pointBackgroundColor: 'rgba(255,99,132,1)',
-              pointBorderColor: '#fff',
-              pointHoverBackgroundColor: '#fff',
-              pointHoverBorderColor: 'rgba(255,99,132,1)',
-              data: filteredResponse.value.map(({ highest_cvss }) => highest_cvss),
-              dragData: true,
-              pointRadius: 8
-            }
-          ]
-        };
-      }
-
-      if (data.type === WebSocketMessageType.VECTOR_DETAILS_RESPONSE) {
-        vectorData.value = data.payload.vulnerability_details;
-      }
-
-      if (data.type === WebSocketMessageType.VECTOR_UPDATE_RESPONSE) {
-        console.log('updated');
-        applyClicked.value = true;
-        totalUpdated.value = data.payload;
-      }
-
-      if (data.type === WebSocketMessageRequest.ERROR) {
-        errorQuasarNotify(data.payload.message || 'Error');
-        showData.value = false;
-      }
+      onMessageHandler(data);
     });
   });
 
@@ -392,6 +327,85 @@
     aux.datasets[1].data[index] = originalValue;
     dataRadar.value = { ...aux };
     radarKey.value++;
+  }
+
+  async function fillReportData() {
+    await ReportService.getReports().then(response => {
+      reports.value = response.data;
+      reportsRow.value = response.data.map(data => ({
+        ...data
+      }));
+    });
+  }
+
+  function onMessageHandler(event) {
+    switch (event.type) {
+      case WebSocketMessageType.INITIAL_DATA_RESPONSE:
+        setInitialDataWss(event);
+        break;
+      case WebSocketMessageType.VECTOR_DETAILS_RESPONSE:
+        vectorData.value = event.payload.vulnerability_details;
+        break;
+      case WebSocketMessageType.VECTOR_UPDATE_RESPONSE:
+        applyClicked.value = true;
+        totalUpdated.value = event.payload;
+        break;
+      case WebSocketMessageRequest.ERROR:
+        errorQuasarNotify(event.payload.message || 'Error');
+        showData.value = false;
+        break;
+    }
+  }
+
+  function setInitialDataWss(event) {
+    detailInitialResponse.value = event.payload;
+    auxValue.value = event;
+    const vulTypes = detailInitialResponse.value.vulnerability_types;
+    filteredResponse.value = vulTypes.filter(({ highest_cvss }) => highest_cvss > 0);
+    dataRadar.value = {
+      labels: filteredResponse.value.map(({ name }) => name),
+      datasets: [
+        {
+          label: 'Original',
+          backgroundColor: 'rgba(179,181,198,0.2)',
+          borderColor: 'rgba(179,181,198,1)',
+          pointBackgroundColor: 'rgba(179,181,198,1)',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: 'rgba(179,181,198,1)',
+          data: filteredResponse.value.map(({ highest_cvss }) => highest_cvss),
+          dragData: false,
+          pointRadius: 0
+        },
+        {
+          label: 'Updated',
+          backgroundColor: 'rgba(255,99,132,0.2)',
+          borderColor: 'rgba(255,99,132,1)',
+          pointBackgroundColor: 'rgba(255,99,132,1)',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: 'rgba(255,99,132,1)',
+          data: filteredResponse.value.map(({ highest_cvss }) => highest_cvss),
+          dragData: true,
+          pointRadius: 8
+        }
+      ]
+    };
+  }
+
+  function onDragStartEventHandler(index, val) {
+    if (!applyClicked.value && lastValue.value[1] !== index) {
+      restartLastValue();
+    }
+    applyClicked.value = false;
+    lastValue.value = [val, index];
+    showData.value = true;
+    wssConnection.value?.send({
+      type: WebSocketMessageRequest.VECTOR_SELECT_REQUEST,
+      payload: {
+        vulnerability_type_name: filteredResponse.value[index]?.name || ''
+      }
+    });
   }
 </script>
 
