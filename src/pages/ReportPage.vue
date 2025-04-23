@@ -3,7 +3,61 @@
     <div>Reports</div>
   </Teleport>
 
-  <template v-if="showDetail">
+  <template v-if="showDetail == 2">
+    <div class="row q-col-gutter-sm justify-around">
+      <div class="col-6">
+        <div style="height: 300px">
+          <div class="row justify-center">
+            <div class="col-6">
+              <div class="row q-my-md justify-center">
+                <q-btn class="col-auto q-px-md q-mr-md" @click="showActual = true" dense
+                  >Actual</q-btn
+                >
+                <q-btn class="col-auto q-px-md" @click="showActual = false" dense>Expected</q-btn>
+              </div>
+            </div>
+          </div>
+          <template v-if="showActual">
+            <Line
+              :data="chartSerieDataActual"
+              :options="{
+                responsive: true,
+                maintainAspectRatio: false
+              }"
+            />
+          </template>
+          <template v-if="!showActual">
+            <Line
+              :data="chartSerieDataExpected"
+              :options="{
+                responsive: true,
+                maintainAspectRatio: false
+              }"
+            />
+          </template>
+        </div>
+      </div>
+      <div class="col-4">
+        <div style="position: relative">
+          <p class="text-h5 text-weight-bold">Expected Security Posture</p>
+          <apexchart
+            :options="SCAN_INSIGHT_PROTECTION_SCORE_OPTIONS"
+            :series="vulnerabilitySeries"
+          ></apexchart>
+          <img
+            src="../assets/needle.svg"
+            width="80"
+            alt="needle"
+            class="needle"
+            :style="{ transform: `rotate(${actualRotation}deg)` }"
+          />
+          <div class="porcentaje">{{ ((actualRotation * 100) / 180).toFixed(0) }}%</div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <template v-if="showDetail == 1">
     <div class="row q-col-gutter-md flex items-stretch q-pa-md">
       <template v-for="type in detailInitialResponse.vulnerability_types" :key="type">
         <div class="col-2 flex">
@@ -127,7 +181,7 @@
     </div>
   </template>
 
-  <template v-else>
+  <template v-if="showDetail == 0">
     <div class="q-pa-md">
       <q-btn
         label="Scoredcard Trends"
@@ -158,13 +212,17 @@
     LineElement,
     Filler,
     Tooltip,
-    Legend
+    Legend,
+    CategoryScale,
+    LinearScale,
+    Title
   } from 'chart.js';
   import dragData from 'chartjs-plugin-dragdata';
   import { AUTH_TOKEN_NAMES } from 'src/constants/fusion-auth.constants';
   import { WebSocketMessageRequest, WebSocketMessageType } from 'src/models/wss-reports.models';
-  import { Radar } from 'vue-chartjs';
+  import { Radar, Line } from 'vue-chartjs';
   import { errorQuasarNotify } from 'src/utils';
+  import { SCAN_INSIGHT_PROTECTION_SCORE_OPTIONS } from 'src/constants/apexcharts.constants';
 
   const reports = ref([]);
   const router = useRouter();
@@ -172,7 +230,7 @@
   const isMounted = ref(false);
   const $q = useQuasar();
   const wssConnection = ref(null);
-  const showDetail = ref(false);
+  const showDetail = ref(0);
   const detailInitialResponse = ref({});
   const vectorData = ref({});
   const showData = ref(false);
@@ -182,6 +240,12 @@
   const applyClicked = ref(true);
   const lastValue = ref([0, 0]);
   const radarKey = ref(0);
+  const reportDataResponse = ref();
+  const chartSerieDataActual = ref();
+  const chartSerieDataExpected = ref();
+  const showActual = ref(false);
+  const vulnerabilitySeries = ref([30, 30, 30]);
+  const actualRotation = ref(0);
 
   const auxValue = ref({});
   const totalUpdated = ref({
@@ -225,7 +289,7 @@
           scan_id: action.col.scan_id
         }
       });
-      showDetail.value = true;
+      showDetail.value = 1;
     }
   }
 
@@ -267,7 +331,21 @@
     }
   };
 
-  ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, dragData, Legend);
+  ChartJS.register(
+    RadialLinearScale,
+    PointElement,
+    LineElement,
+    Filler,
+    Tooltip,
+    dragData,
+    Legend,
+    CategoryScale,
+    LinearScale,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend
+  );
 
   onMounted(async () => {
     const otp = sessionStorage.getItem(AUTH_TOKEN_NAMES.OTP);
@@ -350,9 +428,50 @@
         applyClicked.value = true;
         totalUpdated.value = event.payload;
         break;
-      case WebSocketMessageRequest.ERROR:
+      case WebSocketMessageType.ERROR:
         errorQuasarNotify(event.payload.message || 'Error');
         showData.value = false;
+        break;
+      case WebSocketMessageType.REPORT_DATA_RESPONSE:
+        reportDataResponse.value = event.payload;
+        actualRotation.value =
+          Number(reportDataResponse.value.expected_security_posture).toFixed(2) * 180;
+
+        chartSerieDataActual.value = {
+          labels: event.payload.vulnerability_graph.series[0].data.map(({ x }) => x),
+          datasets: [
+            {
+              label: 'Actual',
+              backgroundColor: '#f87979',
+              data: event.payload.vulnerability_graph.series[0].data.map(({ y }) => y)
+            },
+            {
+              label: 'Average',
+              data: event.payload.vulnerability_graph.series[0].data.map(
+                () => event.payload.vulnerability_graph.series[0].average
+              )
+            }
+          ]
+        };
+
+        chartSerieDataExpected.value = {
+          labels: event.payload.vulnerability_graph.series[1].data.map(({ x }) => x),
+          datasets: [
+            {
+              label: 'Expected',
+              backgroundColor: '#f87979',
+              data: event.payload.vulnerability_graph.series[1].data.map(({ y }) => y)
+            },
+            {
+              label: 'Average',
+              data: event.payload.vulnerability_graph.series[1].data.map(
+                () => event.payload.vulnerability_graph.series[1].average
+              )
+            }
+          ]
+        };
+
+        showDetail.value = 2;
         break;
     }
   }
@@ -438,5 +557,30 @@
     overflow-wrap: break-word;
     word-wrap: break-word;
     white-space: normal;
+  }
+
+  .needle {
+    position: absolute;
+    bottom: 220px;
+    left: 180px;
+    transform-origin: center;
+    transition: transform 0.5s ease-in-out;
+  }
+
+  .porcentaje {
+    color: var(--text, #313541);
+    text-align: center;
+    font-family: Rubik;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 33.356px;
+    /* 208.475% */
+    position: absolute;
+    bottom: 270px;
+    margin-left: auto;
+    margin-right: auto;
+    left: -40px;
+    right: 0;
   }
 </style>
