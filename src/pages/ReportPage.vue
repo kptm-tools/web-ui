@@ -55,6 +55,17 @@
         </div>
       </div>
     </div>
+
+    <div class="row q-col-gutter-sm q-pa-md" style="overflow-y: auto; max-height: 350px">
+      <template
+        v-for="vulnerability in reportDataResponse.unattended_vulnerabilities"
+        :key="vulnerability"
+      >
+        <div class="col-12">
+          <VulnerabilityCard :vul="vulnerability" />
+        </div>
+      </template>
+    </div>
   </template>
 
   <template v-if="showDetail == 1">
@@ -223,6 +234,7 @@
   import { Radar, Line } from 'vue-chartjs';
   import { errorQuasarNotify } from 'src/utils';
   import { SCAN_INSIGHT_PROTECTION_SCORE_OPTIONS } from 'src/constants/apexcharts.constants';
+  import VulnerabilityCard from 'src/components/report/VulnerabilityCard.vue';
 
   const reports = ref([]);
   const router = useRouter();
