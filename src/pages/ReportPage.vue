@@ -212,15 +212,30 @@
         </div>
 
         <div class="row q-col-gutter-sm q-pa-md" style="overflow-y: auto; max-height: 350px">
-          <p class="text-h5 text-weight-bold">Vulnerability Types</p>
-          <template
-            v-for="vulnerability in reportDataResponse.unattended_vulnerabilities"
-            :key="vulnerability"
-          >
-            <div class="col-12">
-              <VulnerabilityCard :vul="vulnerability" />
-            </div>
-          </template>
+          <div class="row">
+            <p class="text-h5 text-weight-bold q-mb-none" style="width: 100%">
+              Vulnerability Types
+            </p>
+          </div>
+          <div class="row q-col-gutter-md justify-center" style="width: 100%">
+            <template v-for="type in vulnerabilityType" :key="type">
+              <div class="col-auto">
+                <q-btn
+                  :label="type"
+                  dense
+                  @click="handlePickType(type)"
+                  :class="{ 'bg-primary text-white': pickedType == type }"
+                ></q-btn>
+              </div>
+            </template>
+          </div>
+          <div class="row">
+            <template v-for="vulnerability in vulnerabilityList" :key="vulnerability">
+              <div class="col-12">
+                <VulnerabilityCard :vul="vulnerability" />
+              </div>
+            </template>
+          </div>
         </div>
       </template>
     </q-step>
@@ -229,7 +244,7 @@
 
 <script setup lang="js">
   import { ReportService } from 'src/services';
-  import { onMounted, ref } from 'vue';
+  import { computed, onMounted, ref } from 'vue';
   import { ReportSummaryTimeRange } from 'src/models';
   import { TableReports, DialogReportInsight } from 'src/components';
   import { useQuasar } from 'quasar';
@@ -279,6 +294,20 @@
   const showActual = ref(false);
   const vulnerabilitySeries = ref([30, 30, 30]);
   const actualRotation = ref(0);
+  const vulnerabilityType = ref([]);
+  const pickedType = ref('');
+
+  const vulnerabilityList = computed(() => {
+    let list = [];
+    if (pickedType.value == '') {
+      list = reportDataResponse.value.unattended_vulnerabilities;
+    } else {
+      list = reportDataResponse.value.unattended_vulnerabilities.filter(
+        ({ type }) => type == pickedType.value
+      );
+    }
+    return list;
+  });
 
   const auxValue = ref({});
   const totalUpdated = ref({
@@ -449,6 +478,14 @@
     });
   }
 
+  function handlePickType(type) {
+    if (pickedType.value == type) {
+      pickedType.value = '';
+    } else {
+      pickedType.value = type;
+    }
+  }
+
   function onMessageHandler(event) {
     switch (event.type) {
       case WebSocketMessageType.INITIAL_DATA_RESPONSE:
@@ -467,6 +504,9 @@
         break;
       case WebSocketMessageType.REPORT_DATA_RESPONSE:
         reportDataResponse.value = event.payload;
+        vulnerabilityType.value = reportDataResponse.value.vulnerability_graph.series[1].data.map(
+          val => val.x
+        );
         actualRotation.value =
           Number(reportDataResponse.value.expected_security_posture).toFixed(2) * 180;
 
