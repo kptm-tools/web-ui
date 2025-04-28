@@ -1,4 +1,4 @@
-import type { CountSeverityPerType, SeverityPerType, VulnerabilityItem } from 'src/models/scans.model';
+import type { SeverityPerType, VulnerabilityItem } from 'src/models/scans.model';
 
 export function getVariationIcon(variation: number): string {
   let iconClass = 'fa-solid q-mx-sm ';
@@ -15,13 +15,11 @@ export function getVariationIcon(variation: number): string {
 }
 
 export function getVulnerabilityList(
-  vulnerabilities: SeverityPerType,
-  vulnerabilitiesCount: CountSeverityPerType
+  vulnerabilities: SeverityPerType
 ): VulnerabilityItem[] {
   return Object.keys(vulnerabilities).map((key, index) => ({
     id: index,
     name: key,
-    type: vulnerabilities[key] || 'unknown',
-    count: vulnerabilitiesCount[key] || 0
+    type: vulnerabilities[key] || 'None',
   }));
 }

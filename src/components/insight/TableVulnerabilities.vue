@@ -22,8 +22,8 @@
             <div class="col-8 flex items-center name">
               {{ vulnerability.name }}
             </div>
-            <div class="col-4">
-              <severity-chip :severity="{ [vulnerability.type.toLowerCase()]: vulnerability.count }" />
+            <div class="col-4" width="100%">
+              <severity-chip :severity="{ [vulnerability.type.toLowerCase()]: vulnerability.type }" style = "width : 100%" />
             </div>
           </div>
         </div>
@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts" setup>
-  import type { SeverityPerType, VulnerabilityItem, CountSeverityPerType } from 'src/models/scans.model';
+  import type { SeverityPerType, VulnerabilityItem } from 'src/models/scans.model';
   import type { PropType, Ref } from 'vue';
 import { onMounted, ref } from 'vue';
   import { SeverityChip } from 'src/components';
@@ -45,15 +45,11 @@ import { onMounted, ref } from 'vue';
     vulnerabilities: {
       type: Object as PropType<SeverityPerType>,
       required: true
-    },
-    countvulnerabilities: {
-      type: Object as PropType<CountSeverityPerType>,
-      required: true
     }
   });
 
   onMounted(() => {
-    vulnerabilitiesList.value = getVulnerabilityList(props.vulnerabilities, props.countvulnerabilities);
+    vulnerabilitiesList.value = getVulnerabilityList(props.vulnerabilities);
   });
 </script>
 

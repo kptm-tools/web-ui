@@ -63,7 +63,7 @@
           </div>
           <div class="col-6">
             <div class="title">List of vulnerabilities</div>
-            <table-vulnerabilities :vulnerabilities="insight.severity_per_type" :countvulnerabilities="insight.count_severity_per_type" />
+            <table-vulnerabilities :vulnerabilities="insight.severity_per_type" />
           </div>
         </div>
       </q-card-section> </q-card
