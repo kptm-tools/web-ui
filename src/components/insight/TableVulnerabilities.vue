@@ -23,7 +23,7 @@
               {{ vulnerability.name }}
             </div>
             <div class="col-4">
-              <severity-chip :severity="{ critical: vulnerability.count }" />
+              <severity-chip :severity="{ [vulnerability.type.toLowerCase()]: vulnerability.count }" />
             </div>
           </div>
         </div>
@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts" setup>
-  import type { SeverityPerType, VulnerabilityItem } from 'src/models/scans.model';
+  import type { SeverityPerType, VulnerabilityItem, CountSeverityPerType } from 'src/models/scans.model';
   import type { PropType, Ref } from 'vue';
 import { onMounted, ref } from 'vue';
   import { SeverityChip } from 'src/components';
@@ -45,11 +45,15 @@ import { onMounted, ref } from 'vue';
     vulnerabilities: {
       type: Object as PropType<SeverityPerType>,
       required: true
+    },
+    countvulnerabilities: {
+      type: Object as PropType<CountSeverityPerType>,
+      required: true
     }
   });
 
   onMounted(() => {
-    vulnerabilitiesList.value = getVulnerabilityList(props.vulnerabilities);
+    vulnerabilitiesList.value = getVulnerabilityList(props.vulnerabilities, props.countvulnerabilities);
   });
 </script>
 

@@ -31,12 +31,17 @@ interface SeverityCounts {
 }
 
 export interface SeverityPerType {
+  [key: string]: string;
+}
+
+export interface CountSeverityPerType {
   [key: string]: number;
 }
 
 export interface VulnerabilityItem {
   id: number;
   name: string;
+  type: string;
   count: number;
 }
 
@@ -51,6 +56,7 @@ interface Metadata {
 export interface ScanInsight {
   severity_counts: SeverityCounts;
   severity_per_type: SeverityPerType;
+  count_severity_per_type: CountSeverityPerType;
   total_vulnerabilities: number;
   vulnerability_variation: number;
   protection_score: number;
