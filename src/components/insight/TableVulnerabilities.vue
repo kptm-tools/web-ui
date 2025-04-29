@@ -23,7 +23,7 @@
               {{ vulnerability.name }}
             </div>
             <div class="col-4">
-              <severity-chip :severity="{ critical: vulnerability.count }" />
+              <severity-chip :severity="{ [vulnerability.type.toLowerCase()]: vulnerability.type }" class="full-width" />
             </div>
           </div>
         </div>
