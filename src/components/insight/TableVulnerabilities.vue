@@ -22,8 +22,8 @@
             <div class="col-8 flex items-center name">
               {{ vulnerability.name }}
             </div>
-            <div class="col-4" width="100%">
-              <severity-chip :severity="{ [vulnerability.type.toLowerCase()]: vulnerability.type }" style = "width : 100%" />
+            <div class="col-4">
+              <severity-chip :severity="{ [vulnerability.type.toLowerCase()]: vulnerability.type }" class="full-width" />
             </div>
           </div>
         </div>
