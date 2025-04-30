@@ -53,6 +53,33 @@ export const SCAN_INSIGHT_PROTECTION_SCORE_OPTIONS = {
   }
 };
 
+export const SCANT_INSIGHT_EXPECTED_SCORE_OPTIONS = {
+  chart: {
+    type: 'donut',
+    height: '100%' // Add this line to set the height
+  },
+  dataLabels: {
+    enabled: false,
+    offsetX: 500,
+    offsetY: 200
+  },
+  legend: {
+    show: true,
+    fontSize: '0px',
+    markers: {
+      size: 0
+    }
+  },
+  colors: ['#E5494D', '#FBBF65', '#46A758'],
+  plotOptions: {
+    pie: {
+      startAngle: -90,
+      endAngle: 90,
+      offsetY: 10
+    }
+  }
+};
+
 export const HEATMAP_CHART_OPTIONS = {
   chart: {
     height: 350,
