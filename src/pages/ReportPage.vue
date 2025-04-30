@@ -224,7 +224,7 @@
                   :label="type"
                   dense
                   @click="handlePickType(type)"
-                  :class="{ 'bg-primary text-white': pickedType == type }"
+                  :class="{ 'bg-primary text-white': pickedType.some(val => val == type) }"
                 ></q-btn>
               </div>
             </template>
@@ -295,15 +295,15 @@
   const vulnerabilitySeries = ref([30, 30, 30]);
   const actualRotation = ref(0);
   const vulnerabilityType = ref([]);
-  const pickedType = ref('');
+  const pickedType = ref([]);
 
   const vulnerabilityList = computed(() => {
     let list = [];
-    if (pickedType.value == '') {
-      list = reportDataResponse.value.unattended_vulnerabilities;
+    if (pickedType.value.length == 0) {
+      list = reportDataResponse.value.solved_vulnerabilities;
     } else {
-      list = reportDataResponse.value.unattended_vulnerabilities.filter(
-        ({ type }) => type == pickedType.value
+      list = reportDataResponse.value.solved_vulnerabilities.filter(({ type }) =>
+        pickedType.value.includes(type)
       );
     }
     return list;
@@ -479,10 +479,11 @@
   }
 
   function handlePickType(type) {
-    if (pickedType.value == type) {
-      pickedType.value = '';
+    const indexType = pickedType.value.findIndex(val => val == type);
+    if (indexType == -1) {
+      pickedType.value.push(type);
     } else {
-      pickedType.value = type;
+      pickedType.value.splice(indexType, 1);
     }
   }
 
@@ -504,6 +505,8 @@
         break;
       case WebSocketMessageType.REPORT_DATA_RESPONSE:
         reportDataResponse.value = event.payload;
+        reportDataResponse.value.solved_vulnerabilities =
+          reportDataResponse.value.solved_vulnerabilities.sort((a, b) => b.max_cvss - a.max_cvss);
         vulnerabilityType.value = reportDataResponse.value.vulnerability_graph.series[1].data.map(
           val => val.x
         );
