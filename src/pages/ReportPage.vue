@@ -214,7 +214,7 @@
         <div class="row q-col-gutter-sm q-pa-md" style="overflow-y: auto; max-height: 350px">
           <div class="row">
             <p class="text-h5 text-weight-bold q-mb-none" style="width: 100%">
-              Vulnerability Types
+              Solved Vulnerability Types
             </p>
           </div>
           <div class="row q-col-gutter-md justify-center" style="width: 100%">
