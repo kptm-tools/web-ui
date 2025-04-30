@@ -1,10 +1,12 @@
 <template>
+  
   <q-chip
     v-if="severity.critical"
     :label="severity.critical"
     color="red"
     square
-    text-color="white"
+    text-color="white"    
+    :class="$attrs.class"
   />
   <q-chip
     v-if="severity.high"
@@ -12,6 +14,7 @@
     :label="severity.high"
     square
     text-color="white"
+    :class="$attrs.class"
   />
   <q-chip
     v-if="severity.medium"
@@ -19,6 +22,7 @@
     :label="severity.medium"
     square
     text-color="white"
+    :class="$attrs.class"
   />
   <q-chip
     v-if="severity.low"
@@ -26,6 +30,7 @@
     :label="severity.low"
     square
     text-color="white"
+    :class="$attrs.class"
   />
 </template>
 

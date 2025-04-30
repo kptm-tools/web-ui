@@ -20,6 +20,6 @@ export function getVulnerabilityList(
   return Object.keys(vulnerabilities).map((key, index) => ({
     id: index,
     name: key,
-    count: vulnerabilities[key] || 0
+    type: vulnerabilities[key] || 'None',
   }));
 }
