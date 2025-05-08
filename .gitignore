@@ -34,6 +34,7 @@ yarn-error.log*
 *.ntvs*
 *.njsproj
 *.sln
+.codacy-coverage/*
 
 # local .env files
 .env.local*

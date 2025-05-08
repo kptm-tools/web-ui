@@ -1,3 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 import { defineConfig } from 'vitest/config';
 import vue from '@vitejs/plugin-vue';
 import { quasar, transformAssetUrls } from '@quasar/vite-plugin';
@@ -13,7 +15,10 @@ export default defineConfig({
       // Matches all files with extension 'js', 'jsx', 'ts' and 'tsx'
       'src/**/*.vitest.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
       'test/vitest/__tests__/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'
-    ]
+    ],
+    coverage: {
+      provider: 'istanbul'
+    }
   },
   plugins: [
     vue({
@@ -21,8 +26,7 @@ export default defineConfig({
     }),
     quasar({
       sassVariables: 'src/quasar-variables.scss'
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    }) as any,
+    }),
     tsconfigPaths()
   ]
 });
