@@ -37,8 +37,6 @@
     "space-before-blocks": "error",
     "object-curly-spacing": ["error", "always"],
     "arrow-parens": ["error", "always"],
-    "vue/script-indent": ["error", 2, { "baseIndent": 1 }],
-    "vue/html-indent": ["error", 2],
     "linebreak-style": ["error", "unix"],
     "max-len": ["warn", { "code": 100, "ignoreComments": true, "ignoreUrls": true }]
   },
