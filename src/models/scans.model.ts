@@ -31,13 +31,13 @@ interface SeverityCounts {
 }
 
 export interface SeverityPerType {
-  [key: string]: number;
+  [key: string]: string;
 }
 
 export interface VulnerabilityItem {
   id: number;
   name: string;
-  count: number;
+  type: string;
 }
 
 export type SeverityKey = keyof SeverityPerType;
