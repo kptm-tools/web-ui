@@ -55,8 +55,8 @@ export const SCAN_INSIGHT_PROTECTION_SCORE_OPTIONS = {
 
 export const SCANT_INSIGHT_EXPECTED_SCORE_OPTIONS = {
   chart: {
-    type: 'donut',
-    height: '100%' // Add this line to set the height
+    height: '100%',
+    type: 'donut'
   },
   dataLabels: {
     enabled: false,
