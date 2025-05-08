@@ -1,31 +1,17 @@
 <template>
-  <Teleport v-if="isMounted" to="#header">
-    <template v-if="showDetail === 0">
-      <div>Reports</div>
-    </template>
-    <template v-else>
-      <div class="q-py-md">
-        <q-btn icon="arrow_back" flat label="Back" @click="showDetail--"></q-btn>
-      </div>
-    </template>
-  </Teleport>
-  <template v-if="showDetail == 0">
-    <div class="q-pa-md">
-      <q-btn
-        label="Scoredcard Trends"
-        color="primary"
-        class="q-mb-md"
-        @click="openScoredcardTrends"
-      ></q-btn>
+  <header-report-page v-if="isMounted" :show-title="isFirstStep" @go-back="reportPageStep--" />
 
-      <table-reports :rows="reportsRow" @action="handleTableAction" />
-    </div>
+  <template v-if="isFirstStep">
+    <table-view
+      :reportRows="reportsRow"
+      @open-score-card="openScoredCardTrends"
+      @table-action="handleTableAction"
+    />
   </template>
-
-  <q-stepper v-model="showDetail" ref="stepper" color="primary" animated v-if="showDetail != 0">
-    <q-step :name="0" title="Report List"> </q-step>
-    <q-step :name="1" title="Dynamic Vector">
-      <template v-if="showDetail == 1">
+  <template v-else>
+    <q-stepper v-model="reportPageStep" color="primary" animated>
+      <q-step :name="0" :title="$t('report.steps.list.title')"> </q-step>
+      <q-step :name="1" :title="$t('report.steps.dynamicVector.title')">
         <div class="row q-col-gutter-md flex items-stretch q-pa-md">
           <template v-for="type in detailInitialResponse.vulnerability_types" :key="type">
             <div class="col-2 flex">
@@ -72,7 +58,8 @@
                     CVSS : {{ detailInitialResponse.global_cvss_score }}
                   </q-card-section>
                   <q-card-section class="text-center">
-                    Total Vulnerabilities : {{ detailInitialResponse.global_total_vulnerabilities }}
+                    Total Vulnerabilities :
+                    {{ detailInitialResponse.global_total_vulnerabilities }}
                   </q-card-section>
                 </q-card>
               </div>
@@ -94,7 +81,8 @@
                     CVSS : {{ totalUpdated.expected_global_cvss_score }}
                   </q-card-section>
                   <q-card-section class="text-center">
-                    Total Vulnerabilities : {{ totalUpdated.expected_global_total_vulnerabilities }}
+                    Total Vulnerabilities :
+                    {{ totalUpdated.expected_global_total_vulnerabilities }}
                   </q-card-section>
                 </q-card>
               </div>
@@ -151,11 +139,8 @@
             </div>
           </div>
         </div>
-      </template>
-    </q-step>
-
-    <q-step :name="2" title="Expected Results">
-      <template v-if="showDetail == 2">
+      </q-step>
+      <q-step :name="2" :title="$t('report.steps.expectedResults.title')">
         <div class="row q-col-gutter-sm justify-around" style="max-height: 400px">
           <div class="col-4">
             <div style="height: 300px">
@@ -237,16 +222,16 @@
             </template>
           </div>
         </div>
-      </template>
-    </q-step>
-  </q-stepper>
+      </q-step>
+    </q-stepper>
+  </template>
 </template>
 
 <script setup lang="js">
   import { ReportService } from 'src/services';
   import { computed, onMounted, ref } from 'vue';
   import { ReportSummaryTimeRange } from 'src/models';
-  import { TableReports, DialogReportInsight } from 'src/components';
+  import { DialogReportInsight } from 'src/components';
   import { useQuasar } from 'quasar';
   import { ROUTES_NAMES } from 'src/router/routes-names';
   import { useRouter } from 'vue-router';
@@ -270,7 +255,9 @@
   import { Radar, Line } from 'vue-chartjs';
   import { errorQuasarNotify } from 'src/utils';
   import { SCAN_INSIGHT_PROTECTION_SCORE_OPTIONS } from 'src/constants/apexcharts.constants';
+  import HeaderReportPage from 'src/components/header/HeaderReportPage.vue';
   import VulnerabilityCard from 'src/components/report/VulnerabilityCard.vue';
+  import TableView from 'src/components/report/TableView.vue';
 
   const reports = ref([]);
   const router = useRouter();
@@ -278,7 +265,7 @@
   const isMounted = ref(false);
   const $q = useQuasar();
   const wssConnection = ref(null);
-  const showDetail = ref(0);
+  const reportPageStep = ref(0);
   const detailInitialResponse = ref({});
   const vectorData = ref({});
   const showData = ref(false);
@@ -296,6 +283,8 @@
   const actualRotation = ref(0);
   const vulnerabilityType = ref([]);
   const pickedType = ref([]);
+
+  const isFirstStep = computed(() => reportPageStep.value === 0);
 
   const vulnerabilityList = computed(() => {
     let list = [];
@@ -315,7 +304,7 @@
     expected_global_total_vulnerabilities: 0
   });
 
-  function openScoredcardTrends() {
+  function openScoredCardTrends() {
     $q.dialog({
       component: ScoredcardTrendsDialog
     });
@@ -351,7 +340,7 @@
           scan_id: action.col.scan_id
         }
       });
-      showDetail.value = 1;
+      reportPageStep.value = 1;
     }
   }
 
@@ -549,7 +538,7 @@
           ]
         };
 
-        showDetail.value = 2;
+        reportPageStep.value = 2;
         break;
     }
   }

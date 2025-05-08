@@ -72,5 +72,25 @@ export default {
       quarter: 'Quarter',
       semester: 'Semester'
     }
+  },
+  report: {
+    header: {
+      title: 'Reports',
+      backButton: 'Back'
+    },
+    table: {
+      scoredCardTrendsButton: 'Scoredcard Trends'
+    },
+    steps: {
+      list: {
+        title: 'Report Lis'
+      },
+      dynamicVector: {
+        title: 'Dynamic Vector'
+      },
+      expectedResults: {
+        title: 'Expected Results'
+      }
+    }
   }
 };
