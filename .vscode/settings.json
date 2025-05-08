@@ -9,5 +9,5 @@
   "[vue]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "cSpell.words": ["apexchart"]
+  "cSpell.words": ["apexchart", "apexcharts"]
 }

@@ -89,7 +89,22 @@ export default {
         title: 'Dynamic Vector'
       },
       expectedResults: {
-        title: 'Expected Results'
+        title: 'Expected Results',
+        chart: {
+          trend: {
+            title: 'Vulnerability Chart',
+            button: {
+              actual: 'Actual',
+              expected: 'Expected'
+            }
+          },
+          needle: {
+            title: 'Expected Security Posture'
+          }
+        },
+        vulnerabilities: {
+          title: 'Vulnerability Types'
+        }
       }
     }
   }

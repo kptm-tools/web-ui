@@ -141,87 +141,11 @@
         </div>
       </q-step>
       <q-step :name="2" :title="$t('report.steps.expectedResults.title')">
-        <div class="row q-col-gutter-sm justify-around" style="max-height: 400px">
-          <div class="col-4">
-            <div style="height: 300px">
-              <div class="row justify-center items-center">
-                <p class="text-h5 text-weight-bold">Vulnerability Chart</p>
-                <div class="col-6">
-                  <div class="row q-my-md justify-center">
-                    <q-btn class="col-auto q-px-md q-mr-md" @click="showActual = true" dense
-                      >Actual</q-btn
-                    >
-                    <q-btn class="col-auto q-px-md" @click="showActual = false" dense
-                      >Expected</q-btn
-                    >
-                  </div>
-                </div>
-              </div>
-              <template v-if="showActual">
-                <Line
-                  :data="chartSerieDataActual"
-                  :options="{
-                    responsive: true,
-                    maintainAspectRatio: false
-                  }"
-                />
-              </template>
-              <template v-if="!showActual">
-                <Line
-                  :data="chartSerieDataExpected"
-                  :options="{
-                    responsive: true,
-                    maintainAspectRatio: false
-                  }"
-                />
-              </template>
-            </div>
-          </div>
-          <div class="col-4">
-            <div style="position: relative">
-              <p class="text-h5 text-weight-bold">Expected Security Posture</p>
-              <apexchart
-                :options="SCAN_INSIGHT_PROTECTION_SCORE_OPTIONS"
-                :series="vulnerabilitySeries"
-              ></apexchart>
-              <img
-                src="../assets/needle.svg"
-                width="80"
-                alt="needle"
-                class="needle"
-                :style="{ transform: `rotate(${actualRotation}deg)` }"
-              />
-              <div class="porcentaje">{{ ((actualRotation * 100) / 180).toFixed(0) }}%</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="row q-col-gutter-sm q-pa-md" style="overflow-y: auto; max-height: 350px">
-          <div class="row">
-            <p class="text-h5 text-weight-bold q-mb-none" style="width: 100%">
-              Vulnerability Types
-            </p>
-          </div>
-          <div class="row q-col-gutter-md justify-center" style="width: 100%">
-            <template v-for="type in vulnerabilityType" :key="type">
-              <div class="col-auto">
-                <q-btn
-                  :label="type"
-                  dense
-                  @click="handlePickType(type)"
-                  :class="{ 'bg-primary text-white': pickedType.some(val => val == type) }"
-                ></q-btn>
-              </div>
-            </template>
-          </div>
-          <div class="row">
-            <template v-for="vulnerability in vulnerabilityList" :key="vulnerability">
-              <div class="col-12">
-                <VulnerabilityCard :vul="vulnerability" />
-              </div>
-            </template>
-          </div>
-        </div>
+        <expected-results-step
+          :vulnerability-graph-series="reportDataResponse.vulnerability_graph"
+          :expected-security-posture="reportDataResponse.expected_security_posture"
+          :solved-vulnerabilities="reportDataResponse.solved_vulnerabilities"
+        />
       </q-step>
     </q-stepper>
   </template>
@@ -237,6 +161,7 @@
   import { useRouter } from 'vue-router';
   import ScoredcardTrendsDialog from 'src/components/report/ScoredcardTrendsDialog.vue';
   import WebSocketReports from 'src/services/wss-reports.service';
+  import ExpectedResultsStep from 'src/components/report/ExpectedResultsStep.vue';
   import {
     Chart as ChartJS,
     RadialLinearScale,
@@ -252,11 +177,9 @@
   import dragData from 'chartjs-plugin-dragdata';
   import { AUTH_TOKEN_NAMES } from 'src/constants/fusion-auth.constants';
   import { WebSocketMessageRequest, WebSocketMessageType } from 'src/models/wss-reports.models';
-  import { Radar, Line } from 'vue-chartjs';
+  import { Radar } from 'vue-chartjs';
   import { errorQuasarNotify } from 'src/utils';
-  import { SCAN_INSIGHT_PROTECTION_SCORE_OPTIONS } from 'src/constants/apexcharts.constants';
   import HeaderReportPage from 'src/components/header/HeaderReportPage.vue';
-  import VulnerabilityCard from 'src/components/report/VulnerabilityCard.vue';
   import TableView from 'src/components/report/TableView.vue';
 
   const reports = ref([]);
@@ -278,25 +201,10 @@
   const reportDataResponse = ref();
   const chartSerieDataActual = ref();
   const chartSerieDataExpected = ref();
-  const showActual = ref(false);
-  const vulnerabilitySeries = ref([30, 30, 30]);
   const actualRotation = ref(0);
   const vulnerabilityType = ref([]);
-  const pickedType = ref([]);
 
   const isFirstStep = computed(() => reportPageStep.value === 0);
-
-  const vulnerabilityList = computed(() => {
-    let list = [];
-    if (pickedType.value.length == 0) {
-      list = reportDataResponse.value.solved_vulnerabilities;
-    } else {
-      list = reportDataResponse.value.solved_vulnerabilities.filter(({ type }) =>
-        pickedType.value.includes(type)
-      );
-    }
-    return list;
-  });
 
   const auxValue = ref({});
   const totalUpdated = ref({
@@ -465,15 +373,6 @@
         ...data
       }));
     });
-  }
-
-  function handlePickType(type) {
-    const indexType = pickedType.value.findIndex(val => val == type);
-    if (indexType == -1) {
-      pickedType.value.push(type);
-    } else {
-      pickedType.value.splice(indexType, 1);
-    }
   }
 
   function onMessageHandler(event) {

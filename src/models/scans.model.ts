@@ -62,14 +62,14 @@ export enum ScanStatus {
   inProgress = 'InProgress',
   completed = 'Completed',
   pending = 'Pending',
-  cancelled = 'Cancelled',
+  cancelled = 'Cancelled'
 }
 
 export type ScanStatusType = keyof ScanStatus;
 
 export enum ScanActions {
   insight = 'insight',
-  cancel = 'cancel',
+  cancel = 'cancel'
 }
 
 export interface ScanTableAction {
@@ -109,6 +109,7 @@ export interface ScanVulnerability {
   access: string;
   complexity: string;
   privileges: string;
+  type: string;
   exploitability: string;
   comment: string;
   vendor_comments?: VendorComment[];
