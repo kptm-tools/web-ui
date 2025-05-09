@@ -3,6 +3,9 @@ FROM node:20.16-slim AS base
 
 WORKDIR /app
 
+# Set memory limit for Node.js during build
+ENV NODE_OPTIONS="--max-old-space-size=4096"
+
 # Set Yarn version
 RUN yarn set version 4.9.1
 
