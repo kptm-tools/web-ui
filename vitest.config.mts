@@ -10,6 +10,8 @@ export default defineConfig({
   test: {
     environment: 'happy-dom',
     sourcemap: false,
+    globals: true,
+    threads: false,
     setupFiles: 'test/vitest/setup-file.ts',
     include: [
       // Matches vitest tests in any subfolder of 'src' or into 'test/vitest/__tests__'
