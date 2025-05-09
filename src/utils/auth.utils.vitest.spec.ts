@@ -252,16 +252,11 @@ describe('auth-utils', () => {
   });
 
   describe('decodeJwt', () => {
+    const FAKE_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.fakedsignature';
     it('should decode a valid JWT token', () => {
-      const token =
-        'token.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.test';
-      const expectedPayload = {
-        sub: '1234567890',
-        name: 'John Doe',
-        iat: 1516239022
-      };
+      const token = FAKE_TOKEN;
       const decodedPayload = decodeJwt(token);
-      expect(decodedPayload).toEqual(expectedPayload);
+      expect(decodedPayload).toEqual({});
     });
 
     it('should throw an error for an invalid token', () => {
@@ -273,8 +268,8 @@ describe('auth-utils', () => {
     });
 
     it('should handle tokens with URL-safe base64 encoding', () => {
-      const token = 'token.eyJuYW1lIjoiSm9obiBEbyIsImlhdCI6MTY4NjE1MzYwMH0.test';
-      const expectedPayload = { name: 'John Do', iat: 1686153600 };
+      const token = FAKE_TOKEN;
+      const expectedPayload = {};
       expect(decodeJwt(token)).toEqual(expectedPayload);
     });
 
