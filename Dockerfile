@@ -16,24 +16,27 @@ COPY . .
 # Verify files are present
 RUN ls -la /app
 
-# Install dependencies
-RUN yarn install
-
-# Build the Quasar project
-RUN yarn build
-
 FROM base AS dev
-# Command to run the Quasar app in development mode
+
+EXPOSE 8080
+
 CMD ["yarn", "dev"]
+
+FROM base AS build
+
+RUN yarn build
 
 FROM nginx:stable-alpine AS prod
 
+RUN rm /etc/nginx/conf.d/default.conf
 
-COPY --from=base /app/dist/spa /usr/share/nginx/html
+# Copy the built SPA from the 'build' stage
+COPY --from=build /app/dist/spa /usr/share/nginx/html
 
-# Copy the nginx config file
-
+# Copy your custom Nginx configuration file
 COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 80
 
 # Start nginx to serve the application
 CMD ["nginx", "-g", "daemon off;"]
