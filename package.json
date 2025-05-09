@@ -14,7 +14,7 @@
     "dev": "quasar dev",
     "build": "quasar build",
     "postinstall": "quasar prepare",
-    "test:unit:ci": "vitest run --coverage",
+    "test:unit:ci": "vitest run --coverage --silent",
     "test:unit:ui": "vitest --ui --coverage"
   },
   "dependencies": {
