@@ -10,14 +10,21 @@ RUN yarn set version 4.9.1
 # Copy only the necessary files for installing dependencies
 COPY package.json yarn.lock ./
 
-# Copy the rest of the application code
-COPY . .
+# Install dependencies
+RUN yarn install
 
 # Verify files are present
 RUN ls -la /app
 
-# Install dependencies
-RUN yarn install
+# Copy the rest of the application code
+COPY . .
+
+# Test stage: runs only tests, no build
+FROM base AS test
+
+# Run tests in a memory-safe way
+ENV NODE_OPTIONS=--max-old-space-size=4096
+RUN yarn test:unit:ci
 
 # Build the Quasar project
 RUN yarn build
@@ -25,6 +32,9 @@ RUN yarn build
 FROM base AS dev
 # Command to run the Quasar app in development mode
 CMD ["yarn", "dev"]
+
+FROM base AS build
+RUN yarn build
 
 FROM nginx:stable-alpine AS prod
 
