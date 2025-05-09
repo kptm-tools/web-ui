@@ -254,7 +254,7 @@ describe('auth-utils', () => {
   describe('decodeJwt', () => {
     it('should decode a valid JWT token', () => {
       const token =
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yUF_QxFWzESw';
+        'token.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.test';
       const expectedPayload = {
         sub: '1234567890',
         name: 'John Doe',
@@ -273,14 +273,13 @@ describe('auth-utils', () => {
     });
 
     it('should handle tokens with URL-safe base64 encoding', () => {
-      const token =
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEbyIsImlhdCI6MTY4NjE1MzYwMH0.afYwN-OQzCjE2K6g8hP4qR-7BQu9j6M5yJQuD59Nw';
+      const token = 'token.eyJuYW1lIjoiSm9obiBEbyIsImlhdCI6MTY4NjE1MzYwMH0.test';
       const expectedPayload = { name: 'John Do', iat: 1686153600 };
       expect(decodeJwt(token)).toEqual(expectedPayload);
     });
 
     it('should throw an error if the payload is not valid JSON', () => {
-      const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..invalid';
+      const token = 'token..invalid';
       expect(() => decodeJwt(token)).toThrowError('Failed to decode and parse JWT payload');
     });
   });
