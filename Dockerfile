@@ -1,40 +1,23 @@
-# Use the official Node.js image with the specified Node version
-FROM node:20.16-slim AS base
 
-WORKDIR /app
+# Verify files are present
+RUN ls -la /app
 
-# Set memory limit for Node.js during build
-ENV NODE_OPTIONS="--max-old-space-size=4096"
+# Install dependencies
+RUN npm install
 
-# Set Yarn version
-RUN yarn set version 4.9.1
-
-# Yarn to use node_modules instead of PnP
-RUN yarn config set nodeLinker node-modules
-
-#  Disable build/postinstall scripts for now
-RUN yarn config set enableScripts false
-
-# Copy full source for next stages
-COPY . .
-
-RUN yarn install
-
-FROM base AS test
-
-ENV NODE_OPTIONS="--max-old-space-size=4096"
-
-RUN yarn test:unit:ci
+# Build the Quasar project
+RUN npm run build
 
 FROM base AS dev
-CMD ["yarn", "dev"]
-
-FROM base AS build
-RUN yarn build
+# Command to run the Quasar app in development mode
+CMD ["npm","run", "dev"]
 
 FROM nginx:stable-alpine AS prod
 
-COPY --from=build /app/dist/spa /usr/share/nginx/html
+
+COPY --from=base /app/dist/spa /usr/share/nginx/html
+
+# Copy the nginx config file
 
 COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
 
