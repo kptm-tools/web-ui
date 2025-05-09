@@ -14,7 +14,6 @@ jobs:
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
-
       - name: 🛎️ Checkout Code
         uses: actions/checkout@v3
 
@@ -28,4 +27,4 @@ jobs:
         run: docker build --target prod -t ${IMAGE_NAME}:prod .
 
       - name: ✅ Run Unit Tests in dev Docker Container
-        run: docker run ${IMAGE_NAME}:dev yarn test:unit:ci
+        run: docker run ${IMAGE_NAME}:dev npm test:unit:ci
