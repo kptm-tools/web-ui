@@ -7,19 +7,19 @@ WORKDIR /app
 # Copy only the necessary files for installing dependencies
 COPY package.json package-lock.json ./
 
-# Install project dependencies
-RUN npm install
-
 # Copy the rest of the application code
 COPY . .
+
+# Install Quasar CLI if needed for development commands
+RUN npm install -g @quasar/cli
+
+# Install project dependencies
+RUN npm install
 
 # Verify files are present
 RUN ls -la /app
 
 FROM base AS dev
-
-# Install Quasar CLI if needed for development commands
-RUN npm install -g @quasar/cli
 
 EXPOSE 8080
 
