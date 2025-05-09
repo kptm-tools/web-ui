@@ -18,6 +18,9 @@ RUN ls -la /app
 
 FROM base AS dev
 
+# Install Quasar CLI if needed for development commands
+RUN npm install -g @quasar/cli
+
 EXPOSE 8080
 
 CMD ["npm","run", "dev"]
