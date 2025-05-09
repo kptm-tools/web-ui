@@ -4,9 +4,11 @@ FROM node:20.16-slim AS base
 # Set the working directory inside the container
 WORKDIR /app
 
-
 # Copy only the necessary files for installing dependencies
 COPY package.json package-lock.json ./
+
+# Install project dependencies
+RUN npm install
 
 # Copy the rest of the application code
 COPY . .
@@ -21,6 +23,9 @@ EXPOSE 8080
 CMD ["npm","run", "dev"]
 
 FROM base AS build
+
+# Install the Quasar CLI globally in the build stage
+RUN npm install -g @quasar/cli
 
 RUN npm run build
 
