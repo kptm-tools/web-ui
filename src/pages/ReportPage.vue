@@ -1,25 +1,153 @@
 <template>
-  <Teleport v-if="isMounted" to="#header">
-    <template v-if="showDetail === 0">
-      <div>Reports</div>
-    </template>
-    <template v-else>
-      <div class="q-py-md">
-        <q-btn icon="arrow_back" flat label="Back" @click="showDetail--"></q-btn>
-      </div>
-    </template>
-  </Teleport>
-  <template v-if="showDetail == 0">
-    <div class="q-pa-md">
-      <q-btn
-        label="Scoredcard Trends"
-        color="primary"
-        class="q-mb-md"
-        @click="openScoredcardTrends"
-      ></q-btn>
+  <header-report-page v-if="isMounted" :show-title="isFirstStep" @go-back="reportPageStep--" />
 
-      <table-reports :rows="reportsRow" @action="handleTableAction" />
-    </div>
+  <template v-if="isFirstStep">
+    <table-view
+      :reportRows="reportsRow"
+      @open-score-card="openScoredCardTrends"
+      @table-action="handleTableAction"
+    />
+  </template>
+  <template v-else>
+    <q-stepper v-model="reportPageStep" color="primary" animated>
+      <q-step :name="0" :title="$t('report.steps.list.title')"> </q-step>
+      <q-step :name="1" :title="$t('report.steps.dynamicVector.title')">
+        <div class="row q-col-gutter-md flex items-stretch q-pa-md">
+          <template v-for="type in detailInitialResponse.vulnerability_types" :key="type">
+            <div class="col-2 flex">
+              <q-card style="flex: 1">
+                <q-card-section style="font-size: 12px; display: flex; height: 100%">
+                  <div class="row" style="flex: 1">
+                    <div class="col-10 flex column">
+                      <div style="flex: 1" class="text-weight-semibold">{{ type.name }}</div>
+                      <div>
+                        CVSS:
+                        <span
+                          :class="`card-${cardColor(type.highest_cvss)}`"
+                          style="padding: 0 20px; margin-left: 5px"
+                        >
+                          {{ type.highest_cvss }}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="col-2 text-center text-weight-bold">
+                      {{ type.count }}
+                    </div>
+                  </div>
+                </q-card-section>
+              </q-card>
+            </div>
+          </template>
+        </div>
+        <div class="row q-col-gutter-md q-pa-md">
+          <div class="col-6" style="max-height: 550px">
+            <Radar :data="dataRadar" :options="options" :key="radarKey" />
+          </div>
+          <div class="col-6">
+            <div class="row">
+              <p class="text-weight-bold">CVSS Global Score</p>
+            </div>
+            <div class="row q-col-gutter-md q-mb-md">
+              <div class="col-6">
+                <q-card>
+                  <q-card-section class="text-center text-weight-bold"> Actual </q-card-section>
+                  <q-card-section
+                    class="text-center"
+                    :class="`card-${cardColor(detailInitialResponse.global_cvss_score)}`"
+                  >
+                    CVSS : {{ detailInitialResponse.global_cvss_score }}
+                  </q-card-section>
+                  <q-card-section class="text-center">
+                    Total Vulnerabilities :
+                    {{ detailInitialResponse.global_total_vulnerabilities }}
+                  </q-card-section>
+                </q-card>
+              </div>
+              <div
+                class="col-6"
+                v-if="
+                  totalUpdated.expected_global_cvss_score !== 0 &&
+                  totalUpdated.expected_global_total_vulnerabilities !== 0
+                "
+              >
+                <q-card>
+                  <q-card-section class="text-center text-weight-bold">
+                    Anticipated
+                  </q-card-section>
+                  <q-card-section
+                    class="text-center"
+                    :class="`card-${cardColor(totalUpdated.expected_global_cvss_score)}`"
+                  >
+                    CVSS : {{ totalUpdated.expected_global_cvss_score }}
+                  </q-card-section>
+                  <q-card-section class="text-center">
+                    Total Vulnerabilities :
+                    {{ totalUpdated.expected_global_total_vulnerabilities }}
+                  </q-card-section>
+                </q-card>
+              </div>
+            </div>
+
+            <q-card v-if="showData">
+              <q-card-actions align="right">
+                <q-btn icon="close" flat dense @click="closeDetail()"></q-btn>
+              </q-card-actions>
+              <div style="height: 200px; overflow-y: auto; overflow-x: hidden; padding: 1em">
+                <div class="text-weight-bold">
+                  {{ vectorData.name }}
+                </div>
+                <div>
+                  <q-slider v-model="currentCvss" marker-labels :min="0" :max="10" disable />
+                </div>
+                <div>
+                  <span class="text-weight-bold">Type : </span
+                  ><span class="overflow-content">{{ vectorData.type }}</span>
+                </div>
+                <div>
+                  <span class="text-weight-bold">Severity : </span
+                  ><span class="overflow-content">{{ vectorData.severity }}</span>
+                </div>
+                <div>
+                  <span class="text-weight-bold">Description : </span>
+                  <span class="overflow-content">{{ vectorData.description }}</span>
+                </div>
+                <div>
+                  <span class="text-weight-bold">Privileges Required : </span
+                  ><span class="overflow-content">{{ vectorData.privileges_required }}</span>
+                </div>
+                <div>
+                  <span class="text-weight-bold">Attack Vector Classification : </span
+                  ><span class="overflow-content">{{ vectorData.classification }}</span>
+                </div>
+                <div>
+                  <span class="text-weight-bold">Integrity Impact : </span
+                  ><span class="overflow-content">{{ vectorData.integrity }}</span>
+                </div>
+                <div>
+                  <span class="text-weight-bold">Availability Impact : </span
+                  ><span class="overflow-content">{{ vectorData.availability }}</span>
+                </div>
+              </div>
+
+              <q-card-actions align="right">
+                <q-btn label="Apply" color="primary" @click="updateVector()"></q-btn>
+              </q-card-actions>
+            </q-card>
+
+            <div class="row" v-if="!showData">
+              <q-btn label="Next" color="primary" @click="confirmVector()"></q-btn>
+            </div>
+          </div>
+        </div>
+      </q-step>
+      <q-step :name="2" :title="$t('report.steps.expectedResults.title')">
+        <expected-results-step
+          :vulnerability-graph-series="reportDataResponse.vulnerability_graph"
+          :expected-security-posture="reportDataResponse.expected_security_posture"
+          :solved-vulnerabilities="reportDataResponse.solved_vulnerabilities"
+        />
+      </q-step>
+    </q-stepper>
   </template>
 
   <q-stepper v-model="showDetail" ref="stepper" color="primary" animated v-if="showDetail != 0">
@@ -246,12 +374,13 @@
   import { ReportService } from 'src/services';
   import { computed, onMounted, ref } from 'vue';
   import { ReportSummaryTimeRange } from 'src/models';
-  import { TableReports, DialogReportInsight } from 'src/components';
+  import { DialogReportInsight } from 'src/components';
   import { useQuasar } from 'quasar';
   import { ROUTES_NAMES } from 'src/router/routes-names';
   import { useRouter } from 'vue-router';
   import ScoredcardTrendsDialog from 'src/components/report/ScoredcardTrendsDialog.vue';
   import WebSocketReports from 'src/services/wss-reports.service';
+  import ExpectedResultsStep from 'src/components/report/ExpectedResultsStep.vue';
   import {
     Chart as ChartJS,
     RadialLinearScale,
@@ -269,8 +398,8 @@
   import { WebSocketMessageRequest, WebSocketMessageType } from 'src/models/wss-reports.models';
   import { Radar, Line } from 'vue-chartjs';
   import { errorQuasarNotify } from 'src/utils';
-  import { SCAN_INSIGHT_PROTECTION_SCORE_OPTIONS } from 'src/constants/apexcharts.constants';
-  import VulnerabilityCard from 'src/components/report/VulnerabilityCard.vue';
+  import HeaderReportPage from 'src/components/header/HeaderReportPage.vue';
+  import TableView from 'src/components/report/TableView.vue';
 
   const reports = ref([]);
   const router = useRouter();
@@ -278,7 +407,7 @@
   const isMounted = ref(false);
   const $q = useQuasar();
   const wssConnection = ref(null);
-  const showDetail = ref(0);
+  const reportPageStep = ref(0);
   const detailInitialResponse = ref({});
   const vectorData = ref({});
   const showData = ref(false);
@@ -291,23 +420,10 @@
   const reportDataResponse = ref();
   const chartSerieDataActual = ref();
   const chartSerieDataExpected = ref();
-  const showActual = ref(false);
-  const vulnerabilitySeries = ref([30, 30, 30]);
   const actualRotation = ref(0);
   const vulnerabilityType = ref([]);
-  const pickedType = ref([]);
 
-  const vulnerabilityList = computed(() => {
-    let list = [];
-    if (pickedType.value.length == 0) {
-      list = reportDataResponse.value.solved_vulnerabilities;
-    } else {
-      list = reportDataResponse.value.solved_vulnerabilities.filter(({ type }) =>
-        pickedType.value.includes(type)
-      );
-    }
-    return list;
-  });
+  const isFirstStep = computed(() => reportPageStep.value === 0);
 
   const auxValue = ref({});
   const totalUpdated = ref({
@@ -315,7 +431,7 @@
     expected_global_total_vulnerabilities: 0
   });
 
-  function openScoredcardTrends() {
+  function openScoredCardTrends() {
     $q.dialog({
       component: ScoredcardTrendsDialog
     });
@@ -351,7 +467,7 @@
           scan_id: action.col.scan_id
         }
       });
-      showDetail.value = 1;
+      reportPageStep.value = 1;
     }
   }
 
@@ -478,15 +594,6 @@
     });
   }
 
-  function handlePickType(type) {
-    const indexType = pickedType.value.findIndex(val => val == type);
-    if (indexType == -1) {
-      pickedType.value.push(type);
-    } else {
-      pickedType.value.splice(indexType, 1);
-    }
-  }
-
   function onMessageHandler(event) {
     switch (event.type) {
       case WebSocketMessageType.INITIAL_DATA_RESPONSE:
@@ -549,7 +656,7 @@
           ]
         };
 
-        showDetail.value = 2;
+        reportPageStep.value = 2;
         break;
     }
   }

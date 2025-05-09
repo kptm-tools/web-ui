@@ -99,8 +99,10 @@ export function decodeJwt(token: string) {
 
   try {
     // Decode and parse the payload
-    return JSON.parse(base64UrlDecode(payload || ''));
+    const decodedPayload = base64UrlDecode(String(payload));
+    return JSON.parse(decodedPayload);
   } catch (error) {
-    new Error('Failed to decode payload: ' + String(error));
+    console.error('Failed to decode and parse JWT payload:', error);
+    throw new Error('Failed to decode and parse JWT payload');
   }
 }

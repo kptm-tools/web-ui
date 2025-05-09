@@ -1,4 +1,6 @@
-import { defineConfig } from 'vitest/config';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
+import { defineConfig, configDefaults } from 'vitest/config';
 import vue from '@vitejs/plugin-vue';
 import { quasar, transformAssetUrls } from '@quasar/vite-plugin';
 import tsconfigPaths from 'vite-tsconfig-paths';
@@ -6,6 +8,8 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 // https://vitejs.dev/config/
 export default defineConfig({
   test: {
+    minify: false,
+    sourcemap: false,
     environment: 'happy-dom',
     setupFiles: 'test/vitest/setup-file.ts',
     include: [
@@ -13,7 +17,19 @@ export default defineConfig({
       // Matches all files with extension 'js', 'jsx', 'ts' and 'tsx'
       'src/**/*.vitest.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
       'test/vitest/__tests__/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'
-    ]
+    ],
+    coverage: {
+      provider: 'istanbul',
+      exclude: [
+        ...configDefaults.exclude,
+        'src/router/**',
+        '.quasar/**',
+        'src/constants/**',
+        'quasar.config.js',
+        'src/boot/**',
+        'src/models/**'
+      ]
+    }
   },
   plugins: [
     vue({
@@ -21,8 +37,7 @@ export default defineConfig({
     }),
     quasar({
       sassVariables: 'src/quasar-variables.scss'
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    }) as any,
+    }),
     tsconfigPaths()
   ]
 });
