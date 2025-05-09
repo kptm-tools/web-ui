@@ -5,7 +5,7 @@ FROM node:20.16-slim AS base
 WORKDIR /app
 
 # Set Yarn version
-RUN yarn set version 1.22.22
+RUN yarn set version 4.9.1
 
 # Copy only the necessary files for installing dependencies
 COPY package.json yarn.lock ./

@@ -1,3 +1,6 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
+
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { AUTH_STATUS_CODES, AUTH_TOKEN_NAMES } from 'src/constants/fusion-auth.constants';
 import type {
