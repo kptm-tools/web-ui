@@ -6,6 +6,9 @@ WORKDIR /app
 # Set Yarn version
 RUN yarn set version 4.9.1
 
+# 👇 Tell Yarn to use node_modules instead of PnP
+RUN yarn config set nodeLinker node-modules
+
 # Copy only the necessary files for installing dependencies
 COPY package.json yarn.lock ./
 RUN yarn install
