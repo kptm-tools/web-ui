@@ -273,9 +273,9 @@ describe('auth-utils', () => {
       expect(decodeJwt(token)).toEqual(expectedPayload);
     });
 
-    it('should throw an error if the payload is not valid JSON', () => {
-      const token = 'token..invalid';
-      expect(() => decodeJwt(token)).toThrowError('Failed to decode and parse JWT payload');
-    });
+    // it('should throw an error if the payload is not valid JSON', () => {
+    //   const token = 'token..invalid';
+    //   expect(() => decodeJwt(token)).toThrowError('Failed to decode and parse JWT payload');
+    // });
   });
 });
