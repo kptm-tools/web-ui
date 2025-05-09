@@ -1,6 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
-import { defineConfig } from 'vitest/config';
+import { defineConfig, configDefaults } from 'vitest/config';
 import vue from '@vitejs/plugin-vue';
 import { quasar, transformAssetUrls } from '@quasar/vite-plugin';
 import tsconfigPaths from 'vite-tsconfig-paths';
@@ -17,7 +17,16 @@ export default defineConfig({
       'test/vitest/__tests__/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'
     ],
     coverage: {
-      provider: 'istanbul'
+      provider: 'istanbul',
+      exclude: [
+        ...configDefaults.exclude,
+        'src/router/**',
+        '.quasar/**',
+        'src/constants/**',
+        'quasar.config.js',
+        'src/boot/**',
+        'src/models/**'
+      ]
     }
   },
   plugins: [
