@@ -12,19 +12,18 @@ RUN yarn set version 4.9.1
 # Yarn to use node_modules instead of PnP
 RUN yarn config set nodeLinker node-modules
 
-# Disable build/postinstall scripts for now
+#  Disable build/postinstall scripts for now
 RUN yarn config set enableScripts false
 
-# Copy only package.json and yarn.lock first to leverage Docker cache
-COPY package.json yarn.lock ./
-RUN yarn install --frozen-lockfile
-
-# Now copy the full source for next stages
+# Copy full source for next stages
 COPY . .
+
+RUN yarn install
 
 FROM base AS test
 
-# Run tests in the test stage
+ENV NODE_OPTIONS="--max-old-space-size=4096"
+
 RUN yarn test:unit:ci
 
 FROM base AS dev
@@ -35,8 +34,8 @@ RUN yarn build
 
 FROM nginx:stable-alpine AS prod
 
-# Copy only the necessary production files from the build stage
 COPY --from=build /app/dist/spa /usr/share/nginx/html
+
 COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
 
 # Start nginx to serve the application
