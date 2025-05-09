@@ -12,12 +12,11 @@ RUN yarn config set nodeLinker node-modules
 #  Disable build/postinstall scripts for now
 RUN yarn config set enableScripts false
 
-# Copy only the necessary files for installing dependencies
-COPY package.json yarn.lock ./
-RUN yarn install
-
 # Copy full source for next stages
 COPY . .
+
+
+RUN yarn install
 
 FROM base AS test
 
