@@ -9,10 +9,7 @@
         </div>
       </div>
     </div>
-    <template
-      v-for="vulnerability in vulnerabilitiesList"
-      :key="vulnerability.id"
-    >
+    <template v-for="vulnerability in vulnerabilitiesList" :key="vulnerability.id">
       <div class="row q-mb-xs">
         <div class="col-2 number flex items-center justify-center">
           {{ vulnerability.id + 1 }}
@@ -23,7 +20,11 @@
               {{ vulnerability.name }}
             </div>
             <div class="col-4">
-              <severity-chip :severity="{ [vulnerability.type.toLowerCase()]: vulnerability.type }" class="full-width" />
+              <!-- TODO : THE COMPONENT DON'T USE TYPE USE SEVERITY WERE THE KEYS COULD BE high,medium,etc... -->
+              <severity-chip
+                :severity="{ [String(vulnerability.type).toLowerCase()]: vulnerability.type }"
+                chip-class="full-width"
+              />
             </div>
           </div>
         </div>
@@ -35,7 +36,7 @@
 <script lang="ts" setup>
   import type { SeverityPerType, VulnerabilityItem } from 'src/models/scans.model';
   import type { PropType, Ref } from 'vue';
-import { onMounted, ref } from 'vue';
+  import { onMounted, ref } from 'vue';
   import { SeverityChip } from 'src/components';
   import { getVulnerabilityList } from 'src/utils';
 
