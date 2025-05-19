@@ -1,0 +1,15 @@
+{
+  "LABEL": {
+    "name": "help wanted",
+    "color": "006B75"
+  },
+  "CHECKS": {
+    "regexp": "^(feat|fix|chore|docs): .+ \\[KT-\\d+\\]$",
+    "ignoreLabels": ["Sync Back", "dependabot", "dependencies"]
+  },
+  "MESSAGES": {
+    "success": "Title follows the specification.",
+    "failure": "PR title has to be in the format: 'feat: description [KT-1234]'.",
+    "notice": ""
+  }
+}
