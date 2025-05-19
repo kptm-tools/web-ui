@@ -150,9 +150,10 @@
     hostsRegister.value = hostOptions.value.map(host => {
       return {
         alias: host.alias,
-        host: host.hostname,
+        host: host.isDomain ? host.hostname : host.ip,
         credentials: host.credentials,
-        rapporteurs: []
+        rapporteurs: [],
+        value_type: host.isDomain ? 'Domain' : 'IP'
       };
     });
     if (!props.edit) {

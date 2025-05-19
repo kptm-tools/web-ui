@@ -2,6 +2,7 @@ export interface ValidatedHost {
   hostname: string;
   ip: string;
   alias: string;
+  isDomain?: boolean;
 }
 
 export interface ValidateHostAuth extends ValidatedHost {
