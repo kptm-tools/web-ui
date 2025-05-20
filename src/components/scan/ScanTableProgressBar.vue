@@ -23,18 +23,16 @@
     return status === ScanStatus.completed
       ? 'positive'
       : status === ScanStatus.pending
-      ? 'warning'
-      : status === ScanStatus.cancelled
-      ? 'grey'
-      : status === ScanStatus.inProgress
-      ? 'positive'
-      : 'negative';
+        ? 'warning'
+        : status === ScanStatus.cancelled
+          ? 'grey'
+          : status === ScanStatus.inProgress
+            ? 'positive'
+            : 'negative';
   }
 
   function getProgressBarValue(status: ScanStatus): number {
-    return status === ScanStatus.completed || status === ScanStatus.cancelled
-      ? 1
-      : 0;
+    return status === ScanStatus.completed || status === ScanStatus.cancelled ? 1 : 0;
   }
 
   function isIndeterminate(status: ScanStatus): boolean {

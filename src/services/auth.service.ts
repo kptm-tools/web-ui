@@ -17,14 +17,10 @@ export function logoutUser(): Promise<AxiosResponse> {
   return fusionAuthApi.post('/api/logout');
 }
 
-export function changePassword(
-  body: ChangePasswordBody
-): Promise<AxiosResponse> {
+export function changePassword(body: ChangePasswordBody): Promise<AxiosResponse> {
   return fusionAuthApi.post('/api/change-password', body);
 }
 
-export function forgotPassword(
-  body: ForgotPasswordBody
-): Promise<AxiosResponse> {
+export function forgotPassword(body: ForgotPasswordBody): Promise<AxiosResponse> {
   return fusionAuthApi.post('/api/forgot-password', body);
 }

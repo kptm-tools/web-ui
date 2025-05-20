@@ -14,12 +14,10 @@ export function getVariationIcon(variation: number): string {
   return iconClass;
 }
 
-export function getVulnerabilityList(
-  vulnerabilities: SeverityPerType
-): VulnerabilityItem[] {
+export function getVulnerabilityList(vulnerabilities: SeverityPerType): VulnerabilityItem[] {
   return Object.keys(vulnerabilities).map((key, index) => ({
     id: index,
     name: key,
-    type: vulnerabilities[key] || 'None',
+    type: vulnerabilities[key] || 'None'
   }));
 }

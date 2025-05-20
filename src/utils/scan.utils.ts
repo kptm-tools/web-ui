@@ -4,14 +4,14 @@ import { ScanActions, ScanStatus } from 'src/models/scans.model';
 import { ScanService } from 'src/services';
 
 export function formatScansForTable(scans: Scan[]): Record<string, unknown>[] {
-  return scans.map((scan) => ({
+  return scans.map(scan => ({
     id: scan.scan_id,
     scanDate: scan.scan_date,
     host: scan.host,
     numVulnerabilities: scan.vulnerabilities,
     severity: scan.severities,
     durations: scan.duration,
-    status: scan.status,
+    status: scan.status
   }));
 }
 
@@ -45,44 +45,44 @@ export const SCAN_TABLE_COLUMNS: QTableColumn[] = [
     name: 'ID',
     label: 'ID',
     align: 'left',
-    field: 'id',
+    field: 'id'
   },
   {
     name: 'Scan Date',
     label: 'ScanDate',
     align: 'left',
-    field: 'scanDate',
+    field: 'scanDate'
   },
   {
     name: 'Host',
     label: 'Host',
     align: 'left',
-    field: 'host',
+    field: 'host'
   },
   {
     name: '# of vulnerabilities',
     label: 'NumVulnerabilities',
     align: 'left',
-    field: 'numVulnerabilities',
+    field: 'numVulnerabilities'
   },
   {
     name: 'Severity',
     label: 'Severity',
     align: 'left',
-    field: 'severity',
+    field: 'severity'
   },
   {
     name: 'Durations',
     label: 'Durations',
     align: 'left',
-    field: 'durations',
+    field: 'durations'
   },
   {
     name: 'Status',
     label: 'Status',
     align: 'left',
-    field: 'status',
-  },
+    field: 'status'
+  }
 ];
 
 export const SCAN_TABLE_SCHEDULE_COLUMNS: QTableColumn[] = [
@@ -90,38 +90,38 @@ export const SCAN_TABLE_SCHEDULE_COLUMNS: QTableColumn[] = [
     name: 'ID',
     label: 'ID',
     align: 'left',
-    field: 'id',
+    field: 'id'
   },
   {
     name: 'Host',
     label: 'Host',
     align: 'left',
-    field: 'host',
+    field: 'host'
   },
   {
     name: 'Scan Date',
     label: 'ScanDate',
     align: 'left',
-    field: 'scheduled_date',
+    field: 'scheduled_date'
   },
   {
     name: 'Frequency',
     label: 'Frequency',
     align: 'left',
-    field: 'frequency',
-  },
+    field: 'frequency'
+  }
 ];
 
 export const SCAN_TABLE_ACTIONS: ScanTableAction[] = [
   {
     name: ScanActions.insight,
     icon: 'fas fa-chart-simple',
-    show: (value: ScanStatus): boolean => value === ScanStatus.completed,
+    show: (value: ScanStatus): boolean => value === ScanStatus.completed
   },
   {
     name: ScanActions.cancel,
     icon: 'close',
     show: (value: ScanStatus): boolean =>
-      value === ScanStatus.inProgress || value === ScanStatus.pending,
-  },
+      value === ScanStatus.inProgress || value === ScanStatus.pending
+  }
 ];

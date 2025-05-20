@@ -2,7 +2,7 @@
   <div class="q-pa-md">
     <table-host
       :rows="store.getFilteredList"
-      @refresh-table="setInitalDataToStore"
+      @refresh-table="setInitialDataToStore"
       @action="actionHandler"
     />
   </div>
@@ -12,19 +12,12 @@
   import TableHost from 'src/components/Table/TableHost.vue';
   import { onMounted } from 'vue';
   import type { Host } from 'src/models/hosts.models';
-  import { useHosthStore } from 'src/stores/host-store';
-  import {
-    setInitalDataToStore,
-    deleteHostById,
-    getHostByIdFromService
-  } from 'src/utils';
+  import { useHostStore } from 'src/stores/host-store';
+  import { setInitialDataToStore, deleteHostById, getHostByIdFromService } from 'src/utils';
 
-  const store = useHosthStore();
+  const store = useHostStore();
 
-  async function actionHandler(action: {
-    action: string;
-    col: Host;
-  }): Promise<void> {
+  async function actionHandler(action: { action: string; col: Host }): Promise<void> {
     const hostId = action.col.id || '';
 
     switch (action.action) {
@@ -38,7 +31,7 @@
   }
 
   onMounted(async () => {
-    await setInitalDataToStore();
+    await setInitialDataToStore();
   });
 </script>
 

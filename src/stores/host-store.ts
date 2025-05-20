@@ -6,7 +6,7 @@ interface HostFilter {
   searchText?: string;
 }
 
-export const useHosthStore = defineStore('host', {
+export const useHostStore = defineStore('host', {
   state: () => ({
     originalList: [] as Host[],
     filteredList: [] as Host[],

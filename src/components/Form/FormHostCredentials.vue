@@ -24,11 +24,7 @@
       </div>
     </div>
 
-    <q-form
-      ref="credentialFormComponent"
-      class="row q-col-gutter-md"
-      @submit="addCredentialToHost"
-    >
+    <q-form ref="credentialFormComponent" class="row q-col-gutter-md" @submit="addCredentialToHost">
       <div class="col-5">
         <q-input
           v-model="credentialForm.username"
@@ -120,13 +116,9 @@
 </template>
 
 <script setup lang="ts">
-  import type {
-    ValidatedHost,
-    ValidateHostAuth,
-    Credential
-  } from 'src/models/hosts.models';
-  import type { Ref, ComputedRef} from 'vue';
-import { ref, computed, onMounted } from 'vue';
+  import type { ValidatedHost, ValidateHostAuth, Credential } from 'src/models/hosts.models';
+  import type { Ref, ComputedRef } from 'vue';
+  import { ref, computed, onMounted } from 'vue';
   import { requiredRules } from 'src/utils/auth.utils';
   import { QForm } from 'quasar';
 
@@ -158,9 +150,8 @@ import { ref, computed, onMounted } from 'vue';
 
   const validateHostAuth: ComputedRef<ValidateHostAuth> = computed(
     () =>
-      (rawHosts.value.find(
-        ({ alias }) => alias === pickedHost.value.alias
-      ) as ValidateHostAuth) || []
+      (rawHosts.value.find(({ alias }) => alias === pickedHost.value.alias) as ValidateHostAuth) ||
+      []
   );
 
   const isPwd = ref(true);
@@ -180,9 +171,7 @@ import { ref, computed, onMounted } from 'vue';
   }
 
   function addCredentialToHost(): void {
-    const indexHost = rawHosts.value.findIndex(
-      ({ alias }) => alias === pickedHost.value.alias
-    );
+    const indexHost = rawHosts.value.findIndex(({ alias }) => alias === pickedHost.value.alias);
 
     if (rawHosts.value[indexHost] && !rawHosts.value[indexHost]?.credentials) {
       rawHosts.value[indexHost].credentials = [];
@@ -197,9 +186,7 @@ import { ref, computed, onMounted } from 'vue';
   }
 
   function removeCredentialToHost(index: number): void {
-    const indexHost = rawHosts.value.findIndex(
-      ({ alias }) => alias === pickedHost.value.alias
-    );
+    const indexHost = rawHosts.value.findIndex(({ alias }) => alias === pickedHost.value.alias);
     rawHosts.value[indexHost]?.credentials.splice(index, 1);
   }
 

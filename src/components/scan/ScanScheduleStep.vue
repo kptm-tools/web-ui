@@ -51,16 +51,8 @@
             class="col-4"
           >
             <template #append>
-              <q-icon
-                name="event"
-                class="cursor-pointer"
-                :disable="shouldStartScanNow"
-              >
-                <q-popup-proxy
-                  cover
-                  transition-show="scale"
-                  transition-hide="scale"
-                >
+              <q-icon name="event" class="cursor-pointer" :disable="shouldStartScanNow">
+                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                   <q-date
                     v-model="host.scanDateTime.date"
                     @update:model-value="handleAllSelectDate"
@@ -85,11 +77,7 @@
           >
             <template #append>
               <q-icon name="access_time" class="cursor-pointer">
-                <q-popup-proxy
-                  cover
-                  transition-show="scale"
-                  transition-hide="scale"
-                >
+                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                   <q-time
                     v-model="host.scanDateTime.time"
                     :disable="shouldStartScanNow"
@@ -158,20 +146,14 @@
   </q-card-section>
 
   <q-card-actions align="right">
-    <q-btn
-      type="submit"
-      label="Next"
-      color="primary"
-      size="md"
-      @click="submitTime"
-    />
+    <q-btn type="submit" label="Next" color="primary" size="md" @click="submitTime" />
   </q-card-actions>
 </template>
 
 <script setup lang="ts">
   import type { Host, HostSchedule } from 'src/models';
-  import type { Ref} from 'vue';
-import { ref, watch } from 'vue';
+  import type { Ref } from 'vue';
+  import { ref, watch } from 'vue';
 
   const emit = defineEmits(['submitTime']);
 

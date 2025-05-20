@@ -10,7 +10,12 @@
                 <template #append>
                   <q-icon name="event" class="cursor-pointer">
                     <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                      <q-date v-model="dateFrom" dense mask="YYYY-MM-DD" @update:model-value="setScoreData">
+                      <q-date
+                        v-model="dateFrom"
+                        dense
+                        mask="YYYY-MM-DD"
+                        @update:model-value="setScoreData"
+                      >
                         <div class="row items-center justify-end">
                           <q-btn v-close-popup label="Close" color="primary" flat />
                         </div>
@@ -28,7 +33,12 @@
                 <template #append>
                   <q-icon name="event" class="cursor-pointer">
                     <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                      <q-date v-model="dateTo" dense mask="YYYY-MM-DD" @update:model-value="setScoreData">
+                      <q-date
+                        v-model="dateTo"
+                        dense
+                        mask="YYYY-MM-DD"
+                        @update:model-value="setScoreData"
+                      >
                         <div class="row items-center justify-end">
                           <q-btn v-close-popup label="Close" color="primary" flat />
                         </div>
@@ -75,93 +85,90 @@
 </template>
 
 <script setup lang="ts">
-import { useDialogPluginComponent } from 'quasar';
-import ScoreCardChart from '../ScoreCardChart.vue';
-import { onMounted, ref } from 'vue';
-import { ScanService } from 'src/services';
+  import { useDialogPluginComponent } from 'quasar';
+  import ScoreCardChart from '../ScoreCardChart.vue';
+  import { onMounted, ref } from 'vue';
+  import { ScanService } from 'src/services';
 
-defineEmits([...useDialogPluginComponent.emits]);
+  defineEmits([...useDialogPluginComponent.emits]);
 
-const { dialogRef, onDialogHide } = useDialogPluginComponent();
+  const { dialogRef, onDialogHide } = useDialogPluginComponent();
 
-const scoreCardTrendData = ref([] as { label: string; grade: string }[]);
+  const scoreCardTrendData = ref([] as { label: string; grade: string }[]);
 
-const dateTo = ref();
-const dateFrom = ref();
+  const dateTo = ref();
+  const dateFrom = ref();
 
-function setScoreData() {
-  const dateFromAux = new Date(dateFrom.value);
-  const dateToAux = new Date(dateTo.value);
-  ScanService.getScorecardTrends(
-    dateFromAux.toISOString().split('T')[0],
-    dateToAux.toISOString().split('T')[0]
-  ).then(response => {
-    scoreCardTrendData.value = response.data.map(value => ({
-      label: value.alias,
-      start:
-        Number((value.oldest_score || value.latest_score || 0)?.toFixed(4)) *
-        100,
-      width:
-        Number(
-          (
-            value.latest_score - (value.oldest_score || value.latest_score)
-          ).toFixed(4)
-        ) * 100,
-      grade: value.latest_score_grade
-    }));
-  }).catch((err) => new Error(err));
-}
+  function setScoreData() {
+    const dateFromAux = new Date(dateFrom.value);
+    const dateToAux = new Date(dateTo.value);
+    ScanService.getScorecardTrends(
+      dateFromAux.toISOString().split('T')[0],
+      dateToAux.toISOString().split('T')[0]
+    )
+      .then(response => {
+        scoreCardTrendData.value = response.data.map(value => ({
+          label: value.alias,
+          start: Number((value.oldest_score || value.latest_score || 0)?.toFixed(4)) * 100,
+          width:
+            Number((value.latest_score - (value.oldest_score || value.latest_score)).toFixed(4)) *
+            100,
+          grade: value.latest_score_grade
+        }));
+      })
+      .catch(err => new Error(err));
+  }
 
-onMounted(() => {
-  const currentDate = new Date();
-  const pastweek = new Date(currentDate);
-  currentDate.setDate(currentDate.getDate() + 1);
-  pastweek.setDate(currentDate.getDate() - 7);
-  dateTo.value = currentDate.toISOString().split('T')[0];
-  dateFrom.value = pastweek.toISOString().split('T')[0];
-  setScoreData();
-});
+  onMounted(() => {
+    const currentDate = new Date();
+    const pastweek = new Date(currentDate);
+    currentDate.setDate(currentDate.getDate() + 1);
+    pastweek.setDate(currentDate.getDate() - 7);
+    dateTo.value = currentDate.toISOString().split('T')[0];
+    dateFrom.value = pastweek.toISOString().split('T')[0];
+    setScoreData();
+  });
 </script>
 
 <style lang="scss">
-.grades-container {
-  display: flex;
-  width: 100%;
-  height: 3rem;
-  gap: 0.2em;
-
-  .grade {
+  .grades-container {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    width: 100%;
     height: 3rem;
-    width: 4rem;
-    color: white;
+    gap: 0.2em;
 
-    .description {
-      font-size: 0.7em;
-    }
+    .grade {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 3rem;
+      width: 4rem;
+      color: white;
 
-    &.A {
-      background-color: #97b951;
-    }
+      .description {
+        font-size: 0.7em;
+      }
 
-    &.B {
-      background-color: #fbbf65;
-    }
+      &.A {
+        background-color: #97b951;
+      }
 
-    &.C {
-      background-color: #f6a800;
-    }
+      &.B {
+        background-color: #fbbf65;
+      }
 
-    &.D {
-      background-color: #f3a488;
-    }
+      &.C {
+        background-color: #f6a800;
+      }
 
-    &.F {
-      background-color: #e5494d;
+      &.D {
+        background-color: #f3a488;
+      }
+
+      &.F {
+        background-color: #e5494d;
+      }
     }
   }
-}
 </style>

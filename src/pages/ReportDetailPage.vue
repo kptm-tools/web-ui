@@ -56,11 +56,7 @@
       :options="['Vulnerability', 'Cvss', 'Risk']"
       @update:model-value="sortList"
     ></q-select>
-    <div
-      v-for="vul in vulnerabilities.vulnerabilities"
-      :key="vul.id"
-      class="col-12"
-    >
+    <div v-for="vul in vulnerabilities.vulnerabilities" :key="vul.id" class="col-12">
       <vulnerability-card :vul="vul" @comment-updated="handleCommentUpdated" />
     </div>
   </div>
@@ -69,8 +65,8 @@
 <script setup lang="ts">
   import type { ScanVulnerabilitesResponse, ScanVulnerability } from 'src/models';
   import { ReportService } from 'src/services';
-  import type { Ref} from 'vue';
-import { computed, onMounted, ref } from 'vue';
+  import type { Ref } from 'vue';
+  import { computed, onMounted, ref } from 'vue';
   import { useRoute } from 'vue-router';
   import { ROUTES_NAMES } from 'src/router/routes-names';
   import { useQuasar } from 'quasar';
@@ -78,9 +74,7 @@ import { computed, onMounted, ref } from 'vue';
 
   const route = useRoute();
   const scanId = route.params.id as string;
-  const vulnerabilities: Ref<ScanVulnerabilitesResponse> = ref(
-    {} as ScanVulnerabilitesResponse
-  );
+  const vulnerabilities: Ref<ScanVulnerabilitesResponse> = ref({} as ScanVulnerabilitesResponse);
   const sort = ref('Vulnerability');
   const isMounted = ref(false);
   const $q = useQuasar();
@@ -91,10 +85,7 @@ import { computed, onMounted, ref } from 'vue';
     );
   });
 
-  function handleCommentUpdated(payload: {
-    vulID: number;
-    newComment: string;
-  }) {
+  function handleCommentUpdated(payload: { vulID: number; newComment: string }) {
     const vulnerabilityToUpdate = vulnerabilities.value.vulnerabilities.find(
       vul => vul.id === payload.vulID
     );
@@ -107,17 +98,14 @@ import { computed, onMounted, ref } from 'vue';
   }
 
   function sortList(type: string): void {
-    let updatedList: ScanVulnerability[] =
-      vulnerabilities.value.vulnerabilities;
+    let updatedList: ScanVulnerability[] = vulnerabilities.value.vulnerabilities;
     if (type === 'Vulnerability') {
       updatedList = vulnerabilities.value.vulnerabilities.sort((a, b) =>
         b.name.localeCompare(a.name)
       );
     }
     if (type === 'Cvss') {
-      updatedList = vulnerabilities.value.vulnerabilities.sort(
-        (a, b) => b.max_cvss - a.max_cvss
-      );
+      updatedList = vulnerabilities.value.vulnerabilities.sort((a, b) => b.max_cvss - a.max_cvss);
     }
     if (type === 'Risk') {
       updatedList = vulnerabilities.value.vulnerabilities.sort(
@@ -129,9 +117,7 @@ import { computed, onMounted, ref } from 'vue';
 
   onMounted(async () => {
     $q.loading.show();
-    vulnerabilities.value = (
-      await ReportService.getReportsVulnerabilities(scanId)
-    ).data;
+    vulnerabilities.value = (await ReportService.getReportsVulnerabilities(scanId)).data;
     $q.loading.hide();
     sortList('Vulnerability');
     isMounted.value = true;

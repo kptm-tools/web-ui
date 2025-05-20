@@ -8,9 +8,7 @@
       <q-input
         v-model="bodyForm[input.key]"
         :label="$t(input.label)"
-        :rules="
-          input.required ? requiredRules($t(input.requiredMessage || '')) : []
-        "
+        :rules="input.required ? requiredRules($t(input.requiredMessage || '')) : []"
         :type="input.type || 'text'"
         filled
         dense
@@ -40,7 +38,7 @@
 <script setup lang="ts">
   import { QForm } from 'quasar';
   import type { Reactive, Ref } from 'vue';
-import { reactive, ref } from 'vue';
+  import { reactive, ref } from 'vue';
   import { requiredRules } from 'src/utils/auth.utils';
   import type { BodyForm, FormContainerBody } from 'src/models/form.models';
 

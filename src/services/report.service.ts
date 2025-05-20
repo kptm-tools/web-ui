@@ -6,9 +6,7 @@ import type {
   ReportSummaryTimeRangeTypes,
   ScanVulnerabilitesResponse
 } from 'src/models';
-import {
-  ReportSummaryTimeRange
-} from 'src/models';
+import { ReportSummaryTimeRange } from 'src/models';
 
 export class ReportService {
   private static readonly BASE_PATH = '/api/reports';
@@ -21,9 +19,7 @@ export class ReportService {
   static async getReportsVulnerabilities(
     scanId: string
   ): Promise<AxiosResponse<ScanVulnerabilitesResponse>> {
-    return await fusionAuthApi.get(
-      `${this.BASE_PATH_SCANS}/${scanId}/vulnerabilities`
-    );
+    return await fusionAuthApi.get(`${this.BASE_PATH_SCANS}/${scanId}/vulnerabilities`);
   }
 
   static async getReportsVulnerabilitiesSummary(

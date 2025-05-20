@@ -10,11 +10,11 @@ declare module 'vue' {
 }
 
 const fusionAuthApi = axios.create({
-  baseURL: process.env.FUSION_SERVER_URL || '',
+  baseURL: process.env.FUSION_SERVER_URL || ''
 });
 
 const isUnprotected = (url: string): boolean => {
-  return UNPROTECTED_PATHS.some((endpoint) => url.includes(endpoint));
+  return UNPROTECTED_PATHS.some(endpoint => url.includes(endpoint));
 };
 
 fusionAuthApi.interceptors.request.use(
@@ -27,17 +27,17 @@ fusionAuthApi.interceptors.request.use(
     }
     return config;
   },
-  (error) => Promise.reject(new Error(error)),
+  error => Promise.reject(new Error(error))
 );
 
 // Add a response interceptor
 fusionAuthApi.interceptors.response.use(
-  (response) => {
+  response => {
     return response;
   },
-  (error) => {
+  error => {
     return Promise.reject(new Error(error));
-  },
+  }
 );
 
 export { fusionAuthApi };
