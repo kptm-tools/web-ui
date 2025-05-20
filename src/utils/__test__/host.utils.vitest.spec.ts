@@ -7,7 +7,7 @@ import {
   getInitalDataForHostTable,
   getPrincipalRapporteur,
   deleteHostById
-} from './host.utils';
+} from '../host.utils';
 import type { Host, Rapporteur } from 'src/models/hosts.models';
 import { HostService } from 'src/services/host.service';
 import { useHostStore } from 'src/stores/host-store';

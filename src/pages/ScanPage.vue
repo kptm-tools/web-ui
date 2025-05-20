@@ -25,14 +25,6 @@
   const rows = computed(() => formatScansForTable(scans.value));
   const connection = ref<WebSocket | null>(null);
 
-  // const interval = setInterval(() => {
-  //   setScansData().catch(err => new Error(err));
-  // }, 3000);
-
-  // async function setScansData(): Promise<void> {
-  //   scans.value = await getScansFromService();
-  // }
-
   async function insightActionHandler(scanId: string): Promise<void> {
     try {
       $q.loading.show();
