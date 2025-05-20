@@ -103,7 +103,7 @@
       credentials: h.credentials,
       rapporteurs: h.rapporteurs,
       value: h.host || '',
-      value_type: 'Domain'
+      value_type: h.value_type || 'Domain'
     }));
     await registerHosts(data);
     onDialogOK();
