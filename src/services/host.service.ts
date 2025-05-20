@@ -1,66 +1,30 @@
 import type { AxiosResponse } from 'axios';
 import { fusionAuthApi } from 'boot/axios';
 import type { Host, HostCreateBody } from 'src/models/hosts.models';
-
-const BASE_PATH = '/api/hosts';
+import { HOST_ENDPOINTS } from 'src/constants/api.constants';
 
 export class HostService {
-  private static readonly BASE_PATH = '/api/hosts';
+  static async createHost(body: HostCreateBody): Promise<AxiosResponse> {
+    return await fusionAuthApi.post(HOST_ENDPOINTS.CREATE(), body);
+  }
 
   static async getHosts(): Promise<AxiosResponse<Host[]>> {
-    return await fusionAuthApi.get(`${this.BASE_PATH}`);
+    return await fusionAuthApi.get(HOST_ENDPOINTS.GET_ALL());
   }
 
   static async deleteHostById(hostId: string): Promise<AxiosResponse<Host[]>> {
-    return await fusionAuthApi.delete(`${BASE_PATH}/${hostId}`);
+    return await fusionAuthApi.delete(HOST_ENDPOINTS.DELETE_BY_ID(hostId));
   }
 
   static async getHostById(hostId: string): Promise<AxiosResponse<Host>> {
-    return await fusionAuthApi.get(`${BASE_PATH}/${hostId}`);
+    return await fusionAuthApi.get(HOST_ENDPOINTS.GET_BY_ID(hostId));
   }
-}
 
-export function validateDomainOrIp(
-  domainOrIp: string,
-  hostname: string
-): Promise<AxiosResponse<string>> {
-  return fusionAuthApi.post(`${BASE_PATH}/validate`, {
-    value: domainOrIp,
-    hostname
-  });
-}
+  static async editHost(hostId: string, body: HostCreateBody): Promise<AxiosResponse> {
+    return await fusionAuthApi.patch(HOST_ENDPOINTS.EDIT_BY_ID(hostId), body);
+  }
 
-export function validateHost(value: string): Promise<AxiosResponse<string>> {
-  return fusionAuthApi.post(`${BASE_PATH}/validate-host`, { value: value });
-}
-
-export function validateAlias(value: string): Promise<AxiosResponse<string>> {
-  return fusionAuthApi.post(`${BASE_PATH}/validate-alias`, { hostname: value });
-}
-
-export async function getHosts(): Promise<AxiosResponse<Host[]>> {
-  return await fusionAuthApi.get(`${BASE_PATH}`);
-}
-
-export async function getHost(hostId: string): Promise<AxiosResponse<Host>> {
-  return await fusionAuthApi.get(`${BASE_PATH}/${hostId}`);
-}
-
-export async function editHost(
-  hostId: string,
-  body: HostCreateBody
-): Promise<AxiosResponse> {
-  return await fusionAuthApi.patch(`${BASE_PATH}/${hostId}`, body);
-}
-
-export async function deleteHost(
-  hostId: string
-): Promise<AxiosResponse<Host[]>> {
-  return await fusionAuthApi.delete(`${BASE_PATH}/${hostId}`);
-}
-
-export async function registerHost(
-  body: HostCreateBody
-): Promise<AxiosResponse> {
-  return await fusionAuthApi.post(`${BASE_PATH}`, body);
+  static async validateHost(value: string): Promise<AxiosResponse<string>> {
+    return fusionAuthApi.post(HOST_ENDPOINTS.VALIDATE_HOST(), { value });
+  }
 }

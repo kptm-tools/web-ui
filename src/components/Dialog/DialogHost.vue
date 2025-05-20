@@ -45,7 +45,7 @@
   } from 'src/models/hosts.models';
   import type { Ref } from 'vue';
   import { computed, ref } from 'vue';
-  import { registerHost } from 'src/services/host.service';
+  import { HostService } from 'src/services/host.service';
   import { useQuasar } from 'quasar';
 
   defineEmits([...useDialogPluginComponent.emits]);
@@ -112,7 +112,7 @@
   async function registerHosts(hostsBody: HostCreateBody[]) {
     for (const hostBody of hostsBody) {
       try {
-        await registerHost(hostBody);
+        await HostService.createHost(hostBody);
         $q.notify({
           type: 'positive',
           message: `Host created ${hostBody.name}`

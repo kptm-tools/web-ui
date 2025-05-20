@@ -71,7 +71,7 @@
   } from 'src/models/hosts.models';
   import FormHostCredentials from 'components/Form/FormHostCredentials.vue';
   import FormHostEmails from 'components/Form/FormHostEmails.vue';
-  import { validateHost } from 'src/services/host.service';
+  import { HostService } from 'src/services/host.service';
   import { errorQuasarNotify } from 'src/utils';
   import type { Rapporteur } from 'src/models';
 
@@ -101,7 +101,7 @@
       formCredentials.value.submitHandler();
       formEmails.value.registerHosts();
 
-      await validateHost(value || '');
+      await HostService.validateHost(value || '');
 
       const body: HostCreateBody = {
         value,

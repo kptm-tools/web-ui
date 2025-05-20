@@ -74,7 +74,7 @@
 
 <script setup lang="ts">
   import { computed, ref, watch } from 'vue';
-  import { validateHost } from 'src/services/host.service';
+  import { HostService } from 'src/services/host.service';
   import type { Host, ValidatedHost } from 'src/models/hosts.models';
   import { useQuasar } from 'quasar';
 
@@ -109,7 +109,7 @@
         domainOrIp = ip.value;
       }
       try {
-        await validateHost(domainOrIp);
+        await HostService.validateHost(domainOrIp);
         isValidated.value = true;
         $q.notify({
           type: 'positive',
