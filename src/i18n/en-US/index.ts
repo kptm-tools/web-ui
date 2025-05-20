@@ -107,5 +107,24 @@ export default {
         }
       }
     }
+  },
+  hosts: {
+    creation: {
+      steps: {
+        auth: {
+          title: 'Host Validation'
+        },
+        validation: {
+          title: 'Authentication'
+        },
+        email: {
+          title: 'Send email'
+        }
+      },
+      message: {
+        ok: 'Host created {name}',
+        error: 'Failure for host {name}'
+      }
+    }
   }
 };

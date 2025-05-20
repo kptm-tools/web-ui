@@ -40,3 +40,13 @@ export async function deleteHostById(hostId: string): Promise<void> {
     console.log(e);
   }
 }
+
+export function formatHostToRequestServiceBody(hosts: Host[]) {
+  return hosts.map(h => ({
+    name: h.alias || '',
+    credentials: h.credentials,
+    rapporteurs: h.rapporteurs,
+    value: h.host || '',
+    value_type: h.value_type || 'Domain'
+  }));
+}

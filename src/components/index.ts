@@ -16,6 +16,9 @@ import TableScan from './Table/TableScan.vue';
 import TableReports from './Table/TableReports.vue';
 
 import FormHostEmails from './Form/FormHostEmails.vue';
+import FormHostCredentials from './Form/FormHostCredentials.vue';
+import FormRegular from './Form/FormRegular.vue';
+import FormValidateHost from './Form/FormValidateHost.vue';
 
 export {
   DialogEditHost,
@@ -31,5 +34,8 @@ export {
   ScanTableProgressBar,
   ScanPickHostsStep,
   ScanScheduleStep,
-  FormHostEmails
+  FormHostEmails,
+  FormHostCredentials,
+  FormRegular,
+  FormValidateHost
 };
