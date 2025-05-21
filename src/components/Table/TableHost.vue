@@ -1,9 +1,9 @@
 <template>
   <q-btn label="New Host" color="primary" class="q-mb-md" @click="addHost"></q-btn>
-  <div style="height: 80vh; overflow-y: auto">
+  <div class="table-container">
     <table-regular
-      :actions="['edit', 'delete']"
-      :columns="columns"
+      :actions="HOST_TABLE_ACTIONS"
+      :columns="HOST_TABLE_COLUMNS"
       :rows="rows"
       @action="handlerEmitter($event)"
     />
@@ -11,13 +11,11 @@
 </template>
 
 <script setup lang="ts">
-  import type { QTableColumn } from 'quasar';
   import { useQuasar } from 'quasar';
-  import TableRegular from './TableRegular.vue';
-  import DialogHost from '../Dialog/DialogHost.vue';
-  import DialogEditHost from '../Dialog/DialogEditHost.vue';
-  import { HostService } from 'src/services/host.service';
-  import type { HostCreateBody } from 'src/models/hosts.models';
+  import { TableRegular, DialogEditHost, DialogHost } from 'src/components';
+  import { HostService } from 'src/services';
+  import { type HostCreateBody } from 'src/models';
+  import { HOST_TABLE_ACTIONS, HOST_TABLE_COLUMNS } from 'src/constants/table.constants';
 
   const props = defineProps<{
     rows: Record<string, unknown>[];
@@ -27,55 +25,15 @@
 
   const $q = useQuasar();
 
-  const columns: QTableColumn[] = [
-    {
-      name: 'Domain',
-      label: 'Domain',
-      align: 'left',
-      field: 'domain'
-    },
-    {
-      name: 'IP',
-      label: 'Ip',
-      align: 'left',
-      field: 'ip'
-    },
-    {
-      name: 'Host Name',
-      label: 'HostName',
-      align: 'left',
-      field: 'hostName'
-    },
-    {
-      name: 'Creation Date',
-      label: 'CreationDate',
-      align: 'left',
-      field: 'creationDate'
-    },
-    {
-      name: 'Email',
-      label: 'Email',
-      align: 'left',
-      field: 'email'
-    }
-  ];
-
   function addHost(): void {
     $q.dialog({
       component: DialogHost,
       componentProps: {
         hosts: props.rows
       }
-    })
-      .onOk(() => {
-        emits('refreshTable');
-      })
-      .onCancel(() => {
-        console.log('Cancel');
-      })
-      .onDismiss(() => {
-        console.log('Called on OK or Cancel');
-      });
+    }).onOk(() => {
+      emits('refreshTable');
+    });
   }
 
   async function editHostHandler(col: unknown): Promise<void> {
@@ -86,20 +44,13 @@
       componentProps: {
         host
       }
-    })
-      .onOk((hostForm: HostCreateBody) => {
-        HostService.editHost(hostId, hostForm)
-          .then(() => {
-            emits('refreshTable');
-          })
-          .catch(err => new Error(err));
-      })
-      .onCancel(() => {
-        console.log('Cancel');
-      })
-      .onDismiss(() => {
-        console.log('Called on OK or Cancel');
-      });
+    }).onOk((hostForm: HostCreateBody) => {
+      HostService.editHost(hostId, hostForm)
+        .then(() => {
+          emits('refreshTable');
+        })
+        .catch(err => new Error(err));
+    });
   }
 
   async function handlerEmitter(action: unknown): Promise<void> {
@@ -112,4 +63,9 @@
   }
 </script>
 
-<style scoped></style>
+<style lang="scss" scoped>
+  .table-container {
+    height: 80vh;
+    overflow-y: auto;
+  }
+</style>

@@ -1,7 +1,8 @@
 import type { QTableColumn } from 'quasar';
-import type { Scan, ScanInsight, ScanTableAction } from 'src/models/scans.model';
-import { ScanActions, ScanStatus } from 'src/models/scans.model';
+import { ScanActions, ScanStatus } from 'src/models';
+import type { CreateScanBody, Scan, ScanInsight, ScanTableAction, HostSchedule } from 'src/models';
 import { ScanService } from 'src/services';
+import { formatDateTimeToServer } from './date.utils';
 
 export function formatScansForTable(scans: Scan[]): Record<string, unknown>[] {
   return scans.map(scan => ({
@@ -38,6 +39,19 @@ export function formatDuration(seconds: number): string {
   if ((secs > 0 && seconds < 60) || result === '') result += `${secs.toFixed(0)}s`;
 
   return result.trim();
+}
+
+export function formatHostScheduleToCreateScanBody(data: HostSchedule[]): CreateScanBody[] {
+  return data
+    .map(val => ({
+      host_id: Number(val.id),
+      repeat_frequency: {
+        quantity: val.repeat_frequency.quantity,
+        unit_of_frequency: val.repeat_frequency.unit_of_frequency
+      },
+      schedule_at: formatDateTimeToServer(val.scanDateTime.date, val.scanDateTime.time)
+    }))
+    .filter(scan => scan.host_id);
 }
 
 export const SCAN_TABLE_COLUMNS: QTableColumn[] = [

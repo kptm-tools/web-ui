@@ -1,26 +1,15 @@
 <template>
   <table-regular
-    :columns="SCAN_TABLE_COLUMNS"
-    :rows="scans"
+    :columns="SCAN_SCHEDULE_TABLE_COLUMNS"
+    :rows="scheduleScans"
     :show-actions="false"
     @action="handlerEmitter($event)"
   >
     <template #column="{ column, row }">
       <template v-if="column.field === 'id'"> </template>
-      <template v-if="column.field === 'scanDate'">
-        {{ formatTableDate(column.value) }}
-      </template>
-      <template v-else-if="column.field === 'status'">
-        <scan-table-progress-bar :status="column.value" />
-      </template>
-      <template v-else-if="column.field === 'severity'">
-        <severity-chip :severity="column.value" />
-      </template>
-
-      <template v-else-if="column.field === 'durations'">
-        {{ formatDuration(column.value) }}
-      </template>
-
+      <template v-if="column.field === 'scheduled_date'">
+        {{ formatTableDate(column.value) }}</template
+      >
       <template v-else-if="column.field === 'actions'">
         <template v-for="action in SCAN_TABLE_ACTIONS" :key="action.name">
           <q-btn
@@ -42,23 +31,21 @@
 </template>
 
 <script setup lang="ts">
-  import { formatDuration, SCAN_TABLE_ACTIONS, formatTableDate } from 'src/utils';
-  import { SCAN_TABLE_COLUMNS } from 'src/constants/table.constants';
-  import { SeverityChip, TableRegular, ScanTableProgressBar } from 'src/components';
   import { type PropType } from 'vue';
-
-  const emits = defineEmits(['action']);
+  import { TableRegular } from 'src/components';
+  import { SCAN_SCHEDULE_TABLE_COLUMNS } from 'src/constants/table.constants';
+  import { formatTableDate, SCAN_TABLE_ACTIONS } from 'src/utils';
 
   defineProps({
-    scans: {
+    scheduleScans: {
       type: Array as PropType<Record<string, unknown>[]>,
       default: () => []
     }
   });
 
+  const emits = defineEmits(['action']);
+
   function handlerEmitter(action: unknown): void {
     emits('action', action);
   }
 </script>
-
-<style scoped></style>

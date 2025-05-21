@@ -41,9 +41,9 @@
 
 <script setup lang="ts">
   import type { QTableColumn } from 'quasar';
-  import { computed, onMounted, ref } from 'vue';
-
-  type tableActions = 'edit' | 'delete' | 'insight' | 'search' | 'detail';
+  import { computed } from 'vue';
+  import { TableActions, type tableActions } from 'src/models';
+  import { TABLE_ACTIONS_COLUMN } from 'src/constants/table.constants';
 
   const componentProps = withDefaults(
     defineProps<{
@@ -62,30 +62,24 @@
     action: unknown;
   }>();
 
-  const secondTick = ref(true);
-
   const updateColumns = computed(() => {
     const columns = [...componentProps.columns];
-    if (componentProps.actions?.length)
-      columns.push({
-        name: 'actions',
-        label: 'Actions',
-        align: 'center',
-        field: 'actions'
-      });
+    if (componentProps.actions?.length) columns.push(TABLE_ACTIONS_COLUMN);
     return columns;
   });
 
   function getIcon(action: tableActions): string {
     switch (action) {
-      case 'edit':
+      case TableActions.EDIT:
         return 'fas fa-pen-to-square';
-      case 'delete':
+      case TableActions.DELETE:
         return 'fas fa-trash-can';
-      case 'insight':
+      case TableActions.INSIGHT:
         return 'fas fa-chart-simple';
-      case 'search':
+      case TableActions.SEARCH:
         return 'fas fa-magnifying-glass';
+      case TableActions.DETAIL:
+        return 'fas fa-eye';
       default:
         return 'fas fa-eye';
     }
@@ -94,21 +88,6 @@
   function handlerEmitter(action: tableActions, col: unknown): void {
     emits('action', { action, col });
   }
-
-  // function isDate(date: string): boolean {
-  //   return new Date(date).toString() !== 'Invalid Date';
-  // }
-
-  // function formatDate(date: Date): string {
-  //   return new Date(date).toLocaleDateString();
-  // }
-
-  onMounted(() => {
-    setInterval(function () {
-      secondTick.value = false;
-      secondTick.value = true;
-    }, 1000);
-  });
 </script>
 
 <style scoped>
