@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { getErrorMessage } from './axios.utils'; // Adjust the import path as needed
+import { getErrorMessage } from '../axios.utils'; // Adjust the import path as needed
 import { i18n } from 'src/boot/i18n';
 
 // Mock the i18n object

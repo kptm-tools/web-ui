@@ -14,8 +14,14 @@ import TableHost from './Table/TableHost.vue';
 import TableRegular from './Table/TableRegular.vue';
 import TableScan from './Table/TableScan.vue';
 import TableReports from './Table/TableReports.vue';
+import TableScheduleScan from './Table/TableScheduleScan.vue';
 
 import FormHostEmails from './Form/FormHostEmails.vue';
+import FormHostCredentials from './Form/FormHostCredentials.vue';
+import FormRegular from './Form/FormRegular.vue';
+import FormValidateHost from './Form/FormValidateHost.vue';
+
+import TabScanTables from './Tab/TabScanTables.vue';
 
 export {
   DialogEditHost,
@@ -28,8 +34,13 @@ export {
   TableRegular,
   TableScan,
   TableReports,
+  TableScheduleScan,
   ScanTableProgressBar,
   ScanPickHostsStep,
   ScanScheduleStep,
-  FormHostEmails
+  FormHostEmails,
+  FormHostCredentials,
+  FormRegular,
+  FormValidateHost,
+  TabScanTables
 };

@@ -56,3 +56,9 @@ export interface Rapporteur {
   email: string;
   is_principal: boolean;
 }
+
+export enum DiALOG_STEPS {
+  VALIDATE = 'validate',
+  AUTH = 'auth',
+  EMAIL = 'email'
+}

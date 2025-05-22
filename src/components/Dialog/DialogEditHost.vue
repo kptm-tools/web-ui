@@ -63,17 +63,16 @@
   import { onMounted, ref } from 'vue';
   import type { AxiosError } from 'axios';
   import { useDialogPluginComponent } from 'quasar';
+  import { FormHostCredentials, FormHostEmails } from 'components';
+  import { HostService } from 'src/services';
+  import { errorQuasarNotify } from 'src/utils';
   import type {
+    Rapporteur,
     ValidatedHost,
     Host,
     ValidateHostAuth,
     HostCreateBody
-  } from 'src/models/hosts.models';
-  import FormHostCredentials from 'components/Form/FormHostCredentials.vue';
-  import FormHostEmails from 'components/Form/FormHostEmails.vue';
-  import { validateHost } from 'src/services/host.service';
-  import { errorQuasarNotify } from 'src/utils';
-  import type { Rapporteur } from 'src/models';
+  } from 'src/models';
 
   defineEmits([...useDialogPluginComponent.emits]);
 
@@ -101,7 +100,7 @@
       formCredentials.value.submitHandler();
       formEmails.value.registerHosts();
 
-      await validateHost(value || '');
+      await HostService.validateHost(value || '');
 
       const body: HostCreateBody = {
         value,

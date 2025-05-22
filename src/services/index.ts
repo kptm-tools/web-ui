@@ -3,3 +3,4 @@ export * from './scan.service';
 export * from './host.service';
 export * from './report.service';
 export * from './vulnerabilites.service';
+export * from './scan-schedules.service';

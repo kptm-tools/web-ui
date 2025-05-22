@@ -13,13 +13,7 @@
     </q-card-section>
 
     <q-card-actions align="right">
-      <q-btn
-        type="submit"
-        label="Save"
-        color="primary"
-        size="md"
-        @click="showTable = false"
-      />
+      <q-btn type="submit" label="Save" color="primary" size="md" @click="showTable = false" />
     </q-card-actions>
   </template>
   <template v-else>
@@ -42,21 +36,9 @@
     </q-card-section>
 
     <q-card-actions align="right">
-      <q-btn
-        label="Select host"
-        color="primary"
-        size="md"
-        flat
-        @click="showTable = true"
-      />
+      <q-btn label="Select host" color="primary" size="md" flat @click="showTable = true" />
 
-      <q-btn
-        type="submit"
-        label="Next"
-        color="primary"
-        size="md"
-        @click="submitHosts"
-      />
+      <q-btn type="submit" label="Next" color="primary" size="md" @click="submitHosts" />
     </q-card-actions>
   </template>
 </template>
@@ -64,8 +46,8 @@
 <script setup lang="ts">
   import type { QTableColumn } from 'quasar';
   import type { Host } from 'src/models';
-  import type { Ref} from 'vue';
-import { ref, toValue } from 'vue';
+  import type { Ref } from 'vue';
+  import { ref, toValue } from 'vue';
 
   defineProps({
     hosts: {

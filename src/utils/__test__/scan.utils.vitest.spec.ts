@@ -10,7 +10,7 @@ import {
   postScanCancelService,
   formatDuration,
   SCAN_TABLE_ACTIONS
-} from './scan.utils';
+} from '../scan.utils';
 
 // Mock the ScanService
 vi.mock('src/services', () => ({

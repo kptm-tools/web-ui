@@ -7,10 +7,10 @@ import {
   getInitalDataForHostTable,
   getPrincipalRapporteur,
   deleteHostById
-} from './host.utils';
+} from '../host.utils';
 import type { Host, Rapporteur } from 'src/models/hosts.models';
 import { HostService } from 'src/services/host.service';
-import { useHosthStore } from 'src/stores/host-store';
+import { useHostStore } from 'src/stores/host-store';
 
 // Mock the HostService
 vi.mock('src/services/host.service', () => ({
@@ -23,7 +23,7 @@ vi.mock('src/services/host.service', () => ({
 
 // Mock the host store
 vi.mock('src/stores/host-store', () => ({
-  useHosthStore: vi.fn(() => ({
+  useHostStore: vi.fn(() => ({
     setInitialList: vi.fn()
   }))
 }));
@@ -201,14 +201,14 @@ describe('host.utils', () => {
   });
 
   describe('deleteHostById', () => {
-    it('should call HostService.deleteHostById and then setInitalDataToStore on success', async () => {
+    it('should call HostService.deleteHostById and then setInitialDataToStore on success', async () => {
       const hostIdToDelete = 'delete-me';
       (HostService.deleteHostById as ReturnType<typeof vi.fn>).mockResolvedValue(undefined);
-      (HostService.getHosts as ReturnType<typeof vi.fn>).mockResolvedValue({ data: [] }); // Mock getHosts for setInitalDataToStore
+      (HostService.getHosts as ReturnType<typeof vi.fn>).mockResolvedValue({ data: [] }); // Mock getHosts for setInitialDataToStore
 
       await deleteHostById(hostIdToDelete);
       expect(HostService.deleteHostById).toHaveBeenCalledWith(hostIdToDelete);
-      expect(useHosthStore).toHaveBeenCalledTimes(1);
+      expect(useHostStore).toHaveBeenCalledTimes(1);
     });
 
     it('should log an error to the console if HostService.deleteHostById throws an error', async () => {
@@ -220,7 +220,7 @@ describe('host.utils', () => {
       await deleteHostById(hostIdToDelete);
       expect(HostService.deleteHostById).toHaveBeenCalledWith(hostIdToDelete);
       expect(consoleLogSpy).toHaveBeenCalledWith(mockError);
-      expect(useHosthStore).not.toHaveBeenCalled(); // Ensure store is not updated on error
+      expect(useHostStore).not.toHaveBeenCalled(); // Ensure store is not updated on error
 
       consoleLogSpy.mockRestore(); // Clean up the spy
     });

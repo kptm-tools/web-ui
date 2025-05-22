@@ -1,24 +1,15 @@
 <template>
   <q-dialog ref="dialogRef" @hide="onDialogHide">
-    <q-card
-      class="q-dialog-plugin full-width"
-      style="max-width: 700px; width: 100%"
-    >
+    <q-card class="q-dialog-plugin full-width" style="max-width: 700px; width: 100%">
       <q-card-section>
         <q-card-title class="text-h6">{{ modalTitle }} </q-card-title>
       </q-card-section>
       <template v-if="step === 0">
-        <scan-pick-hosts-step
-          :hosts="hosts"
-          @submit-hosts="scanPickHostHandler($event)"
-        />
+        <scan-pick-hosts-step :hosts="hosts" @submit-hosts="scanPickHostHandler($event)" />
       </template>
 
       <template v-if="step === 1">
-        <scan-schedule-step
-          :hosts="pickedHosts"
-          @submit-time="scanSetTimeHandler($event)"
-        />
+        <scan-schedule-step :hosts="pickedHosts" @submit-time="scanSetTimeHandler($event)" />
       </template>
 
       <template v-if="step === 2">
@@ -32,18 +23,10 @@
 
 <script setup lang="ts">
   import { useDialogPluginComponent } from 'quasar';
-  import type {
-    Host,
-    HostSchedule,
-    ValidateHostAuth
-  } from 'src/models/hosts.models';
-  import type { Ref} from 'vue';
-import { computed, onMounted, ref } from 'vue';
-  import {
-    ScanPickHostsStep,
-    ScanScheduleStep,
-    FormHostEmails
-  } from 'src/components';
+  import type { Host, HostSchedule, ValidateHostAuth } from 'src/models/hosts.models';
+  import type { Ref } from 'vue';
+  import { computed, onMounted, ref } from 'vue';
+  import { ScanPickHostsStep, ScanScheduleStep, FormHostEmails } from 'src/components';
 
   defineEmits([...useDialogPluginComponent.emits]);
 

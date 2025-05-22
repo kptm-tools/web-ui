@@ -1,6 +1,6 @@
 <template>
   <div class="q-pa-md">
-    <table-scan :rows="rows" @action="handlerEmitter" />
+    <tab-scan-tables :rows="rows" @action="handlerEmitter" />
   </div>
 </template>
 
@@ -8,7 +8,7 @@
   import { useQuasar } from 'quasar';
   import type { Ref } from 'vue';
   import { computed, onMounted, onUnmounted, ref } from 'vue';
-  import { TableScan, DialogScanInsight } from 'src/components';
+  import { TabScanTables, DialogScanInsight } from 'src/components';
   import type { Scan, ScanTableEventAction } from 'src/models';
   import { ScanActions } from 'src/models';
   import {
@@ -24,14 +24,6 @@
 
   const rows = computed(() => formatScansForTable(scans.value));
   const connection = ref<WebSocket | null>(null);
-
-  // const interval = setInterval(() => {
-  //   setScansData().catch(err => new Error(err));
-  // }, 3000);
-
-  // async function setScansData(): Promise<void> {
-  //   scans.value = await getScansFromService();
-  // }
 
   async function insightActionHandler(scanId: string): Promise<void> {
     try {

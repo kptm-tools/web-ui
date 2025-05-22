@@ -23,7 +23,7 @@ import {
   errorLoginResponseHandler,
   requiredRules,
   decodeJwt
-} from './auth.utils'; // Import the functions to be tested
+} from '../auth.utils'; // Import the functions to be tested
 import { type AxiosError } from 'axios';
 
 const mockSetUserInfo = vi.fn();

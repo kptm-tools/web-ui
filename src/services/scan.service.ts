@@ -1,11 +1,6 @@
 import type { AxiosResponse } from 'axios';
 import { fusionAuthApi } from 'boot/axios';
-import type {
-  Scan,
-  ScanInsight,
-  ScanScoreTrend,
-  CreateScanBody
-} from 'src/models/scans.model';
+import type { Scan, ScanInsight, ScanScoreTrend, CreateScanBody } from 'src/models/scans.model';
 
 export class ScanService {
   private static readonly BASE_PATH = '/api/scans';
@@ -15,9 +10,7 @@ export class ScanService {
     return await fusionAuthApi.get(`${this.BASE_PATH}`);
   }
 
-  static async getScanInsights(
-    id: string
-  ): Promise<AxiosResponse<ScanInsight>> {
+  static async getScanInsights(id: string): Promise<AxiosResponse<ScanInsight>> {
     return await fusionAuthApi.get(`${this.BASE_PATH}/${id}/insights`);
   }
 

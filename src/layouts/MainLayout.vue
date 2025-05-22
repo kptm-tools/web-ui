@@ -9,10 +9,26 @@
         <q-separator />
 
         <div v-if="$route.name === 'Hosts'" class="row items-center q-mr-md">
-          <q-input v-model="search" outlined dense label="Search" class="q-mr-md" @update:model-value="handleSeach">
-            <template #append> <q-icon name="search" /> </template></q-input>
-          <q-input v-model="creationDate" outlined dense mask="date" :rules="['date']" class="q-pa-none" label="Date"
-            @update:model-value="handleDate">
+          <q-input
+            v-model="search"
+            outlined
+            dense
+            label="Search"
+            class="q-mr-md"
+            @update:model-value="handleSeach"
+          >
+            <template #append> <q-icon name="search" /> </template
+          ></q-input>
+          <q-input
+            v-model="creationDate"
+            outlined
+            dense
+            mask="date"
+            :rules="['date']"
+            class="q-pa-none"
+            label="Date"
+            @update:model-value="handleDate"
+          >
             <template #append>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -34,12 +50,7 @@
     </q-header>
 
     <q-drawer show-if-above side="left" class="flex column" :width="showSecondDrawer ? 500 : 300">
-      <div style="
-          width: 300px;
-          display: flex;
-          flex-direction: column;
-          height: 100%;
-        ">
+      <div style="width: 300px; display: flex; flex-direction: column; height: 100%">
         <div class="text-center q-pt-lg">
           <img alt="Aynitech Logo" class="logo" src="../assets/logos/kriptone-logo.svg" />
         </div>
@@ -54,7 +65,13 @@
                 <q-item-label>Overview</q-item-label>
               </q-item-section>
             </q-item>
-            <q-item v-ripple clickable to="/hosts" class="nav-item" :active="route.name === 'Hosts'">
+            <q-item
+              v-ripple
+              clickable
+              to="/hosts"
+              class="nav-item"
+              :active="route.name === 'Hosts'"
+            >
               <q-item-section avatar class="q-px-none items-center">
                 <q-icon name="fas fa-sitemap" />
               </q-item-section>
@@ -70,7 +87,13 @@
                 <q-item-label>Scans</q-item-label>
               </q-item-section>
             </q-item>
-            <q-item v-ripple clickable to="reports" class="nav-item" :active="route.name === 'Reports'">
+            <q-item
+              v-ripple
+              clickable
+              to="reports"
+              class="nav-item"
+              :active="route.name === 'Reports'"
+            >
               <q-item-section avatar class="q-px-none items-center">
                 <q-icon name="warning" />
               </q-item-section>
@@ -88,14 +111,9 @@
                 </q-avatar>
               </q-item-section>
               <q-item-section>
-                <q-item-label>{{
-                  userInformation?.user?.user?.name ||
-                  userInformation?.user.firstName
-                }}
-                  {{
-                    userInformation?.user?.user?.lastname ||
-                    userInformation?.user.lastName
-                  }}
+                <q-item-label
+                  >{{ userInformation?.user?.user?.name || userInformation?.user.firstName }}
+                  {{ userInformation?.user?.user?.lastname || userInformation?.user.lastName }}
                 </q-item-label>
                 <!-- <q-item-label>{{
                 userInformation.user.memberships
@@ -139,76 +157,70 @@
 </template>
 
 <script setup lang="ts">
-import { useFusionAuthStore } from 'stores/auth-store';
-import { computed, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { useHosthStore } from 'src/stores/host-store';
-import { ROUTES_NAMES } from 'src/router/routes-names';
+  import { useFusionAuthStore } from 'stores/auth-store';
+  import { computed, ref } from 'vue';
+  import { useRoute, useRouter } from 'vue-router';
+  import { useHostStore } from 'src/stores/host-store';
+  import { ROUTES_NAMES } from 'src/router/routes-names';
 
-const router = useRouter();
-const route = useRoute();
-const hostStore = useHosthStore();
-const fusionAuthStore = useFusionAuthStore();
-const userInformation = computed(() => fusionAuthStore.getUserInfo);
-// const language = ref(true);
+  const router = useRouter();
+  const route = useRoute();
+  const hostStore = useHostStore();
+  const fusionAuthStore = useFusionAuthStore();
+  const userInformation = computed(() => fusionAuthStore.getUserInfo);
+  // const language = ref(true);
 
-async function logout(): Promise<void> {
-  fusionAuthStore.logoutUser();
-  await router.push({ name: 'Login' });
-}
-
-const creationDate = ref();
-const search = ref();
-
-function handleDate(date: string | number | null): void {
-  if (
-    !date ||
-    date.toString().length < 10 ||
-    isNaN(new Date(date).getTime())
-  ) {
-    hostStore.setFilter({ created_at: '' });
-    return;
+  async function logout(): Promise<void> {
+    fusionAuthStore.logoutUser();
+    await router.push({ name: 'Login' });
   }
 
-  hostStore.setFilter({ created_at: new Date(date).toISOString() });
-}
+  const creationDate = ref();
+  const search = ref();
 
-function handleSeach(searchText: string | number | null): void {
-  const currentFilter = { ...hostStore.filter };
-  hostStore.setFilter({
-    ...currentFilter,
-    searchText: searchText?.toString() || ''
-  });
-}
+  function handleDate(date: string | number | null): void {
+    if (!date || date.toString().length < 10 || isNaN(new Date(date).getTime())) {
+      hostStore.setFilter({ created_at: '' });
+      return;
+    }
 
-const showSecondDrawer = computed(
-  () =>
-    route.name === ROUTES_NAMES.reportsDetail ||
-    route.name === ROUTES_NAMES.reportsDetailVul
-);
+    hostStore.setFilter({ created_at: new Date(date).toISOString() });
+  }
+
+  function handleSeach(searchText: string | number | null): void {
+    const currentFilter = { ...hostStore.filter };
+    hostStore.setFilter({
+      ...currentFilter,
+      searchText: searchText?.toString() || ''
+    });
+  }
+
+  const showSecondDrawer = computed(
+    () => route.name === ROUTES_NAMES.reportsDetail || route.name === ROUTES_NAMES.reportsDetailVul
+  );
 </script>
 
 <style lang="scss">
-.nav-item {
-  color: #5c7288;
-  font-weight: 700;
-  line-height: 16px;
-  text-align: left;
-  text-underline-position: from-font;
-  text-decoration-skip-ink: none;
+  .nav-item {
+    color: #5c7288;
+    font-weight: 700;
+    line-height: 16px;
+    text-align: left;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
 
-  &:hover {
-    color: $primary;
+    &:hover {
+      color: $primary;
+    }
   }
-}
 
-.title {
-  font-size: 1.5em;
-  font-weight: 700;
-  line-height: 32px;
-  text-align: left;
-  text-underline-position: from-font;
-  text-decoration-skip-ink: none;
-  color: #313541;
-}
+  .title {
+    font-size: 1.5em;
+    font-weight: 700;
+    line-height: 32px;
+    text-align: left;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    color: #313541;
+  }
 </style>

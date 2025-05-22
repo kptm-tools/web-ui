@@ -7,12 +7,7 @@
     <template #aux-buttons>
       <div class="flex justify-between">
         <div>
-          <q-checkbox
-            v-model="remember"
-            color="grey-7"
-            dense
-            label="Remember"
-          />
+          <q-checkbox v-model="remember" color="grey-7" dense label="Remember" />
         </div>
         <div>
           <q-btn flat label="Forgot your password?" @click="goRecoverHandler" />
@@ -29,7 +24,7 @@
   import type { FusionAuthLoginBody } from 'src/models/fusion-auth.models';
   import { useRouter } from 'vue-router';
   import type { Ref } from 'vue';
-import { ref } from 'vue';
+  import { ref } from 'vue';
   import type { BodyForm } from 'src/models/form.models';
   import { ROUTES_NAMES } from 'src/router/routes-names';
 

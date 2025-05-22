@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { getVariationIcon, getVulnerabilityList } from './insight.utils';
+import { getVariationIcon, getVulnerabilityList } from '../insight.utils';
 import type { SeverityPerType, VulnerabilityItem } from 'src/models/scans.model';
 
 describe('getVariationIcon', () => {

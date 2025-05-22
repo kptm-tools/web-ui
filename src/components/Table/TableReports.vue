@@ -1,8 +1,8 @@
 <template>
   <div style="height: 80vh; overflow-y: auto">
     <table-regular
-      :actions="['insight', 'search', 'detail']"
-      :columns="columns"
+      :actions="REPORT_TABLE_ACTIONS"
+      :columns="REPORT_TABLE_COLUMNS"
       :rows="rows"
       @action="handlerEmitter($event)"
     >
@@ -23,47 +23,14 @@
 </template>
 
 <script setup lang="ts">
-  import type { QTableColumn } from 'quasar';
   import TableRegular from './TableRegular.vue';
+  import { REPORT_TABLE_ACTIONS, REPORT_TABLE_COLUMNS } from 'src/constants/table.constants';
 
   defineProps<{
     rows: Record<string, unknown>[];
   }>();
 
   const emits = defineEmits(['refreshTable', 'action']);
-
-  const columns: QTableColumn[] = [
-    {
-      name: 'Domain',
-      label: 'Domain',
-      align: 'left',
-      field: 'domain'
-    },
-    {
-      name: 'IP',
-      label: 'Ip',
-      align: 'left',
-      field: 'ip'
-    },
-    {
-      name: 'Scan Date',
-      label: 'ScanDate',
-      align: 'left',
-      field: 'scan_date'
-    },
-    {
-      name: 'Total Severities',
-      label: 'TotalSeverities',
-      align: 'left',
-      field: 'total_severities'
-    },
-    {
-      name: 'Comment Status',
-      label: 'CommentStatus',
-      align: 'left',
-      field: 'comment_status'
-    }
-  ];
 
   function formatDate(date: Date): string {
     return new Date(date).toLocaleDateString();
