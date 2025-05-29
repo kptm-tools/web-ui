@@ -27,13 +27,16 @@
   import type { iMainDashboard } from 'src/models/dashboard.models';
   import { ref, onMounted } from 'vue';
   import { DashboardService } from 'src/services/dashboard';
+  import { UserService } from 'src/services';
   import VulnerabilityTrendChart from 'src/components/home/VulnerabilityTrendChart.vue';
   import HostMostVulnerabilitiesList from 'src/components/home/HostMostVulnerabilitiesList.vue';
   import LatestScanChart from 'src/components/home/LatestScanChart.vue';
   import OverallSecurityPostureChart from 'src/components/home/OverallSecurityPostureChart.vue';
   import VulnerabilityHeatMap from 'src/components/home/VulnerabilityHeatMap.vue';
+  import { denyActionsStore } from 'src/stores/deny-actions-store';
 
   const dashboardData: Ref<iMainDashboard> = ref({} as iMainDashboard);
+  const denyStore = denyActionsStore();
 
   async function fetchDashboardData(timePeriod?: string, severities?: string): Promise<void> {
     await DashboardService.getDashboard(timePeriod, severities).then(
@@ -41,11 +44,19 @@
     );
   }
 
+  async function setUserPermissions(): Promise<void> {
+    const {
+      data: { denied_actions }
+    } = await UserService.getPermissions();
+    denyStore.setInitialList(denied_actions);
+  }
+
   async function filterHandler(data: { severities: string; period: string }): Promise<void> {
     await fetchDashboardData(data.period, data.severities);
   }
 
   onMounted(async () => {
+    await setUserPermissions();
     await fetchDashboardData();
   });
 </script>
