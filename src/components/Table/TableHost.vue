@@ -2,7 +2,7 @@
   <q-btn label="New Host" color="primary" class="q-mb-md" @click="addHost"></q-btn>
   <div class="table-container">
     <table-regular
-      :actions="HOST_TABLE_ACTIONS"
+      :actions="updatedTableActions"
       :columns="HOST_TABLE_COLUMNS"
       :rows="rows"
       @action="handlerEmitter($event)"
@@ -11,11 +11,14 @@
 </template>
 
 <script setup lang="ts">
+  import { type ComputedRef, computed } from 'vue';
   import { useQuasar } from 'quasar';
   import { TableRegular, DialogEditHost, DialogHost } from 'src/components';
   import { HostService } from 'src/services';
-  import { type HostCreateBody } from 'src/models';
-  import { HOST_TABLE_ACTIONS, HOST_TABLE_COLUMNS } from 'src/constants/table.constants';
+  import { type HostCreateBody, type tableActions, TableActions } from 'src/models';
+  import { HOST_TABLE_COLUMNS } from 'src/constants/table.constants';
+  import { DENY_ACTIONS } from 'src/constants/deny-actions.constants';
+  import { denyActionsStore } from 'src/stores/deny-actions-store';
 
   const props = defineProps<{
     rows: Record<string, unknown>[];
@@ -24,6 +27,21 @@
   const emits = defineEmits(['refreshTable', 'action']);
 
   const $q = useQuasar();
+  const { isAbleToHandleAction } = denyActionsStore();
+
+  const updatedTableActions: ComputedRef<tableActions[]> = computed(() => {
+    const actions: tableActions[] = [];
+    const addEditHost = isAbleToHandleAction(DENY_ACTIONS.HOST_PATCH_BY_ID);
+    const addDeleteHost = isAbleToHandleAction(DENY_ACTIONS.HOST_DELETE_BY_ID);
+
+    if (addEditHost) {
+      actions.push(TableActions.EDIT);
+    }
+    if (addDeleteHost) {
+      actions.push(TableActions.DELETE);
+    }
+    return actions;
+  });
 
   function addHost(): void {
     $q.dialog({

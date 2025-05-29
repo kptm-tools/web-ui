@@ -26,7 +26,7 @@ export enum DENY_ACTIONS {
   DASHBOARD_GET = 'dashboard:get'
 }
 
-export type DENY_ACTIONS_TYPES = keyof typeof DENY_ACTIONS;
+export type DENY_ACTIONS_TYPES = DENY_ACTIONS;
 
 export enum USER_ROLES {
   OPERATOR = 'operator',
