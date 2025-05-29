@@ -18,7 +18,7 @@ export const denyActionsStore = defineStore('deny-actions', {
   },
   getters: {
     isAbleToHandleAction: state => (denyAction: DENY_ACTIONS_TYPES) => {
-      return state.denyActions[denyAction] == undefined;
+      return state.denyActions[denyAction] === undefined;
     }
   }
 });
