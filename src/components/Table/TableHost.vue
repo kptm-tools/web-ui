@@ -33,7 +33,11 @@
     const actions: tableActions[] = [];
     const addEditHost = isAbleToHandleAction(DENY_ACTIONS.HOST_PATCH_BY_ID);
     const addDeleteHost = isAbleToHandleAction(DENY_ACTIONS.HOST_DELETE_BY_ID);
+    const addGetByIdHost = isAbleToHandleAction(DENY_ACTIONS.HOST_GET_BY_ID);
 
+    if (addGetByIdHost) {
+      actions.push(TableActions.SEARCH);
+    }
     if (addEditHost) {
       actions.push(TableActions.EDIT);
     }

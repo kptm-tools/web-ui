@@ -3,7 +3,13 @@
     <q-tab name="scans" label="Scans" />
     <q-tab name="scheduled" label="Scheduled Scans" v-if="showScheduledScans" />
   </q-tabs>
-  <q-btn label="New Scan" color="primary" class="q-mb-md" @click="newScan"></q-btn>
+  <q-btn
+    label="New Scan"
+    color="primary"
+    class="q-mb-md"
+    @click="newScan"
+    v-if="canAddScan"
+  ></q-btn>
   <template v-if="tab === TAB_OPTIONS.SCANS">
     <table-scan :scans="rows" @action="handlerEmitter" />
   </template>
@@ -42,6 +48,8 @@
   const showScheduledScans = computed(() =>
     isAbleToHandleAction(DENY_ACTIONS.SCAN_SCHEDULE_GET_ALL)
   );
+
+  const canAddScan = computed(() => isAbleToHandleAction(DENY_ACTIONS.SCAN_CREATE));
 
   function newScan(): void {
     $q.dialog({
