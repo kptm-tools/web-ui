@@ -69,30 +69,15 @@ export interface SuccessAuthLogin {
 }
 
 export interface SuccessAuthLoginUser {
-  active: boolean;
-  birthDate: string;
-  connectorId: string;
-  data: Record<string, unknown>;
-  email: string;
-  firstName: string;
   id: string;
-  insertInstant: number;
-  lastLoginInstant: number;
-  lastName: string;
-  lastUpdateInstant: number;
-  memberships: Record<string, unknown>[];
-  passwordChangeRequired: boolean;
-  passwordLastUpdateInstant: number;
-  preferredLanguages: string[];
-  registrations: Registration[];
-  tenantId: string;
-  twoFactor: TwoFactor;
-  usernameStatus: string;
-  verified: boolean;
-  verifiedInstant: number;
-  user?: SuccessAuthLoginUser;
-  name: string;
-  lastname: string;
+  email: string;
+  password: string;
+  application_id: string;
+  roles: string[];
+  user: {
+    name: string;
+    lastname: string;
+  };
 }
 
 export interface FusionAuthErrorResponse {
@@ -132,26 +117,6 @@ interface ErrorDetail {
 
 interface FieldErrors {
   [field: string]: ErrorDetail[];
-}
-
-interface Registration {
-  applicationId: string;
-  data: Record<string, unknown>;
-  id: string;
-  insertInstant: number;
-  lastLoginInstant: number;
-  lastUpdateInstant: number;
-  preferredLanguages: string[];
-  roles: string[];
-  tokens: Record<string, unknown>;
-  usernameStatus: string;
-  verified: boolean;
-  verifiedInstant: number;
-}
-
-interface TwoFactor {
-  methods: TwoFactorMethods[];
-  recoveryCodes: string[];
 }
 
 interface TwoFactorMethods {

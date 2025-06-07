@@ -10,16 +10,16 @@
   import { inputForms } from 'src/constants/form.constants';
   import type { BodyForm } from 'src/models/form.models';
   import type { ChangePasswordBody } from 'src/models/fusion-auth.models';
-  import { useFusionAuthStore } from 'src/stores/auth-store';
+  import { useAuthStore } from 'auth/store/auth-store';
   import FormRegular from 'src/components/Form/FormRegular.vue';
   import { useRouter } from 'vue-router';
   import { AUTH_ROUTES } from 'auth/routes/route-names';
 
-  const fusionAuthStore = useFusionAuthStore();
+  const authStore = useAuthStore();
   const router = useRouter();
 
   async function changePasswordHandler(body: BodyForm): Promise<void> {
-    await fusionAuthStore.recoverPassword(body as unknown as ChangePasswordBody);
+    await authStore.recoverPassword(body as unknown as ChangePasswordBody);
   }
 
   async function goLogin(): Promise<void> {

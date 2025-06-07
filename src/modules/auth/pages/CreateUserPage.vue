@@ -11,12 +11,12 @@
   import { inputForms } from 'src/constants/form.constants';
   import type { BodyForm } from 'src/models/form.models';
   import { useRouter } from 'vue-router';
-  import { useFusionAuthStore } from 'src/stores/auth-store';
+  import { useAuthStore } from 'auth/store/auth-store';
   import type { CreateUserBody } from 'src/models/fusion-auth.models';
   import { AUTH_ROUTES } from 'auth/routes/route-names';
 
   const router = useRouter();
-  const store = useFusionAuthStore();
+  const store = useAuthStore();
 
   function registerHandler(body: BodyForm): void {
     store.registerUser(body as unknown as CreateUserBody).catch(err => new Error(err));

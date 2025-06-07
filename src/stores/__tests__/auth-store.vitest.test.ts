@@ -1,7 +1,7 @@
 import type { Mock } from 'vitest';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
-import { useFusionAuthStore } from '../auth-store';
+import { useAuthStore } from 'auth/store/auth-store';
 import type { SuccessAuthLoginUser } from 'src/models/fusion-auth.models';
 
 vi.mock('src/services/fusion-auth.service', () => ({
@@ -10,11 +10,11 @@ vi.mock('src/services/fusion-auth.service', () => ({
 }));
 
 describe('FusionAuth Store', () => {
-  let store: ReturnType<typeof useFusionAuthStore>;
+  let store: ReturnType<typeof useAuthStore>;
 
   beforeEach(() => {
     setActivePinia(createPinia());
-    store = useFusionAuthStore();
+    store = useAuthStore();
     vi.clearAllMocks();
     sessionStorage.clear();
   });
@@ -28,9 +28,8 @@ describe('FusionAuth Store', () => {
     const now = new Date();
     now.setDate(now.getDate() + 14);
     store.setUserInfo({
-      token: 'mock-token',
+      accessToken: 'mock-token',
       tokenExpirationInstant: now.getTime(),
-      user: {} as SuccessAuthLoginUser,
       otp: 'otp',
       tenantId: ''
     });
@@ -39,7 +38,7 @@ describe('FusionAuth Store', () => {
 
   it('should set userInfo and sessionStorage when userInfo is defined', () => {
     const mockUser = {
-      token: 'mock-token',
+      accessToken: 'mock-token',
       tokenExpirationInstant: Date.now() + 3600 * 1000,
       user: {} as SuccessAuthLoginUser,
       otp: 'otp',

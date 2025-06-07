@@ -1,35 +1,7 @@
 import { AUTH_STATUS_CODES, AUTH_TOKEN_NAMES } from 'src/constants/fusion-auth.constants';
-import type {
-  FusionAuthLoginResponse,
-  SuccessAuthLogin,
-  SuccessAuthLoginChangePassword,
-  SuccessAuthLoginTwoFactor
-} from 'src/models/fusion-auth.models';
-import { useFusionAuthStore } from 'stores/auth-store';
 import { isAxiosError } from 'axios';
 import type { ValidationRule } from 'quasar';
 import { Notify } from 'quasar';
-
-export function successLoginResponseHandler(
-  status: number,
-  response: FusionAuthLoginResponse
-): void {
-  const store = useFusionAuthStore();
-  if (AUTH_STATUS_CODES.LOGIN.SUCCESS_CODES.includes(status)) {
-    const responseAuthLogin = response as SuccessAuthLogin;
-    store.setUserInfo(responseAuthLogin);
-    store.setTokenInfo(
-      responseAuthLogin.token,
-      responseAuthLogin.tokenExpirationInstant,
-      responseAuthLogin.otp,
-      responseAuthLogin.tenantId
-    );
-  } else if (status === AUTH_STATUS_CODES.LOGIN.CHANGE_PASSWORD_CODE) {
-    console.log('Need to change password', response as SuccessAuthLoginChangePassword);
-  } else if (status === AUTH_STATUS_CODES.LOGIN.TWO_FACTOR_CODE) {
-    console.log('Need to validate two factor', response as SuccessAuthLoginTwoFactor);
-  }
-}
 
 export function errorLoginResponseHandler(error: unknown): void {
   if (isAxiosError(error)) {

@@ -11,12 +11,12 @@
   import { inputForms } from 'src/constants/form.constants';
   import type { BodyForm } from 'src/models/form.models';
   import type { ChangePasswordBody } from 'src/models/fusion-auth.models';
-  import { useFusionAuthStore } from 'src/stores/auth-store';
+  import { useAuthStore } from 'auth/store/auth-store';
   import { useRouter } from 'vue-router';
   import { AUTH_ROUTES } from 'auth/routes/route-names';
 
   const router = useRouter();
-  const store = useFusionAuthStore();
+  const store = useAuthStore();
 
   function changePasswordHandler(body: BodyForm): void {
     store.changePassword(body as unknown as ChangePasswordBody).catch(err => new Error(err));

@@ -20,7 +20,7 @@
 <script lang="ts" setup>
   import FormRegular from 'src/components/Form/FormRegular.vue';
   import { inputForms } from 'src/constants/form.constants';
-  import { useFusionAuthStore } from 'stores/auth-store';
+  import { useAuthStore } from 'auth/store/auth-store';
   import type { FusionAuthLoginBody } from 'src/models/fusion-auth.models';
   import { useRouter } from 'vue-router';
   import type { Ref } from 'vue';
@@ -29,13 +29,13 @@
   import { VULNERABILITY_ROUTES } from 'vulnerability/routes/route-names';
   import { AUTH_ROUTES } from 'auth/routes/route-names';
 
-  const fusionAuthStore = useFusionAuthStore();
+  const authStore = useAuthStore();
   const router = useRouter();
 
   const remember: Ref<boolean> = ref(false);
 
   async function loginHandler(body: BodyForm): Promise<void> {
-    await fusionAuthStore.loginUser(body as unknown as FusionAuthLoginBody);
+    await authStore.loginUser(body as unknown as FusionAuthLoginBody);
     await router.push({ name: VULNERABILITY_ROUTES.home.name });
   }
 
