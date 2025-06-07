@@ -13,7 +13,7 @@
   import type { ChangePasswordBody } from 'src/models/fusion-auth.models';
   import { useFusionAuthStore } from 'src/stores/auth-store';
   import { useRouter } from 'vue-router';
-  import { ROUTES_NAMES } from 'src/router/routes-names';
+  import { AUTH_ROUTES } from 'auth/routes/route-names';
 
   const router = useRouter();
   const store = useFusionAuthStore();
@@ -23,7 +23,7 @@
   }
 
   async function goLogin(): Promise<void> {
-    await router.push({ name: ROUTES_NAMES.login });
+    await router.push({ name: AUTH_ROUTES.login.name });
   }
 </script>
 

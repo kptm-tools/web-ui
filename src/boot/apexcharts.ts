@@ -3,5 +3,6 @@ import VueApexCharts from 'vue3-apexcharts';
 
 export default boot(({ app }) => {
   // Set i18n instance on app
+  // @ts-expect-error: Unreachable code error
   app.use(VueApexCharts);
 });
