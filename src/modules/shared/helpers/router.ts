@@ -1,4 +1,4 @@
-import { useAuthStore } from 'auth/store/auth-store';
+import { useAuthStore } from 'src/modules/auth/stores/auth-store';
 import type { NavigationGuardNext, RouteLocationNormalizedGeneric } from 'vue-router';
 import type { AxiosError } from 'axios';
 import { UserService } from 'src/services';

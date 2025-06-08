@@ -20,7 +20,7 @@
 <script lang="ts" setup>
   import FormRegular from 'src/components/Form/FormRegular.vue';
   import { inputForms } from 'src/constants/form.constants';
-  import { useAuthStore } from 'auth/store/auth-store';
+  import { useAuthStore } from 'src/modules/auth/stores/auth-store';
   import type { FusionAuthLoginBody } from 'src/models/fusion-auth.models';
   import { useRouter } from 'vue-router';
   import type { Ref } from 'vue';

@@ -11,7 +11,7 @@
   import { inputForms } from 'src/constants/form.constants';
   import type { BodyForm } from 'src/models/form.models';
   import { useRouter } from 'vue-router';
-  import { useAuthStore } from 'auth/store/auth-store';
+  import { useAuthStore } from 'src/modules/auth/stores/auth-store';
   import type { CreateUserBody } from 'src/models/fusion-auth.models';
   import { AUTH_ROUTES } from 'auth/routes/route-names';
 

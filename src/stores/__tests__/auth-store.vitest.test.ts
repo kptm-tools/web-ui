@@ -1,7 +1,7 @@
 import type { Mock } from 'vitest';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
-import { useAuthStore } from 'auth/store/auth-store';
+import { useAuthStore } from 'src/modules/auth/stores/auth-store';
 import type { SuccessAuthLoginUser } from 'src/models/fusion-auth.models';
 
 vi.mock('src/services/fusion-auth.service', () => ({

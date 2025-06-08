@@ -3,7 +3,7 @@
     <div class="row full-height q-pa-xl justify-center">
       <div class="gt-md col-8 login-left text-white flex column justify-center d-">
         <div class="text q-mb-xl">
-          <p class="title">
+          <p class="title text-white">
             {{ $route.meta.title }}
           </p>
           <p class="subtitle">
@@ -14,13 +14,13 @@
 
         <div class="flex items-center full-width">
           <span class="q-mr-md">Powered by</span>
-          <img alt="Aynitech Logo" class="logo" src="../../assets/logos/aynitech-logo.svg" />
+          <img alt="Aynitech Logo" class="logo" src="/src/assets/logos/aynitech-logo.svg" />
         </div>
       </div>
       <div class="col-12 col-md-8 col-lg-4 flex column justify-center q-pl-lg">
         <q-card class="login-card">
           <q-card-section class="text-center">
-            <img alt="Aynitech Logo" class="logo" src="../../assets/logos/kriptone-logo.svg" />
+            <img alt="Aynitech Logo" class="logo" src="/src/assets/logos/kriptone-logo.svg" />
           </q-card-section>
 
           <q-card-section class="q-mt-lg">
@@ -37,7 +37,7 @@
 <style lang="scss" scoped>
   .login {
     &-container {
-      background-image: url('../../assets/images/login-background.png');
+      background-image: url('/src/assets/images/login-background.png');
       background-size: cover;
 
       .login-card {
