@@ -17,7 +17,7 @@
   import { useQuasar } from 'quasar';
   import { HostService, ScanService, ScanSchedulesService } from 'src/services';
   import type { CreateScanBody, Host, HostSchedule } from 'src/models';
-  import { DialogScan, TableScheduleScan, TableScan } from 'src/components';
+  import DialogScan from 'vulnerability/components/dialog/DialogScan.vue';
   import { formatHostScheduleToCreateScanBody } from 'src/utils';
 
   enum TAB_OPTIONS {

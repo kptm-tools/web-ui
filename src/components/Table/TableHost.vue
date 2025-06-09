@@ -12,7 +12,9 @@
 
 <script setup lang="ts">
   import { useQuasar } from 'quasar';
-  import { TableRegular, DialogEditHost, DialogHost } from 'src/components';
+  import { TableRegular } from 'src/components';
+  import DialogHost from 'vulnerability/components/dialog/DialogHost.vue';
+  import DialogEditHost from 'vulnerability/components/dialog/DialogEditHost.vue';
   import { HostService } from 'src/services';
   import { type HostCreateBody } from 'src/models';
   import { HOST_TABLE_ACTIONS, HOST_TABLE_COLUMNS } from 'src/constants/table.constants';

@@ -1,9 +1,3 @@
-import DialogEditHost from './Dialog/DialogEditHost.vue';
-import DialogHost from './Dialog/DialogHost.vue';
-import DialogScan from './Dialog/DialogScan.vue';
-import DialogScanInsight from './Dialog/DialogScanInsight.vue';
-import DialogReportInsight from './Dialog/DialogReportInsight.vue';
-
 import SeverityChip from './shared/SeverityChip.vue';
 
 import ScanTableProgressBar from './scan/ScanTableProgressBar.vue';
@@ -24,11 +18,6 @@ import FormValidateHost from './Form/FormValidateHost.vue';
 import TabScanTables from './Tab/TabScanTables.vue';
 
 export {
-  DialogEditHost,
-  DialogHost,
-  DialogScan,
-  DialogScanInsight,
-  DialogReportInsight,
   SeverityChip,
   TableHost,
   TableRegular,
