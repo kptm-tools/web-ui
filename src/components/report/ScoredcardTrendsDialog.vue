@@ -86,7 +86,7 @@
 
 <script setup lang="ts">
   import { useDialogPluginComponent } from 'quasar';
-  import ScoreCardChart from '../ScoreCardChart.vue';
+  import ScoreCardChart from 'vulnerability/components/chart/ScoreCardChart.vue';
   import { onMounted, ref } from 'vue';
   import { ScanService } from 'src/services';
 

@@ -11,8 +11,6 @@ import FormHostCredentials from './Form/FormHostCredentials.vue';
 import FormRegular from './Form/FormRegular.vue';
 import FormValidateHost from './Form/FormValidateHost.vue';
 
-import TabScanTables from './Tab/TabScanTables.vue';
-
 export {
   SeverityChip,
   TableRegular,
@@ -22,6 +20,5 @@ export {
   FormHostEmails,
   FormHostCredentials,
   FormRegular,
-  FormValidateHost,
-  TabScanTables
+  FormValidateHost
 };
