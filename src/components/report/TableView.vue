@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-  import { TableReports } from 'src/components';
+  import TableReports from 'vulnerability/components/table/TableReports.vue';
   import { type PropType } from 'vue';
 
   defineProps({

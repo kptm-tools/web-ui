@@ -16,6 +16,8 @@
   import { onMounted, ref, watch, type Ref } from 'vue';
   import { useQuasar } from 'quasar';
   import { HostService, ScanService, ScanSchedulesService } from 'src/services';
+  import TableScan from 'vulnerability/components/table/TableScan.vue';
+  import TableScheduleScan from 'vulnerability/components/table/TableScheduleScan.vue';
   import type { CreateScanBody, Host, HostSchedule } from 'src/models';
   import DialogScan from 'vulnerability/components/dialog/DialogScan.vue';
   import { formatHostScheduleToCreateScanBody } from 'src/utils';
