@@ -1,5 +1,5 @@
 <template>
-  <form-regular
+  <base-form
     :form-body="inputForms.loginForm"
     @submit="loginHandler"
     @secondary-button="goRegisterUserHandler"
@@ -14,11 +14,11 @@
         </div>
       </div>
     </template>
-  </form-regular>
+  </base-form>
 </template>
 
 <script lang="ts" setup>
-  import FormRegular from 'src/components/Form/FormRegular.vue';
+  import BaseForm from 'shared/components/form/BaseForm.vue';
   import { inputForms } from 'src/constants/form.constants';
   import { useAuthStore } from 'src/modules/auth/stores/auth-store';
   import type { FusionAuthLoginBody } from 'src/models/fusion-auth.models';

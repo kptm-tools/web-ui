@@ -1,5 +1,5 @@
 <template>
-  <form-regular
+  <base-form
     :form-body="inputForms.forgotPasswordForm"
     @submit="changePasswordHandler"
     @secondary-button="goLogin"
@@ -11,7 +11,7 @@
   import type { BodyForm } from 'src/models/form.models';
   import type { ChangePasswordBody } from 'src/models/fusion-auth.models';
   import { useAuthStore } from 'src/modules/auth/stores/auth-store';
-  import FormRegular from 'src/components/Form/FormRegular.vue';
+  import BaseForm from 'shared/components/form/BaseForm.vue';
   import { useRouter } from 'vue-router';
   import { AUTH_ROUTES } from 'auth/routes/route-names';
 

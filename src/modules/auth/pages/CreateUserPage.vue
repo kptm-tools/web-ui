@@ -1,5 +1,5 @@
 <template>
-  <form-regular
+  <base-form
     :form-body="inputForms.registerForm"
     @submit="registerHandler"
     @secondary-button="goLogin"
@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-  import FormRegular from 'src/components/Form/FormRegular.vue';
+  import BaseForm from 'shared/components/form/BaseForm.vue';
   import { inputForms } from 'src/constants/form.constants';
   import type { BodyForm } from 'src/models/form.models';
   import { useRouter } from 'vue-router';
