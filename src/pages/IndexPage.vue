@@ -32,8 +32,11 @@
   import LatestScanChart from 'src/components/home/LatestScanChart.vue';
   import OverallSecurityPostureChart from 'src/components/home/OverallSecurityPostureChart.vue';
   import VulnerabilityHeatMap from 'src/components/home/VulnerabilityHeatMap.vue';
+  import { denyActionsStore } from 'src/stores/deny-actions-store';
+  import { DENY_ACTIONS } from 'src/constants/deny-actions.constants';
 
   const dashboardData: Ref<iMainDashboard> = ref({} as iMainDashboard);
+  const { isAbleToHandleAction } = denyActionsStore();
 
   async function fetchDashboardData(timePeriod?: string, severities?: string): Promise<void> {
     await DashboardService.getDashboard(timePeriod, severities).then(
@@ -46,6 +49,10 @@
   }
 
   onMounted(async () => {
-    await fetchDashboardData();
+    if (isAbleToHandleAction(DENY_ACTIONS.DASHBOARD_GET)) {
+      await fetchDashboardData();
+    } else {
+      // TODO : HANDLE REDIRECTION
+    }
   });
 </script>

@@ -66,6 +66,7 @@
               </q-item-section>
             </q-item>
             <q-item
+              v-if="showHosts"
               v-ripple
               clickable
               to="/hosts"
@@ -162,6 +163,8 @@
   import { useRoute, useRouter } from 'vue-router';
   import { useHostStore } from 'src/stores/host-store';
   import { ROUTES_NAMES } from 'src/router/routes-names';
+  import { denyActionsStore } from 'src/stores/deny-actions-store';
+  import { DENY_ACTIONS } from 'src/constants/deny-actions.constants';
 
   const router = useRouter();
   const route = useRoute();
@@ -177,6 +180,10 @@
 
   const creationDate = ref();
   const search = ref();
+
+  const { isAbleToHandleAction } = denyActionsStore();
+
+  const showHosts = computed(() => isAbleToHandleAction(DENY_ACTIONS.HOST_GET_ALL));
 
   function handleDate(date: string | number | null): void {
     if (!date || date.toString().length < 10 || isNaN(new Date(date).getTime())) {

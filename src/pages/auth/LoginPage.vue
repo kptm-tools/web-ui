@@ -27,14 +27,18 @@
   import { ref } from 'vue';
   import type { BodyForm } from 'src/models/form.models';
   import { ROUTES_NAMES } from 'src/router/routes-names';
+  import { UserService } from 'src/services';
+  import { denyActionsStore } from 'src/stores/deny-actions-store';
 
   const fusionAuthStore = useFusionAuthStore();
   const router = useRouter();
+  const denyStore = denyActionsStore();
 
   const remember: Ref<boolean> = ref(false);
 
   async function loginHandler(body: BodyForm): Promise<void> {
     await fusionAuthStore.loginUser(body as unknown as FusionAuthLoginBody);
+    await setUserPermissions();
     await router.push({ name: ROUTES_NAMES.home });
   }
 
@@ -44,6 +48,13 @@
 
   async function goRegisterUserHandler() {
     await router.push({ name: ROUTES_NAMES.registerUser });
+  }
+
+  async function setUserPermissions(): Promise<void> {
+    const {
+      data: { denied_actions }
+    } = await UserService.getPermissions();
+    denyStore.setInitialList(denied_actions);
   }
 </script>
 

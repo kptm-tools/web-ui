@@ -1,5 +1,7 @@
 import type { RouteRecordRaw } from 'vue-router';
 import { ROUTES_NAMES } from './routes-names';
+import { denyActionsStore } from 'src/stores/deny-actions-store';
+import { DENY_ACTIONS } from 'src/constants/deny-actions.constants';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -24,7 +26,14 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: 'Hosts'
         },
-        component: () => import('pages/HostPage.vue')
+        component: () => import('pages/HostPage.vue'),
+        beforeEnter: () => {
+          const { isAbleToHandleAction } = denyActionsStore();
+          if (!isAbleToHandleAction(DENY_ACTIONS.HOST_GET_ALL)) {
+            return '/';
+          }
+          return true;
+        }
       },
       {
         path: 'scans',

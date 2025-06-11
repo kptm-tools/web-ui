@@ -248,7 +248,6 @@
           scan_id: action.col.scan_id
         }
       });
-      reportPageStep.value = 1;
     }
   }
 
