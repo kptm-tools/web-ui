@@ -6,7 +6,7 @@ import type {
   iMainDashboard,
   SeverityCountLevels,
   VulnerabilityTrend
-} from 'src/models/dashboard.models';
+} from 'vulnerability/models/dashboard';
 
 export class DashboardService {
   private static readonly BASE_PATH = '/api/dashboard';
