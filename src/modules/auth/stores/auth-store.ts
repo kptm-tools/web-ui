@@ -1,5 +1,5 @@
-import { authenticateUser, changePassword, forgotPassword } from 'src/services/auth.service';
-import { UserService } from 'src/services';
+import { authenticateUser, changePassword, forgotPassword } from 'auth/services/auth';
+import { UserService } from 'shared/services/user';
 import { defineStore } from 'pinia';
 import type {
   ChangePasswordBody,

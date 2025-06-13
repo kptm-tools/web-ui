@@ -1,7 +1,7 @@
 import { useAuthStore } from 'src/modules/auth/stores/auth-store';
 import type { NavigationGuardNext, RouteLocationNormalizedGeneric } from 'vue-router';
 import type { AxiosError } from 'axios';
-import { UserService } from 'src/services';
+import { UserService } from 'shared/services/user';
 import { decodeJwt } from 'src/utils/auth.utils';
 import { AUTH_ROUTES } from 'auth/routes/route-names';
 import { getSessionStorageValues } from 'auth/helpers/sessionStorage';

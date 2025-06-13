@@ -9,7 +9,7 @@
   import { onMounted, ref } from 'vue';
   import type { AxiosError } from 'axios';
   import { useRouter, useRoute } from 'vue-router';
-  import { UserService } from 'src/services/user.service';
+  import { UserService } from 'shared/services/user';
   import { errorQuasarNotify, successQuasarNotify } from 'src/utils';
 
   const router = useRouter();

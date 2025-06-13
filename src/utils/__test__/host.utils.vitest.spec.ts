@@ -9,7 +9,7 @@ import {
   deleteHostById
 } from '../host.utils';
 import type { Host, Rapporteur } from 'vulnerability/models/hosts';
-import { HostService } from 'src/services/host.service';
+import { HostService } from 'vulnerability/services/host';
 import { useHostStore } from 'src/stores/host-store';
 
 // Mock the HostService

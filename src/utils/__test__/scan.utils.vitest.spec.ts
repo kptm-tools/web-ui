@@ -2,7 +2,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import type { Scan, ScanInsight, ScanTableAction } from 'vulnerability/models/scans';
 import { ScanActions, ScanStatus } from 'vulnerability/models/scans';
-import { ScanService } from 'src/services';
+import { ScanService } from 'vulnerability/services/scan';
 import {
   formatScansForTable,
   getScansFromService,
