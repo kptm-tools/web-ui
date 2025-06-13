@@ -6,7 +6,7 @@ import type {
   FusionAuthLoginBody,
   FusionAuthLoginResponse,
   SuccessAuthLoginUser
-} from 'src/models/fusion-auth.models';
+} from 'auth/models/fusion-auth.models';
 import type { AxiosRequestHeaders, AxiosResponse } from 'axios';
 
 // Mock the axios instance

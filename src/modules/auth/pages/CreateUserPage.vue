@@ -9,10 +9,10 @@
 <script setup lang="ts">
   import BaseForm from 'shared/components/form/BaseForm.vue';
   import { inputForms } from 'src/constants/form.constants';
-  import type { BodyForm } from 'src/models/form.models';
+  import type { BodyForm } from 'shared/models/form';
   import { useRouter } from 'vue-router';
   import { useAuthStore } from 'src/modules/auth/stores/auth-store';
-  import type { CreateUserBody } from 'src/models/fusion-auth.models';
+  import type { CreateUserBody } from 'auth/models/fusion-auth.models';
   import { AUTH_ROUTES } from 'auth/routes/route-names';
 
   const router = useRouter();

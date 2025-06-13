@@ -40,7 +40,7 @@
   import type { Reactive, Ref } from 'vue';
   import { reactive, ref } from 'vue';
   import { requiredRules } from 'src/utils/auth.utils';
-  import type { BodyForm, FormContainerBody } from 'src/models/form.models';
+  import type { BodyForm, FormContainerBody } from 'shared/models/form';
 
   const props = defineProps<{
     formBody: FormContainerBody;

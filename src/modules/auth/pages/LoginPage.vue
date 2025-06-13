@@ -21,11 +21,11 @@
   import BaseForm from 'shared/components/form/BaseForm.vue';
   import { inputForms } from 'src/constants/form.constants';
   import { useAuthStore } from 'src/modules/auth/stores/auth-store';
-  import type { FusionAuthLoginBody } from 'src/models/fusion-auth.models';
+  import type { FusionAuthLoginBody } from 'auth/models/fusion-auth.models';
   import { useRouter } from 'vue-router';
   import type { Ref } from 'vue';
   import { ref } from 'vue';
-  import type { BodyForm } from 'src/models/form.models';
+  import type { BodyForm } from 'shared/models/form';
   import { VULNERABILITY_ROUTES } from 'vulnerability/routes/route-names';
   import { AUTH_ROUTES } from 'auth/routes/route-names';
 

@@ -4,7 +4,7 @@ import type {
   ForgotPasswordBody,
   FusionAuthLoginBody,
   FusionAuthLoginResponse
-} from 'src/models/fusion-auth.models';
+} from 'auth/models/fusion-auth.models';
 import type { AxiosResponse } from 'axios';
 
 export function authenticateUser(

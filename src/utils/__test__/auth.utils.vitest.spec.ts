@@ -11,7 +11,7 @@ import type {
   SuccessAuthLoginUser
   // SuccessAuthLoginChangePassword,
   // SuccessAuthLoginTwoFactor
-} from 'src/models/fusion-auth.models';
+} from 'auth/models/fusion-auth.models';
 import { Notify } from 'quasar';
 
 import {

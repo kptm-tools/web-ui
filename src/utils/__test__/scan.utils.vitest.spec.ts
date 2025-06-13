@@ -202,6 +202,7 @@ describe('SCAN_TABLE_ACTIONS', () => {
   });
 
   it('the "insight" action should be visible only when the status is "completed"', () => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
     const insightAction = SCAN_TABLE_ACTIONS.find(action => action.name === ScanActions.insight);
     expect(insightAction?.show(ScanStatus.completed)).toBe(true);
     expect(insightAction?.show(ScanStatus.inProgress)).toBe(false);
@@ -210,6 +211,7 @@ describe('SCAN_TABLE_ACTIONS', () => {
   });
 
   it('the "cancel" action should be visible when the status is "inProgress" or "pending"', () => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
     const cancelAction = SCAN_TABLE_ACTIONS.find(action => action.name === ScanActions.cancel);
     expect(cancelAction?.show(ScanStatus.completed)).toBe(false);
     expect(cancelAction?.show(ScanStatus.inProgress)).toBe(true);

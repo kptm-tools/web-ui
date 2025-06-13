@@ -10,7 +10,7 @@ import type {
   SuccessAuthLoginChangePassword,
   SuccessAuthLoginTwoFactor,
   SuccessAuthLoginUser
-} from 'src/models/fusion-auth.models';
+} from 'auth/models/fusion-auth.models';
 import type { sessionStorageKeys } from 'auth/models/sessionStorage';
 import { setSessionStorageValues, clearSessionStorageValues } from 'auth/helpers/sessionStorage';
 import { isTimestampExpired } from 'shared/helpers/date';

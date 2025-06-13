@@ -1,6 +1,12 @@
 import type { QTableColumn } from 'quasar';
-import { ScanActions, ScanStatus } from 'src/models';
-import type { CreateScanBody, Scan, ScanInsight, ScanTableAction, HostSchedule } from 'src/models';
+import type {
+  CreateScanBody,
+  Scan,
+  ScanInsight,
+  ScanTableAction
+} from 'vulnerability/models/scans';
+import { ScanActions, ScanStatus } from 'vulnerability/models/scans';
+import type { HostSchedule } from 'src/models';
 import { ScanService } from 'src/services';
 import { formatDateTimeToServer } from './date.utils';
 

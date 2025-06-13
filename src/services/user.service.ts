@@ -1,5 +1,5 @@
 import type { AxiosResponse } from 'axios';
-import type { CreateUserBody, SuccessAuthLoginUser } from 'src/models/fusion-auth.models';
+import type { CreateUserBody, SuccessAuthLoginUser } from 'auth/models/fusion-auth.models';
 import { fusionAuthApi } from 'boot/axios';
 
 export class UserService {
