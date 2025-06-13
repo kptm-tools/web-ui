@@ -1,7 +1,7 @@
 import type {
   WebSocketReportMessageRequest,
   WssMessageHandler
-} from 'src/models/wss-reports.models';
+} from 'vulnerability/models/reportWss';
 
 export default class WebSocketReports {
   private url: string;

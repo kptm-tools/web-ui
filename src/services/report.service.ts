@@ -1,8 +1,12 @@
 import type { AxiosResponse } from 'axios';
 import { fusionAuthApi } from 'boot/axios';
-import type { Report, ReportSummary, ReportSummaryTimeRangeTypes } from 'src/models';
+import type {
+  Report,
+  ReportSummary,
+  ReportSummaryTimeRangeTypes
+} from 'vulnerability/models/reports';
 import type { ScanVulnerabilitesResponse } from 'vulnerability/models/scans';
-import { ReportSummaryTimeRange } from 'src/models';
+import { ReportSummaryTimeRange } from 'vulnerability/models/reports';
 
 export class ReportService {
   private static readonly BASE_PATH = '/api/reports';
