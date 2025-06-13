@@ -1,6 +1,6 @@
 import type { AxiosResponse } from 'axios';
 import { fusionAuthApi } from 'boot/axios';
-import type { Scan, ScanInsight, ScanScoreTrend, CreateScanBody } from 'src/models/scans.model';
+import type { Scan, ScanInsight, ScanScoreTrend, CreateScanBody } from 'vulnerability/models/scans';
 
 export class ScanService {
   private static readonly BASE_PATH = '/api/scans';
