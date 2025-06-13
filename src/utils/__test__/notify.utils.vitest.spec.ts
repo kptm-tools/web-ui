@@ -1,7 +1,7 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { Notify } from 'quasar';
 import { errorQuasarNotify, successQuasarNotify } from '../notify.utils'; // Adjust the import path as needed
-import type { QNotifyPosition } from 'src/models/notify.models';
+import type { QNotifyPosition } from 'shared/models/notify';
 
 // Mock the Quasar Notify object
 vi.mock('quasar', () => ({

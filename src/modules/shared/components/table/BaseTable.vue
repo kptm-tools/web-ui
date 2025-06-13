@@ -42,7 +42,7 @@
 <script setup lang="ts">
   import type { QTableColumn } from 'quasar';
   import { computed } from 'vue';
-  import { TableActions, type tableActions } from 'src/models';
+  import { TableActions, type tableActions } from 'shared/models/table';
   import { TABLE_ACTIONS_COLUMN } from 'src/constants/table.constants';
 
   const componentProps = withDefaults(
