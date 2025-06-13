@@ -8,7 +8,7 @@ import {
   getPrincipalRapporteur,
   deleteHostById
 } from '../host.utils';
-import type { Host, Rapporteur } from 'src/models/hosts.models';
+import type { Host, Rapporteur } from 'vulnerability/models/hosts';
 import { HostService } from 'src/services/host.service';
 import { useHostStore } from 'src/stores/host-store';
 

@@ -1,6 +1,6 @@
 import type { AxiosResponse } from 'axios';
 import { fusionAuthApi } from 'boot/axios';
-import type { Host, HostCreateBody } from 'src/models/hosts.models';
+import type { Host, HostCreateBody } from 'vulnerability/models/hosts';
 import { HOST_ENDPOINTS } from 'src/constants/api.constants';
 
 export class HostService {

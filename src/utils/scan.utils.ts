@@ -6,7 +6,7 @@ import type {
   ScanTableAction
 } from 'vulnerability/models/scans';
 import { ScanActions, ScanStatus } from 'vulnerability/models/scans';
-import type { HostSchedule } from 'src/models';
+import type { HostSchedule } from 'vulnerability/models/hosts';
 import { ScanService } from 'src/services';
 import { formatDateTimeToServer } from './date.utils';
 

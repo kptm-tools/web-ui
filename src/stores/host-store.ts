@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import type { Host } from 'src/models/hosts.models';
+import type { Host } from 'vulnerability/models/hosts';
 
 interface HostFilter {
   created_at?: string;
