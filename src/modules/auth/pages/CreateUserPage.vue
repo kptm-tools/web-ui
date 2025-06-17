@@ -8,7 +8,7 @@
 
 <script setup lang="ts">
   import BaseForm from 'shared/components/form/BaseForm.vue';
-  import { inputForms } from 'src/constants/form.constants';
+  import { inputForms } from 'auth/constants/form';
   import type { BodyForm } from 'shared/models/form';
   import { useRouter } from 'vue-router';
   import { useAuthStore } from 'src/modules/auth/stores/auth-store';

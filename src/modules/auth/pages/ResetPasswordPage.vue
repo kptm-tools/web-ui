@@ -8,7 +8,7 @@
 
 <script lang="ts" setup>
   import BaseForm from 'shared/components/form/BaseForm.vue';
-  import { inputForms } from 'src/constants/form.constants';
+  import { inputForms } from 'auth/constants/form';
   import type { BodyForm } from 'shared/models/form';
   import type { ChangePasswordBody } from 'auth/models/fusion-auth.models';
   import { useAuthStore } from 'src/modules/auth/stores/auth-store';

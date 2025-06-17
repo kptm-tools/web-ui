@@ -19,7 +19,7 @@
 
 <script lang="ts" setup>
   import BaseForm from 'shared/components/form/BaseForm.vue';
-  import { inputForms } from 'src/constants/form.constants';
+  import { inputForms } from 'auth/constants/form';
   import { useAuthStore } from 'src/modules/auth/stores/auth-store';
   import type { FusionAuthLoginBody } from 'auth/models/fusion-auth.models';
   import { useRouter } from 'vue-router';
