@@ -1,7 +1,7 @@
 import type { AxiosResponse } from 'axios';
 import type { CreateUserBody, SuccessAuthLoginUser } from 'auth/models/fusion-auth.models';
 import { fusionAuthApi } from 'boot/axios';
-import type { DenyActionsResponse } from 'src/models/deny-actions.model';
+import type { DenyActionsResponse } from 'vulnerability/models/deny-actions.model';
 
 export class UserService {
   private static readonly BASE_PATH = '/api/users';

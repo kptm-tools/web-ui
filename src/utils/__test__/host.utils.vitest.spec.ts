@@ -10,7 +10,7 @@ import {
 } from '../host.utils';
 import type { Host, Rapporteur } from 'vulnerability/models/hosts';
 import { HostService } from 'vulnerability/services/host';
-import { useHostStore } from 'src/stores/host-store';
+import { useHostStore } from 'vulnerability/stores/host';
 
 // Mock the HostService
 vi.mock('src/services/host.service', () => ({
@@ -22,7 +22,7 @@ vi.mock('src/services/host.service', () => ({
 }));
 
 // Mock the host store
-vi.mock('src/stores/host-store', () => ({
+vi.mock('vulnerability/stores/host', () => ({
   useHostStore: vi.fn(() => ({
     setInitialList: vi.fn()
   }))
