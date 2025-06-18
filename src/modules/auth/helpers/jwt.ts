@@ -40,7 +40,7 @@ export function decodeJwt(token: string) {
  * @param {string} str - The Base64Url encoded string to decode.
  * @returns {string} The decoded string.
  */
-function base64UrlDecode(str: string) {
+export function base64UrlDecode(str: string) {
   const base64 = str.replace(/-/g, '+').replace(/_/g, '/');
   return decodeURIComponent(
     atob(base64)
