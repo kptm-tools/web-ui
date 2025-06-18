@@ -28,14 +28,18 @@
   import type { BodyForm } from 'shared/models/form';
   import { VULNERABILITY_ROUTES } from 'vulnerability/routes/route-names';
   import { AUTH_ROUTES } from 'auth/routes/route-names';
+  import { denyActionsStore } from 'src/stores/deny-actions-store';
+  import { UserService } from 'src/modules/shared/services/user';
 
   const authStore = useAuthStore();
   const router = useRouter();
+  const denyStore = denyActionsStore();
 
   const remember: Ref<boolean> = ref(false);
 
   async function loginHandler(body: BodyForm): Promise<void> {
     await authStore.loginUser(body as unknown as FusionAuthLoginBody);
+    await setUserPermissions();
     await router.push({ name: VULNERABILITY_ROUTES.home.name });
   }
 
@@ -45,6 +49,13 @@
 
   async function goRegisterUserHandler() {
     await router.push({ name: AUTH_ROUTES.registerUser.name });
+  }
+
+  async function setUserPermissions(): Promise<void> {
+    const {
+      data: { denied_actions }
+    } = await UserService.getPermissions();
+    denyStore.setInitialList(denied_actions);
   }
 </script>
 
