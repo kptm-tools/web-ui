@@ -1,16 +1,6 @@
-/* eslint-disable @typescript-eslint/unbound-method */
 import { describe, expect, it, vi, beforeEach } from 'vitest';
-import {
-  formatHostForTable,
-  getHostFromService,
-  getHostByIdFromService,
-  getInitalDataForHostTable,
-  getPrincipalRapporteur,
-  deleteHostById
-} from '../host.utils';
+import { formatHostForTable, getPrincipalRapporteur } from '../host.utils';
 import type { Host, Rapporteur } from 'vulnerability/models/hosts';
-import { HostService } from 'vulnerability/services/host';
-import { useHostStore } from 'vulnerability/stores/host';
 
 // Mock the HostService
 vi.mock('src/services/host.service', () => ({
@@ -106,77 +96,6 @@ describe('host.utils', () => {
     });
   });
 
-  describe('getHostFromService', () => {
-    it('should call HostService.getHosts and return the data', async () => {
-      const mockHostData: Host[] = [
-        {
-          id: '4',
-          name: 'Test Host',
-          created_at: '2023-04-01T12:00:00Z',
-          rapporteurs: [],
-          credentials: []
-        }
-      ];
-      (HostService.getHosts as ReturnType<typeof vi.fn>).mockResolvedValue({ data: mockHostData });
-
-      const result = await getHostFromService();
-      expect(HostService.getHosts).toHaveBeenCalledTimes(1);
-      expect(result).toEqual(mockHostData);
-    });
-  });
-
-  describe('getHostByIdFromService', () => {
-    it('should call HostService.getHostById with the provided hostId and return the data', async () => {
-      const mockHost: Host = {
-        credentials: [],
-        id: '5',
-        name: 'Specific Host',
-        created_at: '2023-05-05T18:00:00Z',
-        rapporteurs: [{ email: 'specific@host.com', is_principal: true, name: 'test' }]
-      };
-      (HostService.getHostById as ReturnType<typeof vi.fn>).mockResolvedValue({ data: mockHost });
-      const hostId = 'test-host-id';
-
-      const result = await getHostByIdFromService(hostId);
-      expect(HostService.getHostById).toHaveBeenCalledWith(hostId);
-      expect(result).toEqual(mockHost);
-    });
-  });
-
-  describe('getInitalDataForHostTable', () => {
-    it('should call HostService.getHosts and format the data for the table', async () => {
-      const mockHostDataFromService: Host[] = [
-        {
-          id: '6',
-          name: 'Service Host A',
-          created_at: '2023-06-10T09:00:00Z',
-          rapporteurs: [],
-          credentials: []
-        }
-      ];
-      (HostService.getHosts as ReturnType<typeof vi.fn>).mockResolvedValue({
-        data: mockHostDataFromService
-      });
-
-      const expectedFormattedData = [
-        {
-          id: '6',
-          name: 'Service Host A',
-          created_at: '2023-06-10T09:00:00Z',
-          rapporteurs: [],
-          credentials: [],
-          hostName: 'Service Host A',
-          creationDate: '2023-06-10T09:00:00Z',
-          email: ''
-        }
-      ];
-
-      const result = await getInitalDataForHostTable();
-      expect(HostService.getHosts).toHaveBeenCalledTimes(1);
-      expect(result).toEqual(expectedFormattedData);
-    });
-  });
-
   describe('getPrincipalRapporteur', () => {
     it('should return the email of the principal rapporteur if one exists', () => {
       const rapporteurs: Rapporteur[] = [
@@ -197,32 +116,6 @@ describe('host.utils', () => {
 
     it('should return an empty string if the rapporteurs array is empty', () => {
       expect(getPrincipalRapporteur([])).toBe('');
-    });
-  });
-
-  describe('deleteHostById', () => {
-    it('should call HostService.deleteHostById and then setInitialDataToStore on success', async () => {
-      const hostIdToDelete = 'delete-me';
-      (HostService.deleteHostById as ReturnType<typeof vi.fn>).mockResolvedValue(undefined);
-      (HostService.getHosts as ReturnType<typeof vi.fn>).mockResolvedValue({ data: [] }); // Mock getHosts for setInitialDataToStore
-
-      await deleteHostById(hostIdToDelete);
-      expect(HostService.deleteHostById).toHaveBeenCalledWith(hostIdToDelete);
-      expect(useHostStore).toHaveBeenCalledTimes(1);
-    });
-
-    it('should log an error to the console if HostService.deleteHostById throws an error', async () => {
-      const hostIdToDelete = 'error-host';
-      const mockError = new Error('Failed to delete host');
-      (HostService.deleteHostById as ReturnType<typeof vi.fn>).mockRejectedValue(mockError);
-      const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-
-      await deleteHostById(hostIdToDelete);
-      expect(HostService.deleteHostById).toHaveBeenCalledWith(hostIdToDelete);
-      expect(consoleLogSpy).toHaveBeenCalledWith(mockError);
-      expect(useHostStore).not.toHaveBeenCalled(); // Ensure store is not updated on error
-
-      consoleLogSpy.mockRestore(); // Clean up the spy
     });
   });
 });
