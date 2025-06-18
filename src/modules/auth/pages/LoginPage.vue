@@ -28,12 +28,12 @@
   import type { BodyForm } from 'shared/models/form';
   import { VULNERABILITY_ROUTES } from 'vulnerability/routes/route-names';
   import { AUTH_ROUTES } from 'auth/routes/route-names';
-  import { denyActionsStore } from 'src/stores/deny-actions-store';
+  import { useDenyActionsStore } from 'src/stores/deny-actions-store';
   import { UserService } from 'src/modules/shared/services/user';
 
   const authStore = useAuthStore();
   const router = useRouter();
-  const denyStore = denyActionsStore();
+  const denyStore = useDenyActionsStore();
 
   const remember: Ref<boolean> = ref(false);
 

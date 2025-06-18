@@ -5,7 +5,7 @@ type DenyActionObject = {
   [key in DENY_ACTIONS_TYPES]?: null;
 };
 
-export const denyActionsStore = defineStore('deny-actions', {
+export const useDenyActionsStore = defineStore('deny-actions', {
   state: () => ({
     denyActions: {} as DenyActionObject
   }),
