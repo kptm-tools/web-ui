@@ -1,16 +1,7 @@
-/* eslint-disable @typescript-eslint/unbound-method */
 import { describe, expect, it, vi } from 'vitest';
-import type { Scan, ScanInsight, ScanTableAction } from 'src/models/scans.model';
-import { ScanActions, ScanStatus } from 'src/models/scans.model';
-import { ScanService } from 'src/services';
-import {
-  formatScansForTable,
-  getScansFromService,
-  getScanInsightsFromService,
-  postScanCancelService,
-  formatDuration,
-  SCAN_TABLE_ACTIONS
-} from '../scan.utils';
+import type { Scan, ScanTableAction } from 'vulnerability/models/scans';
+import { ScanActions, ScanStatus } from 'vulnerability/models/scans';
+import { formatScansForTable, formatDuration, SCAN_TABLE_ACTIONS } from '../scan.utils';
 
 // Mock the ScanService
 vi.mock('src/services', () => ({
@@ -70,95 +61,6 @@ describe('formatScansForTable', () => {
 
   it('should return an empty array if the input array is empty', () => {
     expect(formatScansForTable([])).toEqual([]);
-  });
-});
-
-describe('getScansFromService', () => {
-  it('should call ScanService.getScans and return the data', async () => {
-    const mockScanData: Scan[] = [
-      {
-        scan_id: '3',
-        scan_date: '2023-01-03',
-        host: 'test.local',
-        vulnerabilities: 2,
-        severities: { critical: 0, high: 0, medium: 1, low: 1 },
-        duration: 60,
-        status: ScanStatus.completed
-      }
-    ];
-    (ScanService.getScans as ReturnType<typeof vi.fn>).mockResolvedValue({ data: mockScanData });
-
-    const result = await getScansFromService();
-
-    expect(ScanService.getScans).toHaveBeenCalledTimes(1);
-    expect(result).toEqual(mockScanData);
-  });
-});
-
-describe('getScanInsightsFromService', () => {
-  const mockInsightData: ScanInsight = {
-    total_vulnerabilities: 15,
-    vulnerabilities_by_severity: { critical: 3, high: 5, medium: 4, low: 3 },
-    severity_counts: {
-      critical: 1,
-      high: 1,
-      medium: 1,
-      low: 1
-    },
-    protection_score: 1,
-    severity_per_type: { val: '2' },
-    vulnerability_variation: 1,
-    protection_score_variation: 1,
-    metadata: {
-      scan_id: '1',
-      host_alias: '1',
-      scan_date: '1'
-    }
-  } as ScanInsight;
-
-  it('should call ScanService.getScanInsights with the provided scan_id and return the data', async () => {
-    (ScanService.getScanInsights as ReturnType<typeof vi.fn>).mockResolvedValue({
-      data: mockInsightData
-    });
-    const scanId = 'test-scan-id';
-
-    const result = await getScanInsightsFromService(scanId);
-    expect(ScanService.getScanInsights).toHaveBeenCalledWith(scanId);
-    expect(result).toEqual(mockInsightData);
-  });
-
-  it('should call ScanService.getScanInsights with an empty string if no scan_id is provided', async () => {
-    (ScanService.getScanInsights as ReturnType<typeof vi.fn>).mockResolvedValue({
-      data: mockInsightData
-    });
-
-    await getScanInsightsFromService();
-    expect(ScanService.getScanInsights).toHaveBeenCalledWith('');
-  });
-});
-
-describe('postScanCancelService', () => {
-  it('should call ScanService.cancelScan with the provided scan_id and return the data', async () => {
-    const mockCancelResponse = 'Scan cancellation initiated.';
-    (ScanService.cancelScan as ReturnType<typeof vi.fn>).mockResolvedValue({
-      data: mockCancelResponse
-    });
-    const scanId = 'cancel-scan-id';
-
-    const result = await postScanCancelService(scanId);
-    expect(ScanService.cancelScan).toHaveBeenCalledWith(scanId);
-    expect(result).toEqual(mockCancelResponse);
-  });
-
-  it('should call ScanService.cancelScan with an empty string if no scan_id is provided', async () => {
-    const mockCancelResponse = 'No scan ID provided for cancellation.';
-    (ScanService.cancelScan as ReturnType<typeof vi.fn>).mockResolvedValue({
-      data: mockCancelResponse
-    });
-
-    const result = await postScanCancelService();
-    expect(ScanService.cancelScan).toHaveBeenCalledWith('');
-    expect(result).toEqual(mockCancelResponse);
   });
 });
 

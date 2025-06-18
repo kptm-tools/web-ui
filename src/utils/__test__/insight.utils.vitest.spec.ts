@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { getVariationIcon, getVulnerabilityList } from '../insight.utils';
-import type { SeverityPerType, VulnerabilityItem } from 'src/models/scans.model';
+import type { SeverityPerType, VulnerabilityItem } from 'vulnerability/models/scans';
 
 describe('getVariationIcon', () => {
   it('should return the grey up arrow icon class for a variation of 0', () => {

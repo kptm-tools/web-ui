@@ -1,6 +1,6 @@
-import type { Host, Rapporteur } from 'src/models/hosts.models';
-import { HostService } from 'src/services/host.service';
-import { useHostStore } from 'src/stores/host-store';
+import type { Host, Rapporteur } from 'vulnerability/models/hosts';
+import { HostService } from 'vulnerability/services/host';
+import { useHostStore } from 'vulnerability/stores/host';
 
 export function formatHostForTable(hosts: Host[]): Host[] {
   return hosts.map(host => ({

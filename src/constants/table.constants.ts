@@ -1,5 +1,5 @@
 import type { QTableColumn } from 'quasar';
-import { type tableActions, TableActions } from 'src/models';
+import { type tableActions, TableActions } from 'shared/models/table';
 
 export const TABLE_ACTIONS_COLUMN: QTableColumn = {
   name: 'actions',
