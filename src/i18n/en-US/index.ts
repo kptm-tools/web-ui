@@ -73,41 +73,6 @@ export default {
       semester: 'Semester'
     }
   },
-  report: {
-    header: {
-      title: 'Reports',
-      backButton: 'Back'
-    },
-    table: {
-      scoredCardTrendsButton: 'Scoredcard Trends'
-    },
-    steps: {
-      list: {
-        title: 'Report Lis'
-      },
-      dynamicVector: {
-        title: 'Dynamic Vector'
-      },
-      expectedResults: {
-        title: 'Expected Results',
-        chart: {
-          trend: {
-            title: 'Vulnerability Chart',
-            button: {
-              actual: 'Actual',
-              expected: 'Expected'
-            }
-          },
-          needle: {
-            title: 'Expected Security Posture'
-          }
-        },
-        vulnerabilities: {
-          title: 'Vulnerability Types'
-        }
-      }
-    }
-  },
   hosts: {
     creation: {
       steps: {

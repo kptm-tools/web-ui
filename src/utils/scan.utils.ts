@@ -50,7 +50,7 @@ export function formatDuration(seconds: number): string {
 export function formatHostScheduleToCreateScanBody(data: HostSchedule[]): CreateScanBody[] {
   return data
     .map(val => ({
-      host_id: Number(val.id),
+      host_id: val.id || '',
       repeat_frequency: {
         quantity: val.repeat_frequency.quantity,
         unit_of_frequency: val.repeat_frequency.unit_of_frequency

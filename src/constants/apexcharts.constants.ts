@@ -162,3 +162,23 @@ export const OVERALL_DONUT_OPTIONS = {
     }
   }
 };
+
+export const OVERALL_DONUT_OPTIONS_PERCENTAGE = {
+  chart: {
+    type: 'radialBar',
+    height: 20
+  },
+  dataLabels: {
+    enabled: false,
+    offsetX: 500,
+    offsetY: 200
+  },
+  legend: {
+    show: true,
+    fontSize: '0px',
+    markers: {
+      size: 0
+    }
+  },
+  colors: ['#E5494D', '#FBBF65', '#46A758']
+};
