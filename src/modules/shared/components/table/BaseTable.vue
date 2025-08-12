@@ -80,6 +80,8 @@
         return 'fas fa-magnifying-glass';
       case TableActions.DETAIL:
         return 'fas fa-eye';
+      case TableActions.INFORMATION:
+        return 'fas fa-info';
       default:
         return 'fas fa-eye';
     }
