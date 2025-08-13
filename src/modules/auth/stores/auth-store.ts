@@ -15,6 +15,7 @@ import type { sessionStorageKeys } from 'auth/models/sessionStorage';
 import { setSessionStorageValues, clearSessionStorageValues } from 'auth/helpers/sessionStorage';
 import { isTimestampExpired } from 'shared/helpers/date';
 import { AUTH_STATUS_CODES } from 'src/constants/fusion-auth.constants';
+import { errorQuasarNotify } from 'src/utils';
 
 type AuthStore = {
   userKeys: sessionStorageKeys | undefined;
@@ -56,7 +57,7 @@ export const useAuthStore = defineStore('auth-store', {
           console.log('Need to validate two factor', response.data as SuccessAuthLoginTwoFactor);
         }
       } catch (error) {
-        console.error(error);
+        errorQuasarNotify(error as string);
       }
     },
     async registerUser(body: CreateUserBody): Promise<void> {
