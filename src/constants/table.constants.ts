@@ -45,7 +45,8 @@ export const HOST_TABLE_COLUMNS: QTableColumn[] = [
 export const REPORT_TABLE_ACTIONS: tableActions[] = [
   TableActions.INSIGHT,
   TableActions.SEARCH,
-  TableActions.DETAIL
+  TableActions.DETAIL,
+  TableActions.INFORMATION
 ];
 export const REPORT_TABLE_COLUMNS: QTableColumn[] = [
   {

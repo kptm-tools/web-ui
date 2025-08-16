@@ -3,6 +3,7 @@ export enum TableActions {
   DELETE = 'delete',
   INSIGHT = 'insight',
   SEARCH = 'search',
-  DETAIL = 'detail'
+  DETAIL = 'detail',
+  INFORMATION = 'information'
 }
 export type tableActions = TableActions;
