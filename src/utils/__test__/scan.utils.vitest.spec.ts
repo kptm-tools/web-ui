@@ -42,7 +42,7 @@ describe('formatScansForTable', () => {
         host: 'localhost',
         numVulnerabilities: 5,
         severity: { critical: 2, high: 3, medium: 0, low: 0 },
-        durations: 120,
+        duration: 120,
         status: ScanStatus.completed
       },
       {
@@ -51,7 +51,7 @@ describe('formatScansForTable', () => {
         host: 'example.com',
         numVulnerabilities: 10,
         severity: { critical: 1, high: 4, medium: 3, low: 2 },
-        durations: 300,
+        duration: 300,
         status: ScanStatus.inProgress
       }
     ];
@@ -85,11 +85,11 @@ describe('formatDuration', () => {
     expect(formatDuration(0)).toBe('0s');
   });
 
-  it('should handle durations less than a minute correctly', () => {
+  it('should handle duration less than a minute correctly', () => {
     expect(formatDuration(59)).toBe('59s');
   });
 
-  it('should handle durations less than an hour correctly', () => {
+  it('should handle duration less than an hour correctly', () => {
     expect(formatDuration(3599)).toBe('59m 59s');
   });
 });
