@@ -296,6 +296,11 @@ export const VULNERABILITY_TREND_OPTIONS = {
     },
     zoom: {
       enabled: false
+    },
+    animations: {
+      enabled: true,
+      easing: 'easeinout',
+      speed: 800
     }
   },
   dataLabels: {
@@ -305,6 +310,15 @@ export const VULNERABILITY_TREND_OPTIONS = {
     curve: 'smooth',
     width: 3,
     colors: [APP_CHART_THEME.severity.critical]
+  },
+  markers: {
+    size: 4,
+    colors: [APP_CHART_THEME.severity.critical],
+    strokeColors: '#fff',
+    strokeWidth: 2,
+    hover: {
+      size: 6
+    }
   },
   fill: {
     type: 'gradient',
@@ -389,7 +403,23 @@ export const VULNERABILITY_TREND_OPTIONS = {
     y: {
       title: {
         formatter: () => 'Vulnerabilities: '
+      },
+      formatter: (value: number | null) => {
+        if (value === null) {
+          return 'No scan data';
+        }
+        return value.toString();
       }
+    }
+  },
+  noData: {
+    text: 'No vulnerability trend data available',
+    align: 'center',
+    verticalAlign: 'middle',
+    style: {
+      color: APP_CHART_THEME.colors.secondary,
+      fontSize: '14px',
+      fontFamily: APP_CHART_THEME.fontFamily
     }
   },
   legend: {
