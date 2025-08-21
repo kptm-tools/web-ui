@@ -4,7 +4,7 @@
     "color": "006B75"
   },
   "CHECKS": {
-    "regexp": "^(feat|fix|chore|docs): .+ \\[KT-\\d+\\]$",
+    "regexp": "^(feat|fix|chore|docs): .+ \\[VUL-\\d+\\]$",
     "ignoreLabels": ["Sync Back", "dependabot", "dependencies"]
   },
   "MESSAGES": {
