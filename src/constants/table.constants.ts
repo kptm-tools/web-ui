@@ -140,10 +140,10 @@ export const SCAN_TABLE_COLUMNS: QTableColumn[] = [
     field: 'severity'
   },
   {
-    name: 'Durations',
-    label: 'Durations',
+    name: 'Duration',
+    label: 'Duration',
     align: 'left',
-    field: 'durations'
+    field: 'duration'
   },
   {
     name: 'Status',

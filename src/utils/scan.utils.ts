@@ -17,7 +17,7 @@ export function formatScansForTable(scans: Scan[]): Record<string, unknown>[] {
     host: scan.host,
     numVulnerabilities: scan.vulnerabilities,
     severity: scan.severities,
-    durations: scan.duration,
+    duration: scan.duration,
     status: scan.status
   }));
 }
@@ -92,10 +92,10 @@ export const SCAN_TABLE_COLUMNS: QTableColumn[] = [
     field: 'severity'
   },
   {
-    name: 'Durations',
-    label: 'Durations',
+    name: 'Duration',
+    label: 'Duration',
     align: 'left',
-    field: 'durations'
+    field: 'duration'
   },
   {
     name: 'Status',
