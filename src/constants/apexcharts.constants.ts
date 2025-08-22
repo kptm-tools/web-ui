@@ -180,26 +180,32 @@ export const HEATMAP_CHART_OPTIONS = {
         ranges: [
           {
             from: 0,
-            to: 0.25,
-            name: 'Low Risk',
+            to: 0.15,
+            name: '0-15% Distribution',
+            color: '#42B188'
+          },
+          {
+            from: 0.16,
+            to: 0.30,
+            name: '16-30% Distribution',
             color: '#97B951'
           },
           {
-            from: 0.26,
-            to: 0.5,
-            name: 'Medium Risk',
+            from: 0.31,
+            to: 0.50,
+            name: '31-50% Distribution',
             color: '#F6BE63'
           },
           {
             from: 0.51,
             to: 0.75,
-            name: 'High Risk',
+            name: '51-75% Distribution',
             color: '#F3A488'
           },
           {
             from: 0.76,
             to: 1,
-            name: 'Critical Risk',
+            name: '76-100% Distribution',
             color: '#ED273D'
           }
         ]
@@ -236,6 +242,11 @@ export const HEATMAP_CHART_OPTIONS = {
     style: {
       fontSize: '12px',
       fontFamily: APP_CHART_THEME.fontFamily
+    },
+    y: {
+      formatter: function(value: number) {
+        return `${(value * 100).toFixed(1)}%`;
+      }
     }
   }
 };
