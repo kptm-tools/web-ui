@@ -182,31 +182,31 @@ export const HEATMAP_CHART_OPTIONS = {
             from: 0,
             to: 0.15,
             name: '0-15% Distribution',
-            color: '#42B188'
+            color: '#FEE2E2'
           },
           {
             from: 0.16,
             to: 0.30,
             name: '16-30% Distribution',
-            color: '#97B951'
+            color: '#FECACA'
           },
           {
             from: 0.31,
             to: 0.50,
             name: '31-50% Distribution',
-            color: '#F6BE63'
+            color: '#FCA5A5'
           },
           {
             from: 0.51,
             to: 0.75,
             name: '51-75% Distribution',
-            color: '#F3A488'
+            color: '#F87171'
           },
           {
             from: 0.76,
             to: 1,
             name: '76-100% Distribution',
-            color: '#ED273D'
+            color: '#DC2626'
           }
         ]
       }
