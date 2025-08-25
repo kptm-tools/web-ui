@@ -4,12 +4,16 @@
     "color": "006B75"
   },
   "CHECKS": {
-    "regexp": "^(feat|fix|chore|docs): .+ \\[VUL-\\d+\\]$",
-    "ignoreLabels": ["Sync Back", "dependabot", "dependencies"]
+    "regexp": "^(feat|fix|chore|docs): [a-zA-Z0-9\\s'\".,_-]+?\\s?\\[VUL-\\d+\\]$",
+    "ignoreLabels": [
+      "Sync Back",
+      "dependabot",
+      "dependencies"
+    ]
   },
   "MESSAGES": {
     "success": "Title follows the specification.",
-    "failure": "PR title has to be in the format: 'feat: description [KT-1234]'.",
+    "failure": "PR title has to be in the format: 'feat: description [VUL-1234]'.",
     "notice": ""
   }
 }

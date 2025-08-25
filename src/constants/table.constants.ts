@@ -150,5 +150,6 @@ export const SCAN_TABLE_COLUMNS: QTableColumn[] = [
     label: 'Status',
     align: 'left',
     field: 'status'
-  }
+  },
+  TABLE_ACTIONS_COLUMN
 ];
