@@ -23,15 +23,15 @@
 
   const $q = useQuasar();
   const router = useRouter();
-  const accessAudits = computed(() => sessionStorage.getItem(AUTH_TOKEN_NAMES.AUDITS));
+  const accessAudits = computed(() => sessionStorage.getItem(AUTH_TOKEN_NAMES.AUDITS) || false);
 
   async function vulnerabilityHandler() {
     await router.push({ name: VULNERABILITY_ROUTES.home.name });
   }
 
-  async function auditsHandler() {
-    if (accessAudits.value) {
-      await router.push({ name: VULNERABILITY_ROUTES.home.name });
+  function auditsHandler() {
+    if (accessAudits.value !== 'undefined') {
+      console.info('AUDITS MODULE');
     } else {
       $q.dialog({
         html: true,
@@ -43,7 +43,7 @@
   }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   .module-selector {
     height: calc(100vh + 50px);
   }
