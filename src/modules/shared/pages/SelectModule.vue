@@ -3,7 +3,7 @@
     <img src="../../../assets/logos/kriptone-logo.svg" alt="" class="logo" />
     <div class="col-6">
       <q-card class="card-selection" @click="vulnerabilityHandler">
-        <q-card-title> Kriptone Tools </q-card-title>
+        <q-card-title> Kriptome Tools </q-card-title>
       </q-card>
     </div>
     <div class="col-6">
