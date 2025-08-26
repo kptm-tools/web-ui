@@ -7,6 +7,7 @@ const sharedRoutes: RouteRecordRaw[] = [
     path: '/select-module',
     component: () => import('../pages/SelectModule.vue'),
     meta: {
+      requiresAuth: true,
       title: 'Select Module'
     }
   },
