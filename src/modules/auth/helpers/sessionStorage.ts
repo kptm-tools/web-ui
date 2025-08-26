@@ -18,7 +18,7 @@ export function getSessionStorageValues(): sessionStorageKeys {
     tokenExpirationInstant:
       Number(sessionStorage.getItem(AUTH_TOKEN_NAMES.TOKEN_EXPIRATION_INSTANT)) || 0,
     tenantId: sessionStorage.getItem(AUTH_TOKEN_NAMES.TENANT_ID) || '',
-    audits: sessionStorage.getItem(AUTH_TOKEN_NAMES.AUDITS) || 'false'
+    audits: sessionStorage.getItem(AUTH_TOKEN_NAMES.AUDITS) || ''
   };
 }
 

@@ -3,12 +3,12 @@
     <img src="../../../assets/logos/kriptone-logo.svg" alt="" class="logo" />
     <div class="col-6">
       <q-card class="card-selection" @click="vulnerabilityHandler">
-        <q-card-title> Kriptone Tools </q-card-title>
+        <q-card-section> Kriptone Tools </q-card-section>
       </q-card>
     </div>
     <div class="col-6">
       <q-card class="card-selection border" @click="auditsHandler">
-        <q-card-title> Audits </q-card-title>
+        <q-card-section> Audits </q-card-section>
       </q-card>
     </div>
   </div>
@@ -30,7 +30,7 @@
   }
 
   function auditsHandler() {
-    if (accessAudits.value !== 'undefined') {
+    if (!accessAudits.value) {
       console.info('AUDITS MODULE');
     } else {
       $q.dialog({

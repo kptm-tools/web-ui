@@ -33,7 +33,7 @@ describe('FusionAuth API Service', () => {
           user: {} as SuccessAuthLoginUser,
           otp: 'otp',
           tenantId: '',
-          audits: 'false'
+          audits: ''
         },
         status: 200,
         statusText: 'OK',
