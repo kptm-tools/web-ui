@@ -8,7 +8,7 @@
     </div>
     <div class="col-6">
       <q-card class="card-selection border" @click="auditsHandler">
-        <q-card-title> Audits </q-card-title>
+        <q-card-title> Auditorías </q-card-title>
       </q-card>
     </div>
   </div>
