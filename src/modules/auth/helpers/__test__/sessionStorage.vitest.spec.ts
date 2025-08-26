@@ -84,7 +84,8 @@ describe('Auth/helpers:sessionStorage', () => {
         accessToken: 'new_access_token',
         otp: '987654',
         tokenExpirationInstant: 1678900000000,
-        tenantId: 'new_tenant'
+        tenantId: 'new_tenant',
+        audits: 'false'
       };
 
       const result = setSessionStorageValues(dataToSet);
@@ -103,7 +104,8 @@ describe('Auth/helpers:sessionStorage', () => {
         accessToken: '',
         otp: '',
         tokenExpirationInstant: 12345,
-        tenantId: ''
+        tenantId: '',
+        audits: 'false'
       };
 
       setSessionStorageValues(dataToSet);
@@ -117,7 +119,8 @@ describe('Auth/helpers:sessionStorage', () => {
         accessToken: 'some_token',
         otp: '123',
         tokenExpirationInstant: 0,
-        tenantId: 'some_tenant'
+        tenantId: 'some_tenant',
+        audits: 'false'
       };
 
       setSessionStorageValues(dataToSet);

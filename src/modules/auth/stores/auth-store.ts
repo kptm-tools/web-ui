@@ -48,7 +48,8 @@ export const useAuthStore = defineStore('auth-store', {
             accessToken: updatedResponse.token,
             otp: updatedResponse.otp,
             tenantId: updatedResponse.tenantId,
-            tokenExpirationInstant: updatedResponse.tokenExpirationInstant
+            tokenExpirationInstant: updatedResponse.tokenExpirationInstant,
+            audits: updatedResponse.audits
           };
           this.setUserInfo(sessionStorage);
         } else if (response.status === AUTH_STATUS_CODES.LOGIN.CHANGE_PASSWORD_CODE) {

@@ -26,7 +26,7 @@
   import type { Ref } from 'vue';
   import { ref } from 'vue';
   import type { BodyForm } from 'shared/models/form';
-  import { VULNERABILITY_ROUTES } from 'vulnerability/routes/route-names';
+  // import { VULNERABILITY_ROUTES } from 'vulnerability/routes/route-names';
   import { AUTH_ROUTES } from 'auth/routes/route-names';
   import { useDenyActionsStore } from 'shared/stores/deny-actions-store';
   import { UserService } from 'src/modules/shared/services/user';
@@ -40,7 +40,7 @@
   async function loginHandler(body: BodyForm): Promise<void> {
     await authStore.loginUser(body as unknown as FusionAuthLoginBody);
     await setUserPermissions();
-    await router.push({ name: VULNERABILITY_ROUTES.home.name });
+    await router.push({ path: '/select-module' });
   }
 
   async function goRecoverHandler() {

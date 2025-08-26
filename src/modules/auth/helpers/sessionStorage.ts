@@ -17,7 +17,8 @@ export function getSessionStorageValues(): sessionStorageKeys {
     otp: sessionStorage.getItem(AUTH_TOKEN_NAMES.OTP) || '',
     tokenExpirationInstant:
       Number(sessionStorage.getItem(AUTH_TOKEN_NAMES.TOKEN_EXPIRATION_INSTANT)) || 0,
-    tenantId: sessionStorage.getItem(AUTH_TOKEN_NAMES.TENANT_ID) || ''
+    tenantId: sessionStorage.getItem(AUTH_TOKEN_NAMES.TENANT_ID) || '',
+    audits: sessionStorage.getItem(AUTH_TOKEN_NAMES.AUDITS) || 'false'
   };
 }
 
@@ -35,6 +36,7 @@ export function clearSessionStorageValues(): void {
   sessionStorage.removeItem(AUTH_TOKEN_NAMES.OTP);
   sessionStorage.removeItem(AUTH_TOKEN_NAMES.TOKEN_EXPIRATION_INSTANT);
   sessionStorage.removeItem(AUTH_TOKEN_NAMES.TENANT_ID);
+  sessionStorage.removeItem(AUTH_TOKEN_NAMES.AUDITS);
 }
 
 /**
@@ -64,6 +66,7 @@ export function setSessionStorageValues(data: sessionStorageKeys): sessionStorag
   );
   sessionStorage.setItem(AUTH_TOKEN_NAMES.OTP, data.otp);
   sessionStorage.setItem(AUTH_TOKEN_NAMES.TENANT_ID, data.tenantId);
+  sessionStorage.setItem(AUTH_TOKEN_NAMES.AUDITS, data.audits);
 
   return getSessionStorageValues();
 }

@@ -14,5 +14,6 @@ export enum AUTH_TOKEN_NAMES {
   ACCESS_TOKEN = 'access_token',
   TOKEN_EXPIRATION_INSTANT = 'token_expiration_instant',
   OTP = 'otp',
-  TENANT_ID = 'tenant_id'
+  TENANT_ID = 'tenant_id',
+  AUDITS = 'audits'
 }
