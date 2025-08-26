@@ -34,7 +34,8 @@ describe('Auth/helpers:sessionStorage', () => {
         accessToken: '',
         otp: '',
         tokenExpirationInstant: 0,
-        tenantId: ''
+        tenantId: '',
+        audits: ''
       });
     });
 
@@ -49,7 +50,8 @@ describe('Auth/helpers:sessionStorage', () => {
         accessToken: 'test_access_token',
         otp: '123456',
         tokenExpirationInstant: 1678886400000,
-        tenantId: 'test_tenant'
+        tenantId: 'test_tenant',
+        audits: ''
       });
     });
 
@@ -61,7 +63,8 @@ describe('Auth/helpers:sessionStorage', () => {
         accessToken: 'partial_token',
         otp: '',
         tokenExpirationInstant: 0,
-        tenantId: ''
+        tenantId: '',
+        audits: ''
       });
     });
 
@@ -84,7 +87,8 @@ describe('Auth/helpers:sessionStorage', () => {
         accessToken: 'new_access_token',
         otp: '987654',
         tokenExpirationInstant: 1678900000000,
-        tenantId: 'new_tenant'
+        tenantId: 'new_tenant',
+        audits: ''
       };
 
       const result = setSessionStorageValues(dataToSet);
@@ -103,7 +107,8 @@ describe('Auth/helpers:sessionStorage', () => {
         accessToken: '',
         otp: '',
         tokenExpirationInstant: 12345,
-        tenantId: ''
+        tenantId: '',
+        audits: ''
       };
 
       setSessionStorageValues(dataToSet);
@@ -117,7 +122,8 @@ describe('Auth/helpers:sessionStorage', () => {
         accessToken: 'some_token',
         otp: '123',
         tokenExpirationInstant: 0,
-        tenantId: 'some_tenant'
+        tenantId: 'some_tenant',
+        audits: ''
       };
 
       setSessionStorageValues(dataToSet);
@@ -149,7 +155,8 @@ describe('Auth/helpers:sessionStorage', () => {
         accessToken: '',
         otp: '',
         tokenExpirationInstant: 0,
-        tenantId: ''
+        tenantId: '',
+        audits: ''
       });
     });
 
@@ -160,7 +167,8 @@ describe('Auth/helpers:sessionStorage', () => {
         accessToken: '',
         otp: '',
         tokenExpirationInstant: 0,
-        tenantId: ''
+        tenantId: '',
+        audits: ''
       });
     });
   });
