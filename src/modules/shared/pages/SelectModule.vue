@@ -1,5 +1,6 @@
 <template>
   <div class="row q-col-gutter-xl q-pa-lg flex items-center module-selector bg-grey-8">
+    <img src="../../../assets/logos/kriptone-logo.svg" alt="" class="logo" />
     <div class="col-6">
       <q-card class="card-selection" @click="vulnerabilityHandler">
         <q-card-title> Kriptone Tools </q-card-title>
@@ -45,6 +46,16 @@
 <style lang="scss">
   .module-selector {
     height: calc(100vh + 50px);
+  }
+
+  .logo {
+    position: absolute;
+    top: 10%;
+    width: 300px;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .card-selection {
