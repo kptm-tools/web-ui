@@ -3,12 +3,12 @@
     <img src="../../../assets/logos/kriptone-logo.svg" alt="" class="logo" />
     <div class="col-6">
       <q-card class="card-selection" @click="vulnerabilityHandler">
-        <q-card-section> Kriptone Tools </q-card-section>
+        <q-card-title> Kriptome Tools </q-card-title>
       </q-card>
     </div>
     <div class="col-6">
       <q-card class="card-selection border" @click="auditsHandler">
-        <q-card-section> Audits </q-card-section>
+        <q-card-title> Auditorías </q-card-title>
       </q-card>
     </div>
   </div>
@@ -36,7 +36,7 @@
       $q.dialog({
         html: true,
         message:
-          'Para acceder al modulo de auditoria debe contactarse con <a href="url">test@kriptone.com</a>',
+          'Para acceder al módulo de auditoría debe contactarse con <a href="url">test@kriptome.com</a>',
         ok: false
       });
     }
