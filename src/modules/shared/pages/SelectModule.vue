@@ -36,7 +36,7 @@
       $q.dialog({
         html: true,
         message:
-          'Para acceder al modulo de auditoria debe contactarse con <a href="url">test@kriptone.com</a>',
+          'Para acceder al módulo de auditoría debe contactarse con <a href="url">test@kriptome.com</a>',
         ok: false
       });
     }
