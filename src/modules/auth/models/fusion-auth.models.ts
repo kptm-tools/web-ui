@@ -1,14 +1,14 @@
 import type { AxiosHeaders } from 'axios';
 
 export interface FusionAuthLoginBody {
-  application_id?: string;
+  applicationId: string;
   ipAddress?: string;
   loginId: string;
   metaData?: FusionAuthMetaData;
   noJWT?: boolean;
   password: string;
   twoFactorTrustId?: string;
-  otp: string;
+  otp?: string;
   tenantId?: string;
 }
 
