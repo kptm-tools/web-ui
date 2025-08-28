@@ -20,6 +20,7 @@
   import { computed } from 'vue';
   import { useRouter } from 'vue-router';
   import { VULNERABILITY_ROUTES } from 'vulnerability/routes/route-names';
+  import { AUDITS_ROUTES } from 'src/modules/audits/routes/route-names';
 
   const $q = useQuasar();
   const router = useRouter();
@@ -29,9 +30,9 @@
     await router.push({ name: VULNERABILITY_ROUTES.home.name });
   }
 
-  function auditsHandler() {
+  async function auditsHandler() {
     if (!accessAudits.value) {
-      console.info('AUDITS MODULE');
+      await router.push({ name: AUDITS_ROUTES.home.name });
     } else {
       $q.dialog({
         html: true,
