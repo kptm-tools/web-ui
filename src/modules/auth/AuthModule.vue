@@ -14,13 +14,13 @@
 
         <div class="flex items-center full-width">
           <span class="q-mr-md">Powered by</span>
-          <img alt="Aynitech Logo" class="logo" src="/src/assets/logos/aynitech-logo.svg" />
+          <img alt="Aynitech Logo" class="logo" :src="ayntechLogo" />
         </div>
       </div>
       <div class="col-12 col-md-8 col-lg-4 flex column justify-center q-pl-lg">
         <q-card class="login-card">
           <q-card-section class="text-center">
-            <img alt="Aynitech Logo" class="logo" src="/src/assets/logos/kriptone-logo.svg" />
+            <img alt="Kriptome Logo" class="logo" :src="kriptomeLogo" />
           </q-card-section>
 
           <q-card-section class="q-mt-lg">
@@ -32,12 +32,15 @@
   </div>
 </template>
 
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+  import kriptomeLogo from 'src/assets/logos/kriptome-logo.svg';
+  import ayntechLogo from 'src/assets/logos/aynitech-logo.svg';
+</script>
 
 <style lang="scss" scoped>
   .login {
     &-container {
-      background-image: url('/src/assets/images/login-background.png');
+      background-image: url('src/assets/images/login-background.png');
       background-size: cover;
 
       .login-card {
