@@ -66,6 +66,7 @@ export interface SuccessAuthLogin {
   user: SuccessAuthLoginUser;
   otp: string;
   tenantId: string;
+  audits: string;
 }
 
 export interface SuccessAuthLoginUser {

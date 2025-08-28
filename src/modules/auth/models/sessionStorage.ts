@@ -3,4 +3,5 @@ export interface sessionStorageKeys {
   otp: string;
   tokenExpirationInstant: number;
   tenantId: string;
+  audits: string;
 }
