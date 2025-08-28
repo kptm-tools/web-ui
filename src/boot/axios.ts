@@ -52,4 +52,8 @@ fusionAuthApi.interceptors.response.use(
   }
 );
 
-export { fusionAuthApi };
+const auditsApi = axios.create({
+  baseURL: process.env.AUDITS_SERVER_URL || 'http://localhost:8080'
+});
+
+export { fusionAuthApi, auditsApi };
