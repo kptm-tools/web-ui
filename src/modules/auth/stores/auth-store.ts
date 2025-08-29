@@ -16,6 +16,7 @@ import { setSessionStorageValues, clearSessionStorageValues } from 'auth/helpers
 import { isTimestampExpired } from 'shared/helpers/date';
 import { AUTH_STATUS_CODES } from 'src/constants/fusion-auth.constants';
 import { errorQuasarNotify } from 'src/utils';
+import { type Router } from 'vue-router';
 
 type AuthStore = {
   userKeys: sessionStorageKeys | undefined;
@@ -39,7 +40,7 @@ export const useAuthStore = defineStore('auth-store', {
   },
 
   actions: {
-    async loginUser(loginBody: FusionAuthLoginBody): Promise<void> {
+    async loginUser(loginBody: FusionAuthLoginBody, router: Router): Promise<void> {
       try {
         const response = await authenticateUser(loginBody);
         if (AUTH_STATUS_CODES.LOGIN.SUCCESS_CODES.includes(response.status)) {
@@ -52,6 +53,7 @@ export const useAuthStore = defineStore('auth-store', {
             audits: updatedResponse.audits
           };
           this.setUserInfo(sessionStorage);
+          await router.push({ name: 'SelectModule' });
         } else if (response.status === AUTH_STATUS_CODES.LOGIN.CHANGE_PASSWORD_CODE) {
           console.log('Need to change password', response.data as SuccessAuthLoginChangePassword);
         } else if (response.status === AUTH_STATUS_CODES.LOGIN.TWO_FACTOR_CODE) {

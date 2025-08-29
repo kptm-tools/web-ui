@@ -28,19 +28,18 @@
   import type { BodyForm } from 'shared/models/form';
   // import { VULNERABILITY_ROUTES } from 'vulnerability/routes/route-names';
   import { AUTH_ROUTES } from 'auth/routes/route-names';
-  import { useDenyActionsStore } from 'shared/stores/deny-actions-store';
-  import { UserService } from 'src/modules/shared/services/user';
+  // import { useDenyActionsStore } from 'shared/stores/deny-actions-store';
+  // import { UserService } from 'src/modules/shared/services/user';
 
   const authStore = useAuthStore();
   const router = useRouter();
-  const denyStore = useDenyActionsStore();
+  // const denyStore = useDenyActionsStore();
 
   const remember: Ref<boolean> = ref(false);
 
   async function loginHandler(body: BodyForm): Promise<void> {
-    await authStore.loginUser(body as unknown as FusionAuthLoginBody);
-    await setUserPermissions();
-    await router.push({ path: '/select-module' });
+    await authStore.loginUser(body as unknown as FusionAuthLoginBody, router);
+    // await setUserPermissions();
   }
 
   async function goRecoverHandler() {
@@ -51,12 +50,12 @@
     await router.push({ name: AUTH_ROUTES.registerUser.name });
   }
 
-  async function setUserPermissions(): Promise<void> {
-    const {
-      data: { denied_actions }
-    } = await UserService.getPermissions();
-    denyStore.setInitialList(denied_actions);
-  }
+  // async function setUserPermissions(): Promise<void> {
+  //   const {
+  //     data: { denied_actions }
+  //   } = await UserService.getPermissions();
+  //   denyStore.setInitialList(denied_actions);
+  // }
 </script>
 
 <style scoped lang="scss">

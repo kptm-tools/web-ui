@@ -53,7 +53,20 @@ fusionAuthApi.interceptors.response.use(
 );
 
 const auditsApi = axios.create({
-  baseURL: process.env.AUDITS_SERVER_URL || 'http://localhost:8080'
+  baseURL: process.env.AUDITS_SERVER_URL || 'http://localhost:8000'
 });
+
+auditsApi.interceptors.request.use(
+  (config: InternalAxiosRequestConfig) => {
+    if (!isUnprotected(config.url || '')) {
+      const token = sessionStorage.getItem(AUTH_TOKEN_NAMES.ACCESS_TOKEN);
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    }
+    return config;
+  },
+  error => Promise.reject(new Error(error))
+);
 
 export { fusionAuthApi, auditsApi };

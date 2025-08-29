@@ -1,6 +1,6 @@
 <template>
   <div class="row q-col-gutter-xl q-pa-lg flex items-center module-selector bg-grey-8">
-    <img src="../../../assets/logos/kriptone-logo.svg" alt="" class="logo" />
+    <img src="../../../assets/logos/kriptome-logo.svg" alt="" class="logo" />
     <div class="col-6">
       <q-card class="card-selection" @click="vulnerabilityHandler">
         <q-card-title> Kriptome Tools </q-card-title>
@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
   import { useQuasar } from 'quasar';
-  import { AUTH_TOKEN_NAMES } from 'src/constants/fusion-auth.constants';
+  // import { AUTH_TOKEN_NAMES } from 'src/constants/fusion-auth.constants';
   import { computed } from 'vue';
   import { useRouter } from 'vue-router';
   import { VULNERABILITY_ROUTES } from 'vulnerability/routes/route-names';
@@ -24,7 +24,7 @@
 
   const $q = useQuasar();
   const router = useRouter();
-  const accessAudits = computed(() => sessionStorage.getItem(AUTH_TOKEN_NAMES.AUDITS) || false);
+  const accessAudits = computed(() => false);
 
   async function vulnerabilityHandler() {
     await router.push({ name: VULNERABILITY_ROUTES.home.name });

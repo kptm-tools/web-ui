@@ -6,16 +6,21 @@
   <q-page>
     <template v-if="isFirstAudit">
       <div class="q-px-xl text-center">
-        <h5 class="text-weight-medium text-center">PROCESO DE AUDITORIA</h5>
-        <p class="q-px-xl text-justify">
-          "Al iniciar el proceso de auditoría se solicitará información de su organización, tanto
-          administrativa como tecnológica, por lo que es necesario tenga toda la información a la
-          mano para completar un formulario de alcance que se le presentará a continuación si inicia
-          el proceso de auditoría. Además, deberá también adjuntar un NDA para que Kriptome y su
-          organización estén protegidos legalmente en cualquier caso de fuga de información"
-        </p>
+        <template v-if="!showForm">
+          <h5 class="text-weight-medium text-center">PROCESO DE AUDITORIA</h5>
+          <p class="q-px-xl text-justify">
+            "Al iniciar el proceso de auditoría se solicitará información de su organización, tanto
+            administrativa como tecnológica, por lo que es necesario tenga toda la información a la
+            mano para completar un formulario de alcance que se le presentará a continuación si
+            inicia el proceso de auditoría. Además, deberá también adjuntar un NDA para que Kriptome
+            y su organización estén protegidos legalmente en cualquier caso de fuga de información"
+          </p>
 
-        <q-btn color="primary" no-caps label="Iniciar Auditoría"></q-btn>
+          <q-btn color="primary" no-caps label="Iniciar Auditoría" @click="showForm = true"></q-btn>
+        </template>
+        <template v-else>
+          <ScopeQuestions />
+        </template>
       </div>
     </template>
 
@@ -39,9 +44,11 @@
 <script setup>
   import { HEADER_ID } from 'src/constants/idHtmlReference.constants';
   import { onMounted, ref } from 'vue';
+  import ScopeQuestions from '../components/form/ScopeQuestions.vue';
 
   const isMounted = ref(false);
   const isFirstAudit = ref(true);
+  const showForm = ref(false);
 
   const columns = [
     {

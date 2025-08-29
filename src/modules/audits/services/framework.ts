@@ -8,7 +8,7 @@ import type {
 } from '../models/framework';
 
 export class FrameworkService {
-  static readonly BASE_PATH = 'framework';
+  static readonly BASE_PATH = 'api/audits/framework';
 
   static async getMaturityLevels(): Promise<AxiosResponse<MaturityLevelResponse>> {
     return await auditsApi.get(`${this.BASE_PATH}/maturity-levels`);
