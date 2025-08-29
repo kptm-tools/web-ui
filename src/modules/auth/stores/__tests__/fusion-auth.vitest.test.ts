@@ -21,7 +21,7 @@ describe('FusionAuth API Service', () => {
     it('should call the /api/login endpoint with the correct parameters', async () => {
       // Arrange
       const body: FusionAuthLoginBody = {
-        application_id: 'appId',
+        applicationId: 'appId',
         loginId: 'testuser',
         password: 'testpassword',
         otp: 'otp'
@@ -54,6 +54,7 @@ describe('FusionAuth API Service', () => {
     it('should throw an error if the API call fails', async () => {
       // Arrange
       const body: FusionAuthLoginBody = {
+        applicationId: 'appId',
         loginId: 'testuser',
         password: 'wrongpassword',
         otp: 'otp'
