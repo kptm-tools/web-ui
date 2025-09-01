@@ -5,6 +5,7 @@
       <template v-if="question.question_type === 'text'">
         <q-input
           outlined
+          stack-label
           v-model="answers[question.code]"
           :label="question.label"
           :maxlength="question.validation_rules?.max_length"
@@ -17,6 +18,7 @@
           v-model="answers[question.code]"
           :label="question.label"
           type="number"
+          stack-label
           :rules="[
             val =>
               val >= (question.validation_rules?.min || 0) ||
@@ -37,6 +39,7 @@
       <template v-if="question.question_type === 'file'">
         <q-file
           outlined
+          stack-label
           v-model="files[question.code]"
           :label="question.label"
           :multiple="Boolean((question.validation_rules?.max_files || 0) > 1)"

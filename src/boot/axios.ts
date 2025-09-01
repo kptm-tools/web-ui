@@ -52,11 +52,11 @@ fusionAuthApi.interceptors.response.use(
   }
 );
 
-const auditsApi = axios.create({
+const gatewayApi = axios.create({
   baseURL: process.env.AUDITS_SERVER_URL || 'http://localhost:8000'
 });
 
-auditsApi.interceptors.request.use(
+gatewayApi.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     if (!isUnprotected(config.url || '')) {
       const token = sessionStorage.getItem(AUTH_TOKEN_NAMES.ACCESS_TOKEN);
@@ -69,4 +69,20 @@ auditsApi.interceptors.request.use(
   error => Promise.reject(new Error(error))
 );
 
-export { fusionAuthApi, auditsApi };
+gatewayApi.interceptors.response.use(
+  response => {
+    Loading.hide();
+    return response;
+  },
+  async error => {
+    Loading.hide();
+    if (error.response && error.response.status === 401) {
+      const router = useRouter();
+      clearSessionStorageValues();
+      await router.push({ name: AUTH_ROUTES.login.name });
+    }
+    return Promise.reject(new Error(error));
+  }
+);
+
+export { fusionAuthApi, gatewayApi };

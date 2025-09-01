@@ -17,6 +17,7 @@ import { isTimestampExpired } from 'shared/helpers/date';
 import { AUTH_STATUS_CODES } from 'src/constants/fusion-auth.constants';
 import { errorQuasarNotify } from 'src/utils';
 import { type Router } from 'vue-router';
+import { SHARED_ROUTES } from 'src/modules/shared/routes/route-names';
 
 type AuthStore = {
   userKeys: sessionStorageKeys | undefined;
@@ -53,7 +54,7 @@ export const useAuthStore = defineStore('auth-store', {
             audits: updatedResponse.audits
           };
           this.setUserInfo(sessionStorage);
-          await router.push({ name: 'SelectModule' });
+          await router.push({ name: SHARED_ROUTES.selectModule.name });
         } else if (response.status === AUTH_STATUS_CODES.LOGIN.CHANGE_PASSWORD_CODE) {
           console.log('Need to change password', response.data as SuccessAuthLoginChangePassword);
         } else if (response.status === AUTH_STATUS_CODES.LOGIN.TWO_FACTOR_CODE) {
