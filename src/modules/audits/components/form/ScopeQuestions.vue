@@ -2,7 +2,7 @@
   <q-form class="q-pa-md q-px-xl q-col-gutter-md">
     <h4 class="text-center text-weight-bold">Formulario de Alcance</h4>
     <template v-for="(question, index) in scopeQuestions" :key="question.code">
-      <div v-if="index === 17" class="q-mt-sm text-weight-bold">Funcion a Evaluar</div>
+      <div v-if="index === 17" class="q-mt-sm text-weight-bold">Funciones a Evaluar</div>
       <template v-if="question.question_type === 'text'">
         <q-input
           outlined
