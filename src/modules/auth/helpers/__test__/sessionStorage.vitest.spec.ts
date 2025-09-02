@@ -58,7 +58,6 @@ describe('Auth/helpers:sessionStorage', () => {
       const result = getSessionStorageValues();
       expect(result).toEqual({
         accessToken: 'partial_token',
-        otp: '',
         tokenExpirationInstant: 0,
         tenantId: '',
         audits: ''
