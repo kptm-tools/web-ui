@@ -15,7 +15,7 @@
     </q-header>
 
     <q-drawer show-if-above side="left" class="flex column" :width="showSecondDrawer ? 500 : 300">
-      <main-drawer @logout="logout" />
+      <main-drawer @logout="logout" is-audits />
       <div v-if="showSecondDrawer" class="second-drawer">
         <div id="aux-sidebar"></div>
       </div>
