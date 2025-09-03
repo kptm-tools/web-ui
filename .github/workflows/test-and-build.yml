@@ -3,7 +3,8 @@ name: test-and-build
 on:
   pull_request:
     branches:
-      - main
+      - prod
+      - staging
       - dev
 
 env:
