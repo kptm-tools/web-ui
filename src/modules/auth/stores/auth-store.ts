@@ -48,7 +48,6 @@ export const useAuthStore = defineStore('auth-store', {
           const updatedResponse: SuccessAuthLogin = response.data as SuccessAuthLogin;
           const sessionStorage: sessionStorageKeys = {
             accessToken: updatedResponse.token,
-            otp: updatedResponse.otp,
             tenantId: updatedResponse.tenantId,
             tokenExpirationInstant: updatedResponse.tokenExpirationInstant,
             audits: updatedResponse.audits

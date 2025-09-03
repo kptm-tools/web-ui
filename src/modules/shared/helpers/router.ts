@@ -23,10 +23,10 @@ export async function handlerRouterAuth(
   next: NavigationGuardNext
 ): Promise<void> {
   const authStore = useAuthStore();
-  const { accessToken, otp, tokenExpirationInstant, tenantId, audits } = getSessionStorageValues();
+  const { accessToken, tokenExpirationInstant, tenantId, audits } = getSessionStorageValues();
 
   //Save session storage information in store
-  authStore.setTokenInfo({ accessToken, tokenExpirationInstant, otp, tenantId, audits });
+  authStore.setTokenInfo({ accessToken, tokenExpirationInstant, tenantId, audits });
 
   if (!routeRequiresAuth(to)) {
     next();
@@ -54,7 +54,6 @@ export async function handlerRouterAuth(
       {
         accessToken,
         tokenExpirationInstant,
-        otp,
         tenantId,
         audits
       },

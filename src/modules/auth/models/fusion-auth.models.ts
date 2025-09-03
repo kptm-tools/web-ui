@@ -64,7 +64,6 @@ export interface SuccessAuthLogin {
   token: string;
   tokenExpirationInstant: number;
   user: SuccessAuthLoginUser;
-  otp: string;
   tenantId: string;
   audits: string;
 }

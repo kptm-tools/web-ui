@@ -23,15 +23,13 @@ describe('FusionAuth API Service', () => {
       const body: FusionAuthLoginBody = {
         applicationId: 'appId',
         loginId: 'testuser',
-        password: 'testpassword',
-        otp: 'otp'
+        password: 'testpassword'
       };
       const mockResponse: AxiosResponse<FusionAuthLoginResponse> = {
         data: {
           token: 'mockToken',
           tokenExpirationInstant: 1,
           user: {} as SuccessAuthLoginUser,
-          otp: 'otp',
           tenantId: '',
           audits: ''
         },
@@ -56,8 +54,7 @@ describe('FusionAuth API Service', () => {
       const body: FusionAuthLoginBody = {
         applicationId: 'appId',
         loginId: 'testuser',
-        password: 'wrongpassword',
-        otp: 'otp'
+        password: 'wrongpassword'
       };
       const mockError = new Error('Login failed');
       (fusionAuthApi.post as ReturnType<typeof vi.fn>).mockRejectedValue(mockError);
