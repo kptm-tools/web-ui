@@ -30,7 +30,6 @@ describe('FusionAuth API Service', () => {
           token: 'mockToken',
           tokenExpirationInstant: 1,
           user: {} as SuccessAuthLoginUser,
-          tenantId: '',
           audits: ''
         },
         status: 200,

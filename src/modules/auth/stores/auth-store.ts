@@ -12,10 +12,7 @@ import type {
   SuccessAuthLoginUser
 } from 'auth/models/fusion-auth.models';
 import type { sessionStorageKeys } from 'auth/models/sessionStorage';
-import {
-  setSessionStorageValues,
-  clearSessionStorageValues
-} from 'auth/helpers/sessionStorage';
+import { setSessionStorageValues, clearSessionStorageValues } from 'auth/helpers/sessionStorage';
 import { isTimestampExpired } from 'shared/helpers/date';
 import { AUTH_STATUS_CODES } from 'src/constants/fusion-auth.constants';
 import { errorQuasarNotify } from 'src/utils';
@@ -55,6 +52,9 @@ export const useAuthStore = defineStore('auth-store', {
     userEmail(state): string {
       return state.userInfo?.email || '';
     },
+    tenantId(state): string {
+      return state.userInfo?.tenantId || '';
+    },
     hasUserData(state): boolean {
       return !!state.userInfo && !!state.userInfo.id;
     }
@@ -68,7 +68,6 @@ export const useAuthStore = defineStore('auth-store', {
           const updatedResponse: SuccessAuthLogin = response.data as SuccessAuthLogin;
           const sessionStorage: sessionStorageKeys = {
             accessToken: updatedResponse.token,
-            tenantId: updatedResponse.tenantId || '',
             tokenExpirationInstant: updatedResponse.tokenExpirationInstant,
             audits: updatedResponse.audits || ''
           };

@@ -19,10 +19,10 @@ export function handlerRouterAuth(
   next: NavigationGuardNext
 ): void {
   const authStore = useAuthStore();
-  const { accessToken, tokenExpirationInstant, tenantId, audits } = getSessionStorageValues();
+  const { accessToken, tokenExpirationInstant, audits } = getSessionStorageValues();
 
   // Save session storage information in store
-  authStore.setTokenInfo({ accessToken, tokenExpirationInstant, tenantId, audits });
+  authStore.setTokenInfo({ accessToken, tokenExpirationInstant, audits });
 
   if (!routeRequiresAuth(to)) {
     next();
