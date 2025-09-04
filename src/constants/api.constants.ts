@@ -1,5 +1,5 @@
 export const HOST_ENDPOINTS = {
-  BASE: '/api/hosts',
+  BASE: '/api/core/hosts',
   GET_ALL: () => HOST_ENDPOINTS.BASE,
   CREATE: () => HOST_ENDPOINTS.BASE,
   GET_BY_ID: (hostId: string) => `${HOST_ENDPOINTS.BASE}/${hostId}`,

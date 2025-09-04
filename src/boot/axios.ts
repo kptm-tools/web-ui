@@ -13,44 +13,10 @@ declare module 'vue' {
   }
 }
 
-const fusionAuthApi = axios.create({
-  baseURL: process.env.FUSION_SERVER_URL || ''
-});
-
 const isUnprotected = (url: string): boolean => {
   return UNPROTECTED_PATHS.some(endpoint => url.includes(endpoint));
 };
 
-fusionAuthApi.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => {
-    Loading.show();
-    if (!isUnprotected(config.url || '')) {
-      const token = sessionStorage.getItem(AUTH_TOKEN_NAMES.ACCESS_TOKEN);
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-    }
-    return config;
-  },
-  error => Promise.reject(new Error(error))
-);
-
-// Add a response interceptor
-fusionAuthApi.interceptors.response.use(
-  response => {
-    Loading.hide();
-    return response;
-  },
-  async error => {
-    Loading.hide();
-    if (error.response && error.response.status === 401) {
-      const router = useRouter();
-      clearSessionStorageValues();
-      await router.push({ name: AUTH_ROUTES.login.name });
-    }
-    return Promise.reject(new Error(error));
-  }
-);
 
 const gatewayApi = axios.create({
   baseURL: process.env.AUDITS_SERVER_URL || 'http://localhost:8000'
@@ -85,4 +51,4 @@ gatewayApi.interceptors.response.use(
   }
 );
 
-export { fusionAuthApi, gatewayApi };
+export { gatewayApi };
