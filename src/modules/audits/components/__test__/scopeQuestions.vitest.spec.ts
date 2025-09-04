@@ -58,6 +58,7 @@ vi.mock('../../models/framework', () => ({
 installQuasarPlugin();
 
 describe('FormularioAlcance.vue', () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let wrapper: any;
 
   beforeEach(async () => {
@@ -87,7 +88,10 @@ describe('FormularioAlcance.vue', () => {
   });
 
   it('should render a number input for question_type number', async () => {
-    const numberInput = wrapper.findComponent({ name: 'q-input', props: { label: 'Presupuesto' } });
+    const numberInput = await wrapper.findComponent({
+      name: 'q-input',
+      props: { label: 'Presupuesto' }
+    });
     expect(numberInput.exists()).toBe(true);
   });
 

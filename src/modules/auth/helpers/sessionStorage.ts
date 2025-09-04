@@ -21,12 +21,13 @@ export function getSessionStorageValues(): sessionStorageKeys {
   };
 }
 
+
 /**
  * @function clearSessionStorageValues
  * @description
  * Clears all stored authentication values from `sessionStorage`.
  * This effectively removes the access token, token expiration instant,
- * and tenant ID, ensuring no residual authentication data.
+ * tenant ID, and user data, ensuring no residual authentication data.
  *
  * @returns {void}
  */
@@ -66,3 +67,4 @@ export function setSessionStorageValues(data: sessionStorageKeys): sessionStorag
 
   return getSessionStorageValues();
 }
+

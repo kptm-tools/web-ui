@@ -17,7 +17,6 @@ const isUnprotected = (url: string): boolean => {
   return UNPROTECTED_PATHS.some(endpoint => url.includes(endpoint));
 };
 
-
 const gatewayApi = axios.create({
   baseURL: process.env.AUDITS_SERVER_URL || 'http://localhost:8000'
 });
