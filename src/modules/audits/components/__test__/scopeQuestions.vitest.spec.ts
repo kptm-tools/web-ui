@@ -2,9 +2,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { installQuasarPlugin } from '@quasar/quasar-app-extension-testing-unit-vitest';
 import { nextTick } from 'vue';
+import { QuestionType } from '../../models/framework';
 
-// Mock the external service and models.
-// It's crucial to mock both modules separately and before the component is imported.
 vi.mock('../../services/framework', () => ({
   FrameworkService: {
     getScopeQuestions: vi.fn().mockResolvedValue({
@@ -13,31 +12,31 @@ vi.mock('../../services/framework', () => ({
           {
             code: 'project_name',
             label: 'Nombre del Proyecto',
-            question_type: 0, // TEXT
+            question_type: QuestionType.TEXT,
             validation_rules: { max_length: 50 }
           },
           {
             code: 'budget',
             label: 'Presupuesto',
-            question_type: 1, // NUMBER
+            question_type: QuestionType.NUMBER, // NUMBER
             validation_rules: { min: 1000, max: 100000 }
           },
           {
             code: 'is_urgent',
             label: 'Es Urgente?',
-            question_type: 2, // CHECKBOX
+            question_type: QuestionType.CHECKBOX,
             validation_rules: null
           },
           {
             code: 'project_files',
             label: 'Archivos del Proyecto',
-            question_type: 3, // FILE
+            question_type: QuestionType.FILE,
             validation_rules: { max_files: 2, file_type: 'pdf' }
           },
           {
             code: 'evaluation_functions',
             label: 'Funciones a Evaluar',
-            question_type: 4, // MULTI_TEXT
+            question_type: QuestionType.MULTI_TEXT,
             validation_rules: { max_length_per_item: 20 }
           }
         ]
@@ -48,25 +47,22 @@ vi.mock('../../services/framework', () => ({
 
 vi.mock('../../models/framework', () => ({
   QuestionType: {
-    TEXT: 0,
-    NUMBER: 1,
-    CHECKBOX: 2,
-    FILE: 3,
-    MULTI_TEXT: 4
+    NUMBER: 'number',
+    TEXT: 'text',
+    CHECKBOX: 'checkbox',
+    FILE: 'file',
+    MULTI_TEXT: 'multi-text'
   }
 }));
 
-// Install Quasar and mock services
 installQuasarPlugin();
 
 describe('FormularioAlcance.vue', () => {
   let wrapper: any;
 
   beforeEach(async () => {
-    // The import for the component should be here to ensure the mocks are applied
     const FormularioAlcance = (await import('../form/ScopeQuestions.vue')).default;
     wrapper = mount(FormularioAlcance);
-    // Wait for the onMounted hook to finish fetching data
     await nextTick();
   });
 
@@ -86,8 +82,6 @@ describe('FormularioAlcance.vue', () => {
       props: { label: 'Nombre del Proyecto' }
     });
     expect(textInput.exists()).toBe(true);
-
-    // Test v-model binding
     await textInput.setValue('Test Project');
     expect(wrapper.vm.answers.project_name).toBe('Test Project');
   });
@@ -102,7 +96,6 @@ describe('FormularioAlcance.vue', () => {
     expect(checkbox.exists()).toBe(true);
     expect(wrapper.vm.answers.is_urgent).toBeUndefined();
 
-    // Test v-model binding
     await checkbox.trigger('click');
     await nextTick();
     expect(wrapper.vm.answers.is_urgent).toBe(true);
@@ -123,11 +116,8 @@ describe('FormularioAlcance.vue', () => {
     expect(multiTextInput.exists()).toBe(true);
     expect(addButton.exists()).toBe(true);
 
-    // Simulate user input and click
     await multiTextInput.setValue('Function A');
     await addButton.trigger('click');
-
-    // Wait for the next DOM update cycle to ensure the <li> element is rendered
     await nextTick();
 
     expect(wrapper.vm.auxInputText).toBe('');
