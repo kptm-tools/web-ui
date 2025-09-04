@@ -19,7 +19,7 @@ export interface MaturityLevel {
 export interface ScopeQuestion {
   code: string;
   label: string;
-  question_type: string;
+  question_type: QuestionType;
   validation_rules?: {
     file_type?: string;
     max_files?: number;
@@ -57,4 +57,12 @@ export interface SubCategoryDetail {
   evidence_examples: string[];
   implementation_details: string[];
   name: string;
+}
+
+export enum QuestionType {
+  NUMBER = 'number',
+  TEXT = 'text',
+  CHECKBOX = 'checkbox',
+  FILE = 'file',
+  MULTI_TEXT = 'multi-text'
 }
