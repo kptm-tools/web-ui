@@ -57,6 +57,9 @@ export const useAuthStore = defineStore('auth-store', {
     },
     hasUserData(state): boolean {
       return !!state.userInfo && !!state.userInfo.id;
+    },
+    accessToken(state): string {
+      return state.userKeys?.accessToken || '';
     }
   },
 
@@ -127,6 +130,9 @@ export const useAuthStore = defineStore('auth-store', {
     logoutUser(): void {
       clearSessionStorageValues();
       this.userInfo = undefined;
+    },
+    logout(): void {
+      this.logoutUser();
     }
   }
 });
