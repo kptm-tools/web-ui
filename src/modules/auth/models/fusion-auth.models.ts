@@ -70,14 +70,14 @@ export interface SuccessAuthLogin {
 
 export interface Registration {
   applicationId: string;
-  data: Record<string, any>;
+  data: Record<string, unknown>;
   id: string;
   insertInstant: number;
   lastLoginInstant: number;
   lastUpdateInstant: number;
   preferredLanguages: string[];
   roles: string[];
-  tokens: Record<string, any>;
+  tokens: Record<string, unknown>;
   usernameStatus: string;
   verified: boolean;
   verifiedInstant: number;
@@ -86,21 +86,21 @@ export interface Registration {
 export interface SuccessAuthLoginUser {
   active: boolean;
   connectorId: string;
-  data: Record<string, any>;
+  data: Record<string, unknown>;
   email: string;
   fullName: string;
   id: string;
   insertInstant: number;
   lastLoginInstant: number;
   lastUpdateInstant: number;
-  memberships: any[];
+  memberships: unknown[];
   passwordChangeRequired: boolean;
   passwordLastUpdateInstant: number;
   preferredLanguages: string[];
   registrations: Registration[];
   tenantId: string;
   twoFactor: {
-    methods: any[];
+    methods: unknown[];
     recoveryCodes: string[];
   };
   usernameStatus: string;
