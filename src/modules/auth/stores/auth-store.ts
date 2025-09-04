@@ -12,7 +12,10 @@ import type {
   SuccessAuthLoginUser
 } from 'auth/models/fusion-auth.models';
 import type { sessionStorageKeys } from 'auth/models/sessionStorage';
-import { setSessionStorageValues, clearSessionStorageValues } from 'auth/helpers/sessionStorage';
+import {
+  setSessionStorageValues,
+  clearSessionStorageValues
+} from 'auth/helpers/sessionStorage';
 import { isTimestampExpired } from 'shared/helpers/date';
 import { AUTH_STATUS_CODES } from 'src/constants/fusion-auth.constants';
 import { errorQuasarNotify } from 'src/utils';
@@ -36,7 +39,24 @@ export const useAuthStore = defineStore('auth-store', {
       return !isTimestampExpired(Number(state.userKeys?.tokenExpirationInstant));
     },
     getUserInfo(state): SuccessAuthLoginUser {
-      return state.userInfo || ({ user: { lastname: '', name: '' } } as SuccessAuthLoginUser);
+      return state.userInfo || ({ fullName: '' } as SuccessAuthLoginUser);
+    },
+    userFullName(state): string {
+      return state.userInfo?.fullName || '';
+    },
+    userRole(state): string {
+      // Extract the first role from the user's registrations
+      return state.userInfo?.registrations?.[0]?.roles?.[0] || '';
+    },
+    userRoleFormatted(state): string {
+      const role = state.userInfo?.registrations[0]?.roles?.[0] || '';
+      return role.charAt(0).toUpperCase() + role.slice(1);
+    },
+    userEmail(state): string {
+      return state.userInfo?.email || '';
+    },
+    hasUserData(state): boolean {
+      return !!state.userInfo && !!state.userInfo.id;
     }
   },
 
@@ -48,11 +68,12 @@ export const useAuthStore = defineStore('auth-store', {
           const updatedResponse: SuccessAuthLogin = response.data as SuccessAuthLogin;
           const sessionStorage: sessionStorageKeys = {
             accessToken: updatedResponse.token,
-            tenantId: updatedResponse.tenantId,
+            tenantId: updatedResponse.tenantId || '',
             tokenExpirationInstant: updatedResponse.tokenExpirationInstant,
-            audits: updatedResponse.audits
+            audits: updatedResponse.audits || ''
           };
-          this.setUserInfo(sessionStorage);
+          // Set both session storage and user info from login response
+          this.setUserInfo(sessionStorage, updatedResponse.user);
           await router.push({ name: SHARED_ROUTES.selectModule.name });
         } else if (response.status === AUTH_STATUS_CODES.LOGIN.CHANGE_PASSWORD_CODE) {
           console.log('Need to change password', response.data as SuccessAuthLoginChangePassword);
@@ -97,6 +118,12 @@ export const useAuthStore = defineStore('auth-store', {
     },
     setTokenInfo(data: sessionStorageKeys): void {
       this.userKeys = data;
+    },
+    refreshUserData(): void {
+      // This method can be used to refresh user data if needed
+      // For now, it's a placeholder since user data comes from login
+      // In the future, if a /api/user/me endpoint is available, it can be called here
+      console.log('User data refresh requested - data should be loaded from login');
     },
     logoutUser(): void {
       clearSessionStorageValues();
