@@ -5,7 +5,7 @@ import type { sessionStorageKeys } from 'auth/models/sessionStorage';
  * @function getSessionStorageValues
  * @description
  * Retrieves authentication-related values from the browser's `sessionStorage`.
- * It attempts to fetch the access token, token expiration instant, and tenant ID.
+ * It attempts to fetch the access token, token expiration instant, and audits.
  * If any value is not found in session storage, it defaults to an empty string
  * for string values or `0` for the token expiration instant.
  *
@@ -16,7 +16,6 @@ export function getSessionStorageValues(): sessionStorageKeys {
     accessToken: sessionStorage.getItem(AUTH_TOKEN_NAMES.ACCESS_TOKEN) || '',
     tokenExpirationInstant:
       Number(sessionStorage.getItem(AUTH_TOKEN_NAMES.TOKEN_EXPIRATION_INSTANT)) || 0,
-    tenantId: sessionStorage.getItem(AUTH_TOKEN_NAMES.TENANT_ID) || '',
     audits: sessionStorage.getItem(AUTH_TOKEN_NAMES.AUDITS) || ''
   };
 }
@@ -26,14 +25,13 @@ export function getSessionStorageValues(): sessionStorageKeys {
  * @description
  * Clears all stored authentication values from `sessionStorage`.
  * This effectively removes the access token, token expiration instant,
- * and tenant ID, ensuring no residual authentication data.
+ * and audits, ensuring no residual authentication data.
  *
  * @returns {void}
  */
 export function clearSessionStorageValues(): void {
   sessionStorage.removeItem(AUTH_TOKEN_NAMES.ACCESS_TOKEN);
   sessionStorage.removeItem(AUTH_TOKEN_NAMES.TOKEN_EXPIRATION_INSTANT);
-  sessionStorage.removeItem(AUTH_TOKEN_NAMES.TENANT_ID);
   sessionStorage.removeItem(AUTH_TOKEN_NAMES.AUDITS);
 }
 
@@ -41,7 +39,7 @@ export function clearSessionStorageValues(): void {
  * @function setSessionStorageValues
  * @description
  * Stores authentication-related values into `sessionStorage`. This includes
- * the access token, token expiration instant, and tenant ID.
+ * the access token, token expiration instant, and audits.
  * The `tokenExpirationInstant` is converted to a string before storage.
  * After setting the values, it immediately retrieves and returns them from
  * session storage to confirm successful storage.
@@ -50,7 +48,7 @@ export function clearSessionStorageValues(): void {
  * data to be stored.
  * - `accessToken`: The JWT access token.
  * - `tokenExpirationInstant`: The timestamp when the token expires (number).
- * - `tenantId`: The identifier for the tenant.
+ * - `audits`: The audits information.
  *
  * @returns {sessionStorageKeys} An object containing the values as they are
  * currently stored in `sessionStorage` after the set operation.
@@ -61,7 +59,6 @@ export function setSessionStorageValues(data: sessionStorageKeys): sessionStorag
     AUTH_TOKEN_NAMES.TOKEN_EXPIRATION_INSTANT,
     data.tokenExpirationInstant.toString()
   );
-  sessionStorage.setItem(AUTH_TOKEN_NAMES.TENANT_ID, data.tenantId);
   sessionStorage.setItem(AUTH_TOKEN_NAMES.AUDITS, data.audits);
 
   return getSessionStorageValues();

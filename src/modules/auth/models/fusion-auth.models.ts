@@ -64,20 +64,48 @@ export interface SuccessAuthLogin {
   token: string;
   tokenExpirationInstant: number;
   user: SuccessAuthLoginUser;
-  tenantId: string;
-  audits: string;
+  tenantId?: string;
+  audits?: string;
+}
+
+export interface Registration {
+  applicationId: string;
+  data: Record<string, unknown>;
+  id: string;
+  insertInstant: number;
+  lastLoginInstant: number;
+  lastUpdateInstant: number;
+  preferredLanguages: string[];
+  roles: string[];
+  tokens: Record<string, unknown>;
+  usernameStatus: string;
+  verified: boolean;
+  verifiedInstant: number;
 }
 
 export interface SuccessAuthLoginUser {
-  id: string;
+  active: boolean;
+  connectorId: string;
+  data: Record<string, unknown>;
   email: string;
-  password: string;
-  application_id: string;
-  roles: string[];
-  user: {
-    name: string;
-    lastname: string;
+  fullName: string;
+  id: string;
+  insertInstant: number;
+  lastLoginInstant: number;
+  lastUpdateInstant: number;
+  memberships: unknown[];
+  passwordChangeRequired: boolean;
+  passwordLastUpdateInstant: number;
+  preferredLanguages: string[];
+  registrations: Registration[];
+  tenantId: string;
+  twoFactor: {
+    methods: unknown[];
+    recoveryCodes: string[];
   };
+  usernameStatus: string;
+  verified: boolean;
+  verifiedInstant: number;
 }
 
 export interface FusionAuthErrorResponse {
@@ -86,8 +114,7 @@ export interface FusionAuthErrorResponse {
 }
 
 export interface CreateUserBody {
-  firstname: string;
-  lastname: string;
+  fullName: string;
   email: string;
   password: string;
   applicationId: string;
