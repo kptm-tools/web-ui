@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { describe, expect, it, vi } from 'vitest';
 import { authenticateUser, logoutUser } from 'auth/services/auth'; // Adjust path as needed
-import { fusionAuthApi } from 'boot/axios';
+import { gatewayApi } from 'boot/axios';
 import type {
   FusionAuthLoginBody,
   FusionAuthLoginResponse,
@@ -11,7 +11,7 @@ import type { AxiosRequestHeaders, AxiosResponse } from 'axios';
 
 // Mock the axios instance
 vi.mock('src/boot/axios', () => ({
-  fusionAuthApi: {
+  gatewayApi: {
     post: vi.fn()
   }
 }));
@@ -23,16 +23,13 @@ describe('FusionAuth API Service', () => {
       const body: FusionAuthLoginBody = {
         applicationId: 'appId',
         loginId: 'testuser',
-        password: 'testpassword',
-        otp: 'otp'
+        password: 'testpassword'
       };
       const mockResponse: AxiosResponse<FusionAuthLoginResponse> = {
         data: {
           token: 'mockToken',
           tokenExpirationInstant: 1,
           user: {} as SuccessAuthLoginUser,
-          otp: 'otp',
-          tenantId: '',
           audits: ''
         },
         status: 200,
@@ -40,14 +37,14 @@ describe('FusionAuth API Service', () => {
         headers: {},
         config: { headers: {} as AxiosRequestHeaders }
       };
-      (fusionAuthApi.post as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
+      (gatewayApi.post as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
 
       // Act
       const response = await authenticateUser(body);
 
       // Assert
 
-      expect(fusionAuthApi.post).toHaveBeenCalledWith('/api/login', body);
+      expect(gatewayApi.post).toHaveBeenCalledWith('/api/login', body);
       expect(response).toEqual(mockResponse);
     });
 
@@ -56,11 +53,10 @@ describe('FusionAuth API Service', () => {
       const body: FusionAuthLoginBody = {
         applicationId: 'appId',
         loginId: 'testuser',
-        password: 'wrongpassword',
-        otp: 'otp'
+        password: 'wrongpassword'
       };
       const mockError = new Error('Login failed');
-      (fusionAuthApi.post as ReturnType<typeof vi.fn>).mockRejectedValue(mockError);
+      (gatewayApi.post as ReturnType<typeof vi.fn>).mockRejectedValue(mockError);
 
       // Act & Assert
       await expect(authenticateUser(body)).rejects.toThrow('Login failed');
@@ -76,13 +72,13 @@ describe('FusionAuth API Service', () => {
         headers: {},
         config: { headers: {} as AxiosRequestHeaders }
       };
-      (fusionAuthApi.post as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
+      (gatewayApi.post as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
 
       // Act
       const response = await logoutUser();
 
       // Assert
-      expect(fusionAuthApi.post).toHaveBeenCalledWith('/api/logout');
+      expect(gatewayApi.post).toHaveBeenCalledWith('/api/logout');
       expect(response).toEqual(mockResponse);
     });
 
@@ -95,13 +91,13 @@ describe('FusionAuth API Service', () => {
         headers: {},
         config: { headers: {} as AxiosRequestHeaders }
       };
-      (fusionAuthApi.post as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
+      (gatewayApi.post as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
 
       // Act
       const response = await logoutUser();
 
       // Assert
-      expect(fusionAuthApi.post).toHaveBeenCalledWith('/api/logout');
+      expect(gatewayApi.post).toHaveBeenCalledWith('/api/logout');
       expect(response).toEqual(mockResponse);
     });
   });

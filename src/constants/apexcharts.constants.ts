@@ -11,7 +11,7 @@ export const APP_CHART_THEME = {
   },
   severity: {
     critical: '#ED273D',
-    high: '#F3A488', 
+    high: '#F3A488',
     medium: '#F6BE63',
     low: '#97B951',
     none: '#42B188',
@@ -98,7 +98,11 @@ export const SCAN_INSIGHT_PROTECTION_SCORE_OPTIONS = {
   legend: {
     show: false
   },
-  colors: [APP_CHART_THEME.colors.danger, APP_CHART_THEME.colors.warning, APP_CHART_THEME.colors.success],
+  colors: [
+    APP_CHART_THEME.colors.danger,
+    APP_CHART_THEME.colors.warning,
+    APP_CHART_THEME.colors.success
+  ],
   plotOptions: {
     pie: {
       startAngle: -90,
@@ -186,13 +190,13 @@ export const HEATMAP_CHART_OPTIONS = {
           },
           {
             from: 0.16,
-            to: 0.30,
+            to: 0.3,
             name: '16-30% Distribution',
             color: '#FECACA'
           },
           {
             from: 0.31,
-            to: 0.50,
+            to: 0.5,
             name: '31-50% Distribution',
             color: '#FCA5A5'
           },
@@ -244,7 +248,7 @@ export const HEATMAP_CHART_OPTIONS = {
       fontFamily: APP_CHART_THEME.fontFamily
     },
     y: {
-      formatter: function(value: number) {
+      formatter: function (value: number) {
         return `${(value * 100).toFixed(1)}%`;
       }
     }
@@ -264,7 +268,11 @@ export const OVERALL_DONUT_OPTIONS = {
   legend: {
     show: false
   },
-  colors: [APP_CHART_THEME.colors.danger, APP_CHART_THEME.colors.warning, APP_CHART_THEME.colors.success],
+  colors: [
+    APP_CHART_THEME.colors.danger,
+    APP_CHART_THEME.colors.warning,
+    APP_CHART_THEME.colors.success
+  ],
   plotOptions: {
     pie: {
       startAngle: -90,
@@ -292,7 +300,11 @@ export const OVERALL_DONUT_OPTIONS_PERCENTAGE = {
   legend: {
     show: false
   },
-  colors: [APP_CHART_THEME.colors.danger, APP_CHART_THEME.colors.warning, APP_CHART_THEME.colors.success]
+  colors: [
+    APP_CHART_THEME.colors.danger,
+    APP_CHART_THEME.colors.warning,
+    APP_CHART_THEME.colors.success
+  ]
 };
 
 // New ApexCharts configuration for Vulnerability Trend Chart

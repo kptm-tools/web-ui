@@ -2,8 +2,10 @@
   <q-form class="q-pa-md q-px-xl q-col-gutter-md">
     <h4 class="text-center text-weight-bold">Formulario de Alcance</h4>
     <template v-for="(question, index) in scopeQuestions" :key="question.code">
-      <div v-if="index === 17" class="q-mt-sm text-weight-bold">Funciones a Evaluar</div>
-      <template v-if="question.question_type === 'text'">
+      <div v-if="index === indexBeforeSelectFunction" class="q-mt-sm text-weight-bold">
+        Funciones a Evaluar
+      </div>
+      <template v-if="question.question_type === QuestionType.TEXT">
         <q-input
           outlined
           stack-label
@@ -13,7 +15,7 @@
         />
       </template>
 
-      <template v-if="question.question_type === 'number'">
+      <template v-if="question.question_type === QuestionType.NUMBER">
         <q-input
           outlined
           v-model="answers[question.code]"
@@ -31,13 +33,13 @@
         />
       </template>
 
-      <template v-if="question.question_type === 'checkbox'">
+      <template v-if="question.question_type === QuestionType.CHECKBOX">
         <div class="row">
           <q-checkbox left-label v-model="answers[question.code]" :label="question.label" />
         </div>
       </template>
 
-      <template v-if="question.question_type === 'file'">
+      <template v-if="question.question_type === QuestionType.FILE">
         <q-file
           outlined
           stack-label
@@ -48,7 +50,7 @@
         />
       </template>
 
-      <template v-if="question.question_type === 'multi-text'">
+      <template v-if="question.question_type === QuestionType.MULTI_TEXT">
         <div class="q-mt-sm text-weight-bold">{{ question.label }}</div>
         <div class="row items-center">
           <div class="col">
@@ -87,13 +89,14 @@
 <script setup lang="ts">
   import { onMounted, ref } from 'vue';
   import { FrameworkService } from '../../services/framework';
-  import { type ScopeQuestion } from '../../models/framework';
+  import { type ScopeQuestion, QuestionType } from '../../models/framework';
 
   const scopeQuestions = ref([] as ScopeQuestion[]);
   const answers = ref({} as { [key: string]: string });
   const files = ref({} as { [key: string]: File });
   const multiText = ref({} as { [key: string]: string[] });
   const auxInputText = ref('');
+  const indexBeforeSelectFunction = 17;
 
   function handlerMultiText(code: string) {
     if (!multiText.value[code]) {

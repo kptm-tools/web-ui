@@ -29,9 +29,9 @@ export enum DENY_ACTIONS {
 export type DENY_ACTIONS_TYPES = DENY_ACTIONS;
 
 export enum USER_ROLES {
-  OPERATOR = 'operator',
+  MANAGER = 'manager',
   ANALYST = 'analyst',
-  ADMIN = 'admin'
+  SUPER_ADMIN = 'super-admin'
 }
 
 export type USER_ROLES_TYPES = keyof typeof USER_ROLES;
