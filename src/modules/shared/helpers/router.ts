@@ -2,6 +2,7 @@ import { useAuthStore } from 'auth/stores/auth-store';
 import type { NavigationGuardNext, RouteLocationNormalizedGeneric } from 'vue-router';
 import { AUTH_ROUTES } from 'auth/routes/route-names';
 import { getSessionStorageValues } from 'auth/helpers/sessionStorage';
+import { SHARED_ROUTES } from '../routes/route-names';
 
 /**
  * @function handlerRouterAuth
@@ -29,6 +30,11 @@ export function handlerRouterAuth(
     return;
   }
 
+  if (routeRequiresSuperAdmin(to) && !authStore.isSuperAdmin) {
+    next({ name: SHARED_ROUTES.selectModule.name });
+    return;
+  }
+
   if (!authStore.isAuthenticated || !accessToken) {
     next({ name: AUTH_ROUTES.login.name });
     return;
@@ -46,4 +52,8 @@ export function handlerRouterAuth(
 
 function routeRequiresAuth(to: RouteLocationNormalizedGeneric): boolean {
   return to.matched.some(record => record.meta.requiresAuth);
+}
+
+function routeRequiresSuperAdmin(to: RouteLocationNormalizedGeneric): boolean {
+  return to.matched.some(record => record.meta.superAdmin);
 }

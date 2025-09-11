@@ -45,6 +45,7 @@ describe('FrameworkService', () => {
       ]
     };
     // Mock the get method to resolve with our mock response
+
     (gatewayApi.get as vi.Mock).mockResolvedValue(mockAxiosResponse(mockData));
 
     // Call the service method
