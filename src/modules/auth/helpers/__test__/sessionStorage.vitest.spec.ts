@@ -32,24 +32,21 @@ describe('Auth/helpers:sessionStorage', () => {
       const result = getSessionStorageValues();
       expect(result).toEqual({
         accessToken: '',
-        otp: '',
         tokenExpirationInstant: 0,
-        tenantId: ''
+        audits: ''
       });
     });
 
     it('should return stored values when all items are present', () => {
       sessionStorageMock[AUTH_TOKEN_NAMES.ACCESS_TOKEN] = 'test_access_token';
-      sessionStorageMock[AUTH_TOKEN_NAMES.OTP] = '123456';
       sessionStorageMock[AUTH_TOKEN_NAMES.TOKEN_EXPIRATION_INSTANT] = '1678886400000';
-      sessionStorageMock[AUTH_TOKEN_NAMES.TENANT_ID] = 'test_tenant';
+      sessionStorageMock[AUTH_TOKEN_NAMES.AUDITS] = 'test_audits';
 
       const result = getSessionStorageValues();
       expect(result).toEqual({
         accessToken: 'test_access_token',
-        otp: '123456',
         tokenExpirationInstant: 1678886400000,
-        tenantId: 'test_tenant'
+        audits: 'test_audits'
       });
     });
 
@@ -59,9 +56,8 @@ describe('Auth/helpers:sessionStorage', () => {
       const result = getSessionStorageValues();
       expect(result).toEqual({
         accessToken: 'partial_token',
-        otp: '',
         tokenExpirationInstant: 0,
-        tenantId: ''
+        audits: ''
       });
     });
 
@@ -82,42 +78,37 @@ describe('Auth/helpers:sessionStorage', () => {
     it('should set all provided values into session storage and return them', () => {
       const dataToSet: sessionStorageKeys = {
         accessToken: 'new_access_token',
-        otp: '987654',
         tokenExpirationInstant: 1678900000000,
-        tenantId: 'new_tenant'
+        audits: 'test_audits'
       };
 
       const result = setSessionStorageValues(dataToSet);
 
       expect(sessionStorageMock[AUTH_TOKEN_NAMES.ACCESS_TOKEN]).toBe(dataToSet.accessToken);
-      expect(sessionStorageMock[AUTH_TOKEN_NAMES.OTP]).toBe(dataToSet.otp);
       expect(sessionStorageMock[AUTH_TOKEN_NAMES.TOKEN_EXPIRATION_INSTANT]).toBe(
         dataToSet.tokenExpirationInstant.toString()
       );
-      expect(sessionStorageMock[AUTH_TOKEN_NAMES.TENANT_ID]).toBe(dataToSet.tenantId);
+      expect(sessionStorageMock[AUTH_TOKEN_NAMES.AUDITS]).toBe(dataToSet.audits);
       expect(result).toEqual(dataToSet);
     });
 
     it('should handle empty string inputs for string fields', () => {
       const dataToSet: sessionStorageKeys = {
         accessToken: '',
-        otp: '',
         tokenExpirationInstant: 12345,
-        tenantId: ''
+        audits: ''
       };
 
       setSessionStorageValues(dataToSet);
       expect(sessionStorageMock[AUTH_TOKEN_NAMES.ACCESS_TOKEN]).toBe('');
-      expect(sessionStorageMock[AUTH_TOKEN_NAMES.OTP]).toBe('');
-      expect(sessionStorageMock[AUTH_TOKEN_NAMES.TENANT_ID]).toBe('');
+      expect(sessionStorageMock[AUTH_TOKEN_NAMES.AUDITS]).toBe('');
     });
 
     it('should handle zero for tokenExpirationInstant', () => {
       const dataToSet: sessionStorageKeys = {
         accessToken: 'some_token',
-        otp: '123',
         tokenExpirationInstant: 0,
-        tenantId: 'some_tenant'
+        audits: 'test_audits'
       };
 
       setSessionStorageValues(dataToSet);
@@ -130,26 +121,22 @@ describe('Auth/helpers:sessionStorage', () => {
   describe('clearSessionStorageValues', () => {
     it('should remove all authentication-related items from session storage', () => {
       sessionStorageMock[AUTH_TOKEN_NAMES.ACCESS_TOKEN] = 'token_to_clear';
-      sessionStorageMock[AUTH_TOKEN_NAMES.OTP] = 'otp_to_clear';
       sessionStorageMock[AUTH_TOKEN_NAMES.TOKEN_EXPIRATION_INSTANT] = '123';
-      sessionStorageMock[AUTH_TOKEN_NAMES.TENANT_ID] = 'tenant_to_clear';
+      sessionStorageMock[AUTH_TOKEN_NAMES.AUDITS] = 'audits_to_clear';
 
       expect(sessionStorageMock).toHaveProperty(AUTH_TOKEN_NAMES.ACCESS_TOKEN);
-      expect(sessionStorageMock).toHaveProperty(AUTH_TOKEN_NAMES.OTP);
 
       clearSessionStorageValues();
 
       expect(sessionStorageMock).not.toHaveProperty(AUTH_TOKEN_NAMES.ACCESS_TOKEN);
-      expect(sessionStorageMock).not.toHaveProperty(AUTH_TOKEN_NAMES.OTP);
       expect(sessionStorageMock).not.toHaveProperty(AUTH_TOKEN_NAMES.TOKEN_EXPIRATION_INSTANT);
-      expect(sessionStorageMock).not.toHaveProperty(AUTH_TOKEN_NAMES.TENANT_ID);
+      expect(sessionStorageMock).not.toHaveProperty(AUTH_TOKEN_NAMES.AUDITS);
 
       const result = getSessionStorageValues();
       expect(result).toEqual({
         accessToken: '',
-        otp: '',
         tokenExpirationInstant: 0,
-        tenantId: ''
+        audits: ''
       });
     });
 
@@ -158,9 +145,8 @@ describe('Auth/helpers:sessionStorage', () => {
       const result = getSessionStorageValues();
       expect(result).toEqual({
         accessToken: '',
-        otp: '',
         tokenExpirationInstant: 0,
-        tenantId: ''
+        audits: ''
       });
     });
   });

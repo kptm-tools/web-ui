@@ -4,7 +4,7 @@ export const inputForms: InputFormContainer = {
   loginForm: {
     inputs: [
       {
-        key: 'application_id',
+        key: 'applicationId',
         label: 'auth.login.form.applicationId.label',
         required: true,
         requiredMessage: 'auth.login.form.applicationId.required'
@@ -36,7 +36,7 @@ export const inputForms: InputFormContainer = {
         requiredMessage: 'auth.login.form.applicationId.required'
       },
       {
-        key: 'loginId',
+        key: 'login_id',
         label: 'auth.login.form.username.label',
         required: true,
         requiredMessage: 'auth.login.form.username.required',
@@ -50,7 +50,7 @@ export const inputForms: InputFormContainer = {
         type: 'password'
       },
       {
-        key: 'changePasswordId',
+        key: 'change_password_id',
         label: 'auth.login.form.changePasswordId.label',
         required: true,
         requiredMessage: 'auth.login.form.changePasswordId.required'

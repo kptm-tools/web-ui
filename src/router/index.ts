@@ -35,8 +35,8 @@ export default route(function (/* { store, ssrContext } */) {
     history: createHistory(process.env.VUE_ROUTER_BASE)
   });
 
-  Router.beforeEach(async (to, from, next) => {
-    await handlerRouterAuth(to, next);
+  Router.beforeEach((to, from, next) => {
+    handlerRouterAuth(to, next);
   });
 
   Router.afterEach(to => {
