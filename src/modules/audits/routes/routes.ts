@@ -13,6 +13,14 @@ const routes: RouteRecordRaw[] = [
           title: 'Audits Home'
         },
         component: () => import('../pages/AuditsHome.vue')
+      },
+      {
+        path: AUDITS_ROUTES.dashboard.path,
+        name: AUDITS_ROUTES.dashboard.name,
+        meta: {
+          title: 'Admin Home'
+        },
+        component: () => import('../pages/AdminHome.vue')
       }
     ]
   }

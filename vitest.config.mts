@@ -35,7 +35,10 @@ export default defineConfig({
         'quasar.config.js',
         'src/boot/**',
         'src/modules/auth/constants/**',
-        'src/models/**'
+        'src/models/**',
+        'src/modules/admin/routes/**',
+        'src/modules/audits/routes/**',
+        'src/modules/auth/routes/**'
       ]
     }
   },

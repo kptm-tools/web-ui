@@ -5,6 +5,7 @@ import { authenticateUser, changePassword, forgotPassword } from 'auth/services/
 import { UserService } from 'shared/services/user';
 import * as sessionStorageHelpers from 'auth/helpers/sessionStorage';
 import * as dateHelpers from 'shared/helpers/date';
+import type { AxiosResponseHeaders, InternalAxiosRequestConfig } from 'axios';
 
 // Mock the external dependencies
 vi.mock('auth/services/auth', () => ({
@@ -170,7 +171,13 @@ describe('useAuthStore', () => {
       it('calls UserService.createUser on success', async () => {
         const mockBody = { email: 'newuser@example.com' };
         // eslint-disable-next-line @typescript-eslint/unbound-method
-        vi.mocked(UserService.createUser).mockResolvedValue({});
+        vi.mocked(UserService.createUser).mockResolvedValue({
+          data: undefined,
+          status: 0,
+          statusText: '',
+          headers: {} as AxiosResponseHeaders,
+          config: {} as InternalAxiosRequestConfig
+        });
 
         await authStore.registerUser(mockBody);
 
@@ -193,7 +200,13 @@ describe('useAuthStore', () => {
     describe('recoverPassword', () => {
       it('calls forgotPassword on success', async () => {
         const mockBody = { email: 'user@example.com' };
-        vi.mocked(forgotPassword).mockResolvedValue({});
+        vi.mocked(forgotPassword).mockResolvedValue({
+          data: undefined,
+          status: 0,
+          statusText: '',
+          headers: {} as AxiosResponseHeaders,
+          config: {} as InternalAxiosRequestConfig
+        });
 
         await authStore.recoverPassword(mockBody);
 
@@ -214,7 +227,13 @@ describe('useAuthStore', () => {
     describe('changePassword', () => {
       it('calls changePassword on success', async () => {
         const mockBody = { newPassword: 'new-password' };
-        vi.mocked(changePassword).mockResolvedValue({});
+        vi.mocked(changePassword).mockResolvedValue({
+          data: undefined,
+          status: 0,
+          statusText: '',
+          headers: {} as AxiosResponseHeaders,
+          config: {} as InternalAxiosRequestConfig
+        });
 
         await authStore.changePassword(mockBody);
 
