@@ -35,6 +35,11 @@ export const useAuthStore = defineStore('auth-store', {
     isAuthenticated(state): boolean {
       return !isTimestampExpired(Number(state.userKeys?.tokenExpirationInstant));
     },
+    isSuperAdmin(state): boolean {
+      return Boolean(
+        state.userInfo?.registrations.some(val => val.roles.some(rol => rol === 'super-admin'))
+      );
+    },
     getUserInfo(state): SuccessAuthLoginUser {
       return state.userInfo || ({ fullName: '' } as SuccessAuthLoginUser);
     },
