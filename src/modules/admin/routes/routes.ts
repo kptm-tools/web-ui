@@ -11,8 +11,8 @@ const routes: RouteRecordRaw[] = [
     },
     children: [
       {
-        path: ADMIN_ROUTES.home.path,
-        name: ADMIN_ROUTES.home.name,
+        path: ADMIN_ROUTES.dashboard.path,
+        name: ADMIN_ROUTES.dashboard.name,
         meta: {
           title: 'Admin Home'
         },

@@ -15,7 +15,7 @@
     </q-header>
 
     <q-drawer show-if-above side="left" class="flex column" :width="showSecondDrawer ? 500 : 300">
-      <main-drawer @logout="logout" is-audits />
+      <main-drawer @logout="logout" is-audits :is-super-admin="isSuperAdmin" />
       <div v-if="showSecondDrawer" class="second-drawer">
         <div id="aux-sidebar"></div>
       </div>
@@ -46,6 +46,8 @@
   const miscStore = useMiscStore();
 
   const showSecondDrawer = computed(() => miscStore.isSecondDrawerVisible);
+
+  const isSuperAdmin = computed(() => authStore.isSuperAdmin);
 
   async function logout(): Promise<void> {
     authStore.logoutUser();

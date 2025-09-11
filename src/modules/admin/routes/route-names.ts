@@ -1,5 +1,5 @@
 export const ADMIN_ROUTES = {
-  home: {
+  dashboard: {
     name: 'AdminHome',
     path: ''
   }
