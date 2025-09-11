@@ -1,12 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import type { AxiosResponse } from 'axios';
+import type { AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { gatewayApi } from 'src/boot/axios';
 import { FrameworkService } from '../framework';
-import type {
-  MaturityLevelResponse,
-  ScopeQuestionResponse,
-  StructureResponse,
-  SubCategoryDetail
+import {
+  QuestionType,
+  type MaturityLevelResponse,
+  type ScopeQuestionResponse,
+  type StructureResponse,
+  type SubCategoryDetail
 } from '../../models/framework'; // Assuming types are located here as per the original service file
 
 // Mock the external gatewayApi
@@ -23,12 +24,12 @@ vi.mock('src/boot/axios', () => {
 
 describe('FrameworkService', () => {
   // Use a mock response object that matches the AxiosResponse shape
-  const mockAxiosResponse = (data: any): AxiosResponse => ({
+  const mockAxiosResponse = (data: unknown): AxiosResponse => ({
     data,
     status: 200,
     statusText: 'OK',
     headers: {},
-    config: {}
+    config: {} as InternalAxiosRequestConfig
   });
 
   // Reset the mock functions before each test
@@ -50,6 +51,7 @@ describe('FrameworkService', () => {
     const response = await FrameworkService.getMaturityLevels();
 
     // Assert that the API was called with the correct URL
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(gatewayApi.get).toHaveBeenCalledWith('api/audits/framework/maturity-levels');
     // Assert that the correct data was returned
     expect(response.data).toEqual(mockData);
@@ -58,14 +60,15 @@ describe('FrameworkService', () => {
   it('should call getScopeQuestions and return data', async () => {
     const mockData: ScopeQuestionResponse = {
       questions: [
-        { code: 'q1', label: 'Question 1', question_type: 'text' },
-        { code: 'q2', label: 'Question 2', question_type: 'number' }
+        { code: 'q1', label: 'Question 1', question_type: QuestionType.TEXT },
+        { code: 'q2', label: 'Question 2', question_type: QuestionType.NUMBER }
       ]
     };
     (gatewayApi.get as vi.Mock).mockResolvedValue(mockAxiosResponse(mockData));
 
     const response = await FrameworkService.getScopeQuestions();
 
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(gatewayApi.get).toHaveBeenCalledWith('api/audits/framework/scope-questions');
     expect(response.data).toEqual(mockData);
   });
@@ -78,6 +81,7 @@ describe('FrameworkService', () => {
 
     const response = await FrameworkService.getStructure();
 
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(gatewayApi.get).toHaveBeenCalledWith('api/audits/framework/structure');
     expect(response.data).toEqual(mockData);
   });
@@ -96,6 +100,7 @@ describe('FrameworkService', () => {
     const response = await FrameworkService.getSubcategoryById(mockId);
 
     // Assert that the API was called with the correct dynamic URL
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(gatewayApi.get).toHaveBeenCalledWith(`api/audits/framework/subcategories/${mockId}`);
     expect(response.data).toEqual(mockData);
   });
