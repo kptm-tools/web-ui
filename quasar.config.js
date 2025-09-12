@@ -3,6 +3,7 @@
 
 import { defineConfig } from '#q-app/wrappers';
 import { fileURLToPath } from 'node:url';
+import { resolve } from 'node:path';
 
 export default defineConfig(ctx => {
   return {
@@ -92,7 +93,13 @@ export default defineConfig(ctx => {
           },
           { server: false }
         ]
-      ]
+      ],
+
+      alias: {
+        vulnerability: resolve(__dirname, './src/modules/vulnerability'),
+        auth: resolve(__dirname, './src/modules/auth'),
+        shared: resolve(__dirname, './src/modules/shared')
+      }
     },
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#devserver

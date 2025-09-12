@@ -1,0 +1,65 @@
+import { AUTH_TOKEN_NAMES } from 'src/constants/fusion-auth.constants';
+import type { sessionStorageKeys } from 'auth/models/sessionStorage';
+
+/**
+ * @function getSessionStorageValues
+ * @description
+ * Retrieves authentication-related values from the browser's `sessionStorage`.
+ * It attempts to fetch the access token, token expiration instant, and audits.
+ * If any value is not found in session storage, it defaults to an empty string
+ * for string values or `0` for the token expiration instant.
+ *
+ * @returns {SessionStorageKeys} An object containing the retrieved session storage values.
+ */
+export function getSessionStorageValues(): sessionStorageKeys {
+  return {
+    accessToken: sessionStorage.getItem(AUTH_TOKEN_NAMES.ACCESS_TOKEN) || '',
+    tokenExpirationInstant:
+      Number(sessionStorage.getItem(AUTH_TOKEN_NAMES.TOKEN_EXPIRATION_INSTANT)) || 0,
+    audits: sessionStorage.getItem(AUTH_TOKEN_NAMES.AUDITS) || ''
+  };
+}
+
+/**
+ * @function clearSessionStorageValues
+ * @description
+ * Clears all stored authentication values from `sessionStorage`.
+ * This effectively removes the access token, token expiration instant,
+ * and audits, ensuring no residual authentication data.
+ *
+ * @returns {void}
+ */
+export function clearSessionStorageValues(): void {
+  sessionStorage.removeItem(AUTH_TOKEN_NAMES.ACCESS_TOKEN);
+  sessionStorage.removeItem(AUTH_TOKEN_NAMES.TOKEN_EXPIRATION_INSTANT);
+  sessionStorage.removeItem(AUTH_TOKEN_NAMES.AUDITS);
+}
+
+/**
+ * @function setSessionStorageValues
+ * @description
+ * Stores authentication-related values into `sessionStorage`. This includes
+ * the access token, token expiration instant, and audits.
+ * The `tokenExpirationInstant` is converted to a string before storage.
+ * After setting the values, it immediately retrieves and returns them from
+ * session storage to confirm successful storage.
+ *
+ * @param {sessionStorageKeys} data - An object containing the authentication
+ * data to be stored.
+ * - `accessToken`: The JWT access token.
+ * - `tokenExpirationInstant`: The timestamp when the token expires (number).
+ * - `audits`: The audits information.
+ *
+ * @returns {sessionStorageKeys} An object containing the values as they are
+ * currently stored in `sessionStorage` after the set operation.
+ */
+export function setSessionStorageValues(data: sessionStorageKeys): sessionStorageKeys {
+  sessionStorage.setItem(AUTH_TOKEN_NAMES.ACCESS_TOKEN, data.accessToken);
+  sessionStorage.setItem(
+    AUTH_TOKEN_NAMES.TOKEN_EXPIRATION_INSTANT,
+    data.tokenExpirationInstant.toString()
+  );
+  sessionStorage.setItem(AUTH_TOKEN_NAMES.AUDITS, data.audits);
+
+  return getSessionStorageValues();
+}
