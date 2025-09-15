@@ -1,0 +1,6 @@
+// Runtime configuration for the application
+// This file is processed at container startup to inject environment variables
+window.APP_CONFIG = {
+  API_BASE_URL: '${API_BASE_URL}',
+  WS_BASE_URL: '${WS_BASE_URL}'
+};
