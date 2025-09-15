@@ -39,9 +39,6 @@ RUN rm /etc/nginx/conf.d/default.conf
 # Copy the built SPA from the 'build' stage
 COPY --from=build /app/dist/spa /usr/share/nginx/html
 
-# Copy your custom Nginx configuration file
-COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
-
 EXPOSE 80
 
 # Start nginx to serve the application

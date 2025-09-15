@@ -1,6 +1,10 @@
 import type { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 import axios from 'axios';
 import { AUTH_TOKEN_NAMES, UNPROTECTED_PATHS } from 'src/constants/fusion-auth.constants';
+import { Loading } from 'quasar';
+import { clearSessionStorageValues } from 'src/modules/auth/helpers/sessionStorage';
+import { useRouter } from 'vue-router';
+import { AUTH_ROUTES } from 'src/modules/auth/routes/route-names';
 
 declare module 'vue' {
   interface ComponentCustomProperties {
@@ -9,15 +13,15 @@ declare module 'vue' {
   }
 }
 
-const fusionAuthApi = axios.create({
-  baseURL: process.env.FUSION_SERVER_URL || '',
-});
-
 const isUnprotected = (url: string): boolean => {
-  return UNPROTECTED_PATHS.some((endpoint) => url.includes(endpoint));
+  return UNPROTECTED_PATHS.some(endpoint => url.includes(endpoint));
 };
 
-fusionAuthApi.interceptors.request.use(
+const gatewayApi = axios.create({
+  baseURL: process.env.AUDITS_SERVER_URL || 'http://localhost:8000'
+});
+
+gatewayApi.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     if (!isUnprotected(config.url || '')) {
       const token = sessionStorage.getItem(AUTH_TOKEN_NAMES.ACCESS_TOKEN);
@@ -27,17 +31,23 @@ fusionAuthApi.interceptors.request.use(
     }
     return config;
   },
-  (error) => Promise.reject(new Error(error)),
+  error => Promise.reject(new Error(error))
 );
 
-// Add a response interceptor
-fusionAuthApi.interceptors.response.use(
-  (response) => {
+gatewayApi.interceptors.response.use(
+  response => {
+    Loading.hide();
     return response;
   },
-  (error) => {
+  async error => {
+    Loading.hide();
+    if (error.response && error.response.status === 401) {
+      const router = useRouter();
+      clearSessionStorageValues();
+      await router.push({ name: AUTH_ROUTES.login.name });
+    }
     return Promise.reject(new Error(error));
-  },
+  }
 );
 
-export { fusionAuthApi };
+export { gatewayApi };

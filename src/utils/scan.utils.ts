@@ -1,17 +1,24 @@
 import type { QTableColumn } from 'quasar';
-import type { Scan, ScanInsight, ScanTableAction } from 'src/models/scans.model';
-import { ScanActions, ScanStatus } from 'src/models/scans.model';
-import { ScanService } from 'src/services';
+import type {
+  CreateScanBody,
+  Scan,
+  ScanInsight,
+  ScanTableAction
+} from 'vulnerability/models/scans';
+import { ScanActions, ScanStatus } from 'vulnerability/models/scans';
+import type { HostSchedule } from 'vulnerability/models/hosts';
+import { ScanService } from 'vulnerability/services/scan';
+import { formatDateTimeToServer } from './date.utils';
 
 export function formatScansForTable(scans: Scan[]): Record<string, unknown>[] {
-  return scans.map((scan) => ({
+  return scans.map(scan => ({
     id: scan.scan_id,
     scanDate: scan.scan_date,
     host: scan.host,
     numVulnerabilities: scan.vulnerabilities,
     severity: scan.severities,
-    durations: scan.duration,
-    status: scan.status,
+    duration: scan.duration,
+    status: scan.status
   }));
 }
 
@@ -40,49 +47,62 @@ export function formatDuration(seconds: number): string {
   return result.trim();
 }
 
+export function formatHostScheduleToCreateScanBody(data: HostSchedule[]): CreateScanBody[] {
+  return data
+    .map(val => ({
+      host_id: val.id || '',
+      repeat_frequency: {
+        quantity: val.repeat_frequency.quantity,
+        unit_of_frequency: val.repeat_frequency.unit_of_frequency
+      },
+      schedule_at: formatDateTimeToServer(val.scanDateTime.date, val.scanDateTime.time)
+    }))
+    .filter(scan => scan.host_id);
+}
+
 export const SCAN_TABLE_COLUMNS: QTableColumn[] = [
   {
     name: 'ID',
     label: 'ID',
     align: 'left',
-    field: 'id',
+    field: 'id'
   },
   {
     name: 'Scan Date',
     label: 'ScanDate',
     align: 'left',
-    field: 'scanDate',
+    field: 'scanDate'
   },
   {
     name: 'Host',
     label: 'Host',
     align: 'left',
-    field: 'host',
+    field: 'host'
   },
   {
     name: '# of vulnerabilities',
     label: 'NumVulnerabilities',
     align: 'left',
-    field: 'numVulnerabilities',
+    field: 'numVulnerabilities'
   },
   {
     name: 'Severity',
     label: 'Severity',
     align: 'left',
-    field: 'severity',
+    field: 'severity'
   },
   {
-    name: 'Durations',
-    label: 'Durations',
+    name: 'Duration',
+    label: 'Duration',
     align: 'left',
-    field: 'durations',
+    field: 'duration'
   },
   {
     name: 'Status',
     label: 'Status',
     align: 'left',
-    field: 'status',
-  },
+    field: 'status'
+  }
 ];
 
 export const SCAN_TABLE_SCHEDULE_COLUMNS: QTableColumn[] = [
@@ -90,38 +110,38 @@ export const SCAN_TABLE_SCHEDULE_COLUMNS: QTableColumn[] = [
     name: 'ID',
     label: 'ID',
     align: 'left',
-    field: 'id',
+    field: 'id'
   },
   {
     name: 'Host',
     label: 'Host',
     align: 'left',
-    field: 'host',
+    field: 'host'
   },
   {
     name: 'Scan Date',
     label: 'ScanDate',
     align: 'left',
-    field: 'scheduled_date',
+    field: 'scheduled_date'
   },
   {
     name: 'Frequency',
     label: 'Frequency',
     align: 'left',
-    field: 'frequency',
-  },
+    field: 'frequency'
+  }
 ];
 
 export const SCAN_TABLE_ACTIONS: ScanTableAction[] = [
   {
     name: ScanActions.insight,
     icon: 'fas fa-chart-simple',
-    show: (value: ScanStatus): boolean => value === ScanStatus.completed,
+    show: (value: ScanStatus): boolean => value === ScanStatus.completed
   },
   {
     name: ScanActions.cancel,
     icon: 'close',
     show: (value: ScanStatus): boolean =>
-      value === ScanStatus.inProgress || value === ScanStatus.pending,
-  },
+      value === ScanStatus.inProgress || value === ScanStatus.pending
+  }
 ];

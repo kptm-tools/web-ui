@@ -24,8 +24,10 @@ jobs:
       - name: 📦 Build dev Docker Image
         run: docker build --target dev -t ${IMAGE_NAME}:dev .
 
-      - name: 📦 Build prod Docker Image
-        run: docker build --target prod -t ${IMAGE_NAME}:prod .
-
       - name: ✅ Run Unit Tests in dev Docker Container
+        id: test-step
         run: docker run ${IMAGE_NAME}:dev npm run test:unit:ci
+
+      - name: 📦 Build prod Docker Image
+        if: steps.test-step.outcome == 'success'
+        run: docker build --target prod -t ${IMAGE_NAME}:prod .

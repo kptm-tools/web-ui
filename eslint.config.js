@@ -38,8 +38,8 @@ export default defineConfigWithVueTs(
   {
     files: ['**/*.ts', '**/*.vue'],
     rules: {
-      '@typescript-eslint/consistent-type-imports': ['error', { prefer: 'type-imports' }],
-    },
+      '@typescript-eslint/consistent-type-imports': ['error', { prefer: 'type-imports' }]
+    }
   },
   // https://github.com/vuejs/eslint-config-typescript
   vueTsConfigs.recommendedTypeChecked,
@@ -57,8 +57,8 @@ export default defineConfigWithVueTs(
         cordova: 'readonly',
         Capacitor: 'readonly',
         chrome: 'readonly', // BEX related
-        browser: 'readonly', // BEX related
-      },
+        browser: 'readonly' // BEX related
+      }
     },
 
     // add your custom rules here
@@ -68,18 +68,18 @@ export default defineConfigWithVueTs(
       // allow debugger during development only
       'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
 
-      'vue/block-lang': 'off',
-    },
+      'vue/block-lang': 'off'
+    }
   },
 
   {
     files: ['src-pwa/custom-service-worker.ts'],
     languageOptions: {
       globals: {
-        ...globals.serviceworker,
-      },
-    },
+        ...globals.serviceworker
+      }
+    }
   },
 
-  prettierSkipFormatting,
+  prettierSkipFormatting
 );
