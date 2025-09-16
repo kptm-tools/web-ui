@@ -49,6 +49,7 @@
   import { AdminService } from '../services/admin';
   import { type UnassignedAuditRow, type UnassignedAuditsResponse } from '../models/admin';
   import { type QTableColumn } from 'quasar';
+  import { errorQuasarNotify } from 'src/utils';
 
   const unassignedAuditsResponse: Ref<UnassignedAuditsResponse | null> = ref(null);
   const pagination = ref({
@@ -56,13 +57,13 @@
     descending: false,
     page: 1,
     rowsPerPage: 20,
-    rowsNumber: 10
+    rowsNumber: 20
   });
   const columns: QTableColumn[] = [
     {
       name: 'title',
       align: 'center',
-      label: 'Organizacion',
+      label: 'Organización',
       field: 'title',
       sortable: true
     },
@@ -76,7 +77,7 @@
     {
       name: 'created_at',
       align: 'center',
-      label: 'Creacion',
+      label: 'Creación',
       field: 'created_at',
       sortable: true
     },
@@ -107,9 +108,9 @@
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async function onRequest(props: any) {
     if (props.pagination) {
-      const { page, rowsPerPage } = props.pagination;
-      if (page && rowsPerPage) {
-        await setUnassignedAuditsData(page, rowsPerPage);
+      const { page, rowsNumber } = props.pagination;
+      if (page && rowsNumber) {
+        await setUnassignedAuditsData(page, rowsNumber);
       }
     }
   }
@@ -121,7 +122,7 @@
         await AdminService.getUnassignedAudits(page, pageSize)
       ).data;
     } catch (err) {
-      console.error(err);
+      errorQuasarNotify(String(err));
     } finally {
       loading.value = false;
     }
