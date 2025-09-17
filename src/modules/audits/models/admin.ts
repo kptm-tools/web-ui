@@ -19,6 +19,16 @@ export interface UnassignedAuditsResponse {
   };
 }
 
+export interface AuditsResponse {
+  data: AuditRow[];
+  pagination: {
+    page: number;
+    page_size: number;
+    total_items: number;
+    total_pages: number;
+  };
+}
+
 export type AvailableAnalystsResponse = AvailableAnalyst[];
 
 export interface AvailableAnalyst {
@@ -36,6 +46,18 @@ export interface UnassignedAuditRow {
   days_unassigned: number;
   name: string;
   title: string;
+}
+
+export interface AuditRow {
+  analyst_name: string;
+  audit_id: string;
+  audit_name: string;
+  created_at: string;
+  days_unassigned: number;
+  is_assigned: boolean;
+  tenant_id: string;
+  tenant_name: string;
+  updated_at: string;
 }
 
 export interface AuditAnalyst {

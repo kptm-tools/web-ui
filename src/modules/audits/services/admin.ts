@@ -3,6 +3,7 @@ import { gatewayApi } from 'src/boot/axios';
 import type {
   AssignAnalystAuditRequest,
   AssignAnalystAuditResponse,
+  AuditsResponse,
   AvailableAnalystsResponse,
   UnassignedAuditsResponse
 } from '../models/admin';
@@ -25,6 +26,14 @@ export class AdminService {
 
   static async getAssignmentDetail(id: string): Promise<AxiosResponse<AssignAnalystAuditResponse>> {
     return await gatewayApi.get(`${this.BASE_PATH}/audits/${id}/assignment`);
+  }
+
+  static async getAllAudits(
+    page: number = 1,
+    pageSize: number = 20
+  ): Promise<AxiosResponse<AuditsResponse>> {
+    const baseUrl = `${this.BASE_PATH}/audits?page=${page}&pageSize=${pageSize}`;
+    return await gatewayApi.get(baseUrl);
   }
 
   static async getUnassignedAudits(
