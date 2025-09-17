@@ -31,6 +31,12 @@ const gatewayApi = axios.create({
 
 gatewayApi.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
+    // QA Testing bypass - use mock token when VITE_BYPASS_AUTH is enabled
+    if (import.meta.env.VITE_BYPASS_AUTH === 'true') {
+      config.headers.Authorization = 'Bearer qa-testing-token';
+      return config;
+    }
+
     if (!isUnprotected(config.url || '')) {
       const token = sessionStorage.getItem(AUTH_TOKEN_NAMES.ACCESS_TOKEN);
       if (token) {
@@ -49,7 +55,8 @@ gatewayApi.interceptors.response.use(
   },
   async error => {
     Loading.hide();
-    if (error.response && error.response.status === 401) {
+    // QA Testing bypass - don't redirect to login on 401 when bypass is enabled
+    if (error.response && error.response.status === 401 && import.meta.env.VITE_BYPASS_AUTH !== 'true') {
       const router = useRouter();
       clearSessionStorageValues();
       await router.push({ name: AUTH_ROUTES.login.name });
