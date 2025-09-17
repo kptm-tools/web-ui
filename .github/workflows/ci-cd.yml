@@ -1,11 +1,11 @@
 name: CI/CD Pipeline
 
 on:
-  # Trigger on pushes to dev and main branches
+  # Trigger on pushes to dev and prod branches
   push:
     branches:
       - dev
-      - main
+      - prod
       - staging
 
 env:
@@ -35,10 +35,18 @@ jobs:
         run: |
           IMAGE_ID=ghcr.io/${{github.repository_owner}}/$IMAGE_NAME
           IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
-          [ "$VERSION" == "main" ] && VERSION=latest
+          
+          BRANCH_NAME=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          
+          if [[ "$BRANCH_NAME" == "prod" ]]; then
+            TAG="prod"
+          elif [[ "$BRANCH_NAME" == "staging" ]]; then
+            TAG="staging"
+          else
+            TAG="latest"
+          fi
+          
           echo IMAGE_ID=$IMAGE_ID
-          echo VERSION=$VERSION
-          docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
-          docker push $IMAGE_ID:$VERSION
+          echo TAG=$TAG
+          docker tag $IMAGE_NAME $IMAGE_ID:$TAG
+          docker push $IMAGE_ID:$TAG

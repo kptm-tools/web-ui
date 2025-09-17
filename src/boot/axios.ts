@@ -17,8 +17,16 @@ const isUnprotected = (url: string): boolean => {
   return UNPROTECTED_PATHS.some(endpoint => url.includes(endpoint));
 };
 
+// Use runtime config if available, fallback to build-time env or localhost
+const getApiBaseUrl = (): string => {
+  if (typeof window !== 'undefined' && window.APP_CONFIG?.API_BASE_URL) {
+    return window.APP_CONFIG.API_BASE_URL;
+  }
+  return process.env.AUDITS_SERVER_URL || 'http://localhost:8000';
+};
+
 const gatewayApi = axios.create({
-  baseURL: process.env.AUDITS_SERVER_URL || 'http://localhost:8000'
+  baseURL: getApiBaseUrl()
 });
 
 gatewayApi.interceptors.request.use(
