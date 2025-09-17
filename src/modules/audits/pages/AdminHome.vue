@@ -68,11 +68,11 @@
 <script lang="ts" setup>
   import { computed, type ComputedRef, onMounted, type Ref, ref } from 'vue';
   import { AdminService } from '../services/admin';
-  import {
+  import type {
     AuditRow,
     AuditsResponse,
-    type UnassignedAuditRow,
-    type UnassignedAuditsResponse
+    UnassignedAuditRow,
+    UnassignedAuditsResponse
   } from '../models/admin';
   import { type QTableColumn } from 'quasar';
   import { errorQuasarNotify } from 'src/utils';
