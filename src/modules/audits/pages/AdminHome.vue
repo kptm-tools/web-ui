@@ -90,7 +90,7 @@
     AvailableAnalyst
   } from '../models/admin';
   import { type QTableColumn } from 'quasar';
-  import { errorQuasarNotify } from 'src/utils';
+  import { errorQuasarNotify, successQuasarNotify } from 'src/utils';
   import { useQuasar } from 'quasar';
 
   const $q = useQuasar();
@@ -250,6 +250,7 @@
     try {
       loading.value = true;
       await AdminService.putUnassignAnalystAudit(id);
+      successQuasarNotify('Analista Desasinado');
     } catch (err) {
       errorQuasarNotify(String(err));
     } finally {
