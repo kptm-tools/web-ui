@@ -2,8 +2,8 @@
   <q-splitter v-model="splitterModel" horizontal>
     <template v-slot:before>
       <q-tabs v-model="tabs" align="left">
-        <q-tab name="unassigned" label="Unassigned" />
-        <q-tab name="assigned" label="Assigned" />
+        <q-tab name="unassigned" label="No Asignadas" />
+        <q-tab name="all" label="Todas las Auditorias" />
       </q-tabs>
     </template>
     <template v-slot:after>
@@ -18,7 +18,7 @@
         <q-tab-panel name="unassigned">
           <q-table
             :rows="unassignedAuditsRows"
-            :columns="columns"
+            :columns="unassignedAuditsColumns"
             :pagination="pagination"
             :loading="loading"
             @request="onRequest"
@@ -30,7 +30,7 @@
                 <q-btn
                   label="Asignar Analista"
                   dense
-                  color="primary"
+                  color="secondary"
                   style="font-size: 0.8em"
                 ></q-btn>
               </q-td>
@@ -38,11 +38,11 @@
           </q-table>
         </q-tab-panel>
 
-        <q-tab-panel name="assigned">
+        <q-tab-panel name="all">
           <q-table
             :rows="auditsRows"
-            :columns="auditsColumns"
-            :pagination="auditsPagination"
+            :columns="allAuditsColumns"
+            :pagination="allAuditsPagination"
             :loading="loading"
             @request="onRequest"
             binary-state-sort
@@ -50,12 +50,22 @@
           >
             <template v-slot:body-cell-actions="props">
               <q-td :props="props">
-                <q-btn
-                  label="Deasignar Analista"
-                  dense
-                  color="primary"
-                  style="font-size: 0.8em"
-                ></q-btn>
+                <template v-if="props.row.is_assigned">
+                  <q-btn
+                    label="Desasignar Analista"
+                    dense
+                    color="primary"
+                    style="font-size: 0.8em"
+                  ></q-btn>
+                </template>
+                <template v-else>
+                  <q-btn
+                    label="Asignar Analista"
+                    dense
+                    color="secondary"
+                    style="font-size: 0.8em"
+                  ></q-btn>
+                </template>
               </q-td>
             </template>
           </q-table>
@@ -66,7 +76,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed, type ComputedRef, onMounted, type Ref, ref } from 'vue';
+  import { computed, type ComputedRef, onMounted, type Ref, ref, watch } from 'vue';
   import { AdminService } from '../services/admin';
   import type {
     AuditRow,
@@ -78,7 +88,7 @@
   import { errorQuasarNotify } from 'src/utils';
 
   const unassignedAuditsResponse: Ref<UnassignedAuditsResponse | null> = ref(null);
-  const auditsResponse: Ref<AuditsResponse | null> = ref(null);
+  const allAuditsResponse: Ref<AuditsResponse | null> = ref(null);
   const pagination = ref({
     sortBy: 'desc',
     descending: false,
@@ -86,14 +96,14 @@
     rowsPerPage: 20,
     rowsNumber: 20
   });
-  const auditsPagination = ref({
+  const allAuditsPagination = ref({
     sortBy: 'desc',
     descending: false,
     page: 1,
     rowsPerPage: 20,
     rowsNumber: 20
   });
-  const columns: QTableColumn[] = [
+  const unassignedAuditsColumns: QTableColumn[] = [
     {
       name: 'title',
       align: 'center',
@@ -130,7 +140,7 @@
       sortable: true
     }
   ];
-  const auditsColumns: QTableColumn[] = [
+  const allAuditsColumns: QTableColumn[] = [
     {
       name: 'audit_name',
       align: 'center',
@@ -145,13 +155,13 @@
       field: 'created_at',
       sortable: true
     },
-    {
-      name: 'days_unassigned',
-      align: 'center',
-      label: 'Dias sin asignar',
-      field: 'days_unassigned',
-      sortable: true
-    },
+    // {
+    //   name: 'days_unassigned',
+    //   align: 'center',
+    //   label: 'Dias sin asignar',
+    //   field: 'days_unassigned',
+    //   sortable: true
+    // },
     {
       name: 'analyst_name',
       align: 'center',
@@ -165,6 +175,13 @@
       label: 'Tenant',
       field: 'tenant_name',
       sortable: true
+    },
+    {
+      name: 'actions',
+      align: 'center',
+      label: '',
+      field: 'actions',
+      sortable: true
     }
   ];
   const splitterModel = ref(50);
@@ -176,7 +193,7 @@
     () => unassignedAuditsResponse.value?.data || []
   );
 
-  const auditsRows: ComputedRef<AuditRow[]> = computed(() => auditsResponse.value?.data || []);
+  const auditsRows: ComputedRef<AuditRow[]> = computed(() => allAuditsResponse.value?.data || []);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async function onRequest(props: any) {
@@ -208,7 +225,7 @@
   async function setAuditsData(page: number, pageSize: number): Promise<void> {
     try {
       loading.value = true;
-      auditsResponse.value = (await AdminService.getAllAudits(page, pageSize)).data;
+      allAuditsResponse.value = (await AdminService.getAllAudits(page, pageSize)).data;
     } catch (err) {
       errorQuasarNotify(String(err));
     } finally {
@@ -216,11 +233,19 @@
     }
   }
 
-  onMounted(async () => {
+  async function setData(): Promise<void> {
     if (tabs.value === 'unassigned') {
       await setUnassignedAuditsData(pagination.value.page, pagination.value.rowsPerPage);
     } else {
-      await setAuditsData(auditsPagination.value.page, auditsPagination.value.rowsPerPage);
+      await setAuditsData(allAuditsPagination.value.page, allAuditsPagination.value.rowsPerPage);
     }
+  }
+
+  watch(tabs, async () => {
+    await setData();
+  });
+
+  onMounted(async () => {
+    await setData();
   });
 </script>
