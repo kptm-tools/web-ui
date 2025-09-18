@@ -32,6 +32,7 @@
                   dense
                   color="secondary"
                   style="font-size: 0.8em"
+                  @click="setAuditAnalyst(props.row.name, props.row.audit_id)"
                 ></q-btn>
               </q-td>
             </template>
@@ -64,6 +65,7 @@
                     dense
                     color="secondary"
                     style="font-size: 0.8em"
+                    @click="setAuditAnalyst(props.row.name, props.row.audit_id)"
                   ></q-btn>
                 </template>
               </q-td>
@@ -78,17 +80,23 @@
 <script lang="ts" setup>
   import { computed, type ComputedRef, onMounted, type Ref, ref, watch } from 'vue';
   import { AdminService } from '../services/admin';
+  import DialogSelectAnalyst from '../components/dialog/DialogSelectAnalyst.vue';
   import type {
     AuditRow,
     AuditsResponse,
     UnassignedAuditRow,
-    UnassignedAuditsResponse
+    UnassignedAuditsResponse,
+    AvailableAnalyst
   } from '../models/admin';
   import { type QTableColumn } from 'quasar';
   import { errorQuasarNotify } from 'src/utils';
+  import { useQuasar } from 'quasar';
+
+  const $q = useQuasar();
 
   const unassignedAuditsResponse: Ref<UnassignedAuditsResponse | null> = ref(null);
   const allAuditsResponse: Ref<AuditsResponse | null> = ref(null);
+  const availableAnalyst: Ref<AvailableAnalyst[] | null> = ref(null);
   const pagination = ref({
     sortBy: 'desc',
     descending: false,
@@ -209,6 +217,10 @@
     }
   }
 
+  async function getAvailableAnalyst(): Promise<AvailableAnalyst[]> {
+    return (await AdminService.getAvailableAnalysts()).data;
+  }
+
   async function setUnassignedAuditsData(page: number, pageSize: number): Promise<void> {
     try {
       loading.value = true;
@@ -238,6 +250,34 @@
       await setUnassignedAuditsData(pagination.value.page, pagination.value.rowsPerPage);
     } else {
       await setAuditsData(allAuditsPagination.value.page, allAuditsPagination.value.rowsPerPage);
+    }
+  }
+
+  async function setAuditAnalyst(audit: string, id: string): Promise<void> {
+    try {
+      $q.loading.show();
+      availableAnalyst.value = await getAvailableAnalyst();
+      $q.dialog({
+        component: DialogSelectAnalyst,
+        componentProps: {
+          analysts: availableAnalyst.value,
+          audit
+        }
+      });
+    } catch (err) {
+      errorQuasarNotify(String(err));
+    } finally {
+      $q.loading.hide();
+      $q.dialog({
+        component: DialogSelectAnalyst,
+        componentProps: {
+          analysts: [],
+          audit,
+          id
+        }
+      }).onOk(async () => {
+        await setData();
+      });
     }
   }
 
