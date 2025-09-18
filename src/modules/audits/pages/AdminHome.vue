@@ -57,6 +57,7 @@
                     dense
                     color="primary"
                     style="font-size: 0.8em"
+                    @click="unassignAnalystDialog(props.row.analyst_name, props.row.audit_id)"
                   ></q-btn>
                 </template>
                 <template v-else>
@@ -245,6 +246,17 @@
     }
   }
 
+  async function unassignAnalyst(id: string): Promise<void> {
+    try {
+      loading.value = true;
+      await AdminService.putUnassignAnalystAudit(id);
+    } catch (err) {
+      errorQuasarNotify(String(err));
+    } finally {
+      loading.value = false;
+    }
+  }
+
   async function setData(): Promise<void> {
     if (tabs.value === 'unassigned') {
       await setUnassignedAuditsData(pagination.value.page, pagination.value.rowsPerPage);
@@ -279,6 +291,18 @@
         await setData();
       });
     }
+  }
+
+  async function unassignAnalystDialog(analyst: string, id: string): Promise<void> {
+    $q.dialog({
+      title: `Desasignar auditoria`,
+      message: `¿Estás seguro de que quieres desasignar a ${analyst} de esta auditoría?`,
+      cancel: true,
+      persistent: true
+    }).onOk(async () => {
+      await unassignAnalyst(id);
+      await setData();
+    });
   }
 
   watch(tabs, async () => {
