@@ -199,7 +199,7 @@
   const loading = ref(false);
 
   const unassignedAuditsRows: ComputedRef<UnassignedAuditRow[]> = computed(
-    () => unassignedAuditsResponse.value?.data || []
+    () => unassignedAuditsResponse.value?.audits || []
   );
 
   const auditsRows: ComputedRef<AuditRow[]> = computed(() => allAuditsResponse.value?.data || []);
@@ -219,7 +219,7 @@
   }
 
   async function getAvailableAnalyst(): Promise<AvailableAnalyst[]> {
-    return (await AdminService.getAvailableAnalysts()).data;
+    return (await AdminService.getAvailableAnalysts()).data.analysts;
   }
 
   async function setUnassignedAuditsData(page: number, pageSize: number): Promise<void> {
@@ -274,23 +274,13 @@
         component: DialogSelectAnalyst,
         componentProps: {
           analysts: availableAnalyst.value,
-          audit
+          audit,id
         }
       });
     } catch (err) {
       errorQuasarNotify(String(err));
     } finally {
       $q.loading.hide();
-      $q.dialog({
-        component: DialogSelectAnalyst,
-        componentProps: {
-          analysts: [],
-          audit,
-          id
-        }
-      }).onOk(async () => {
-        await setData();
-      });
     }
   }
 

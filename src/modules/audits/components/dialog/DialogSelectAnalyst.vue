@@ -8,15 +8,15 @@
       <q-card-section>
         <p>Seleccionar Analista</p>
         <q-list bordered separator style="max-height: 200px; overflow-y: auto">
-          <template v-for="analyst in analysts" :key="analyst.user_id">
+          <template v-for="analyst in analysts" :key="analyst.id">
             <q-item
               clickable
               v-ripple
-              @click="selectAnalyst(analyst.user_id)"
-              :active="analyst.user_id == pickedAnalyst"
+              @click="selectAnalyst(analyst.id)"
+              :active="analyst.id == pickedAnalyst"
             >
               <q-item-section>
-                {{ analyst.name }} ({{ analyst.workload.active_audits }} Auditorias)</q-item-section
+                {{ analyst.display_name }} Auditorias</q-item-section
               >
             </q-item>
           </template>

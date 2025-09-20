@@ -10,7 +10,7 @@ export interface AssignAnalystAuditResponse {
 }
 
 export interface UnassignedAuditsResponse {
-  data: UnassignedAuditRow[];
+  audits: UnassignedAuditRow[];
   pagination: {
     page: number;
     page_size: number;
@@ -29,11 +29,13 @@ export interface AuditsResponse {
   };
 }
 
-export type AvailableAnalystsResponse = AvailableAnalyst[];
+export interface AvailableAnalystsResponse {
+  analysts: AvailableAnalyst[];
+}
 
 export interface AvailableAnalyst {
-  name: string;
-  user_id: string;
+  display_name: string;
+  id: string;
   workload: {
     active_audits: number;
     completed_audits: number;

@@ -19,8 +19,8 @@ const routes: RouteRecordRaw[] = [
         name: AUDITS_ROUTES.dashboard.name,
         meta: {
           title: 'Admin Home',
-          requiresAuth: true,
-          superAdmin: true
+          //requiresAuth: true,
+          //superAdmin: true
         },
         component: () => import('../pages/AdminHome.vue')
       }
