@@ -1,6 +1,7 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { formatHostForTable, getPrincipalRapporteur } from '../host.utils';
 import type { Host, Rapporteur } from 'vulnerability/models/hosts';
+import { formatHostDate } from '../date.utils';
 
 // Mock the HostService
 vi.mock('src/services/host.service', () => ({
@@ -63,7 +64,8 @@ describe('host.utils', () => {
           ],
           credentials: [],
           hostName: 'Server A',
-          creationDate: '2023-01-15T10:00:00Z',
+          creationDate: formatHostDate('2023-01-15T10:00:00Z'),
+          originalCreationDate: '2023-01-15T10:00:00Z',
           email: 'primary@example.com'
         },
         {
@@ -73,7 +75,8 @@ describe('host.utils', () => {
           rapporteurs: [{ email: 'single@test.com', is_principal: true, name: 'test' }],
           credentials: [],
           hostName: 'Database B',
-          creationDate: '2023-02-20T14:30:00Z',
+          creationDate: formatHostDate('2023-02-20T14:30:00Z'),
+          originalCreationDate: '2023-02-20T14:30:00Z',
           email: 'single@test.com'
         },
         {
@@ -83,7 +86,8 @@ describe('host.utils', () => {
           rapporteurs: [],
           credentials: [],
           hostName: 'API Gateway C',
-          creationDate: '2023-03-01T08:00:00Z',
+          creationDate: formatHostDate('2023-03-01T08:00:00Z'),
+          originalCreationDate: '2023-03-01T08:00:00Z',
           email: ''
         }
       ];
