@@ -4,6 +4,25 @@ export function formatTableDate(date: string): string {
   return formattedDate;
 }
 
+export function formatHostDate(dateString: string | undefined): string {
+  if (!dateString) return '';
+
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return '';
+
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const month = months[date.getMonth()];
+  const day = date.getDate();
+  const year = date.getFullYear();
+
+  let hours = date.getHours();
+  const minutes = date.getMinutes().toString().padStart(2, '0');
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12 || 12;
+
+  return `${month} ${day}, ${year} ${hours}:${minutes} ${ampm}`;
+}
+
 export function formatDateTimeToServer(
   dateFormat: string | null = '',
   timeFormat: string | null = ''

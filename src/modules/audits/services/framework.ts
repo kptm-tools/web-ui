@@ -1,5 +1,6 @@
 import type { AxiosResponse } from 'axios';
 import { gatewayApi } from 'src/boot/axios';
+import { buildApiPath } from 'src/utils/api-path.utils';
 import type {
   MaturityLevelResponse,
   ScopeQuestionResponse,
@@ -8,23 +9,23 @@ import type {
 } from '../models/framework';
 
 export class FrameworkService {
-  static readonly BASE_PATH = 'api/audits/framework';
+  private static readonly GATEWAY_PATH = 'api/audits/framework';
 
   static async getMaturityLevels(): Promise<AxiosResponse<MaturityLevelResponse>> {
-    return await gatewayApi.get(`${this.BASE_PATH}/maturity-levels`);
+    return await gatewayApi.get(buildApiPath(this.GATEWAY_PATH, 'maturity-levels'));
   }
 
   static async getScopeQuestions(): Promise<AxiosResponse<ScopeQuestionResponse>> {
-    return await gatewayApi.get(`${this.BASE_PATH}/scope-questions`);
+    return await gatewayApi.get(buildApiPath(this.GATEWAY_PATH, 'scope-questions'));
   }
 
   static async getStructure(): Promise<AxiosResponse<StructureResponse>> {
-    return await gatewayApi.get(`${this.BASE_PATH}/structure`);
+    return await gatewayApi.get(buildApiPath(this.GATEWAY_PATH, 'structure'));
   }
 
   static async getSubcategoryById(
     subcategoryId: string
   ): Promise<AxiosResponse<SubCategoryDetail>> {
-    return await gatewayApi.get(`${this.BASE_PATH}/subcategories/${subcategoryId}`);
+    return await gatewayApi.get(buildApiPath(this.GATEWAY_PATH, 'subcategories', subcategoryId));
   }
 }
