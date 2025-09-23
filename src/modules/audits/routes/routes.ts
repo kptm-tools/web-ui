@@ -18,9 +18,7 @@ const routes: RouteRecordRaw[] = [
         path: AUDITS_ROUTES.dashboard.path,
         name: AUDITS_ROUTES.dashboard.name,
         meta: {
-          title: 'Admin Home',
-          requiresAuth: true,
-          superAdmin: true
+          title: 'Admin Home'
         },
         component: () => import('../pages/AdminHome.vue')
       }

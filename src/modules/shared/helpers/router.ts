@@ -3,7 +3,6 @@ import type { NavigationGuardNext, RouteLocationNormalizedGeneric } from 'vue-ro
 import { AUTH_ROUTES } from 'auth/routes/route-names';
 import { getSessionStorageValues } from 'auth/helpers/sessionStorage';
 import { SHARED_ROUTES } from '../routes/route-names';
-import type { SuccessAuthLoginUser } from 'auth/models/fusion-auth.models';
 
 /**
  * @function handlerRouterAuth
@@ -25,63 +24,6 @@ export function handlerRouterAuth(
 
   // Save session storage information in store
   authStore.setTokenInfo({ accessToken, tokenExpirationInstant, audits });
-
-  // QA Testing bypass - skip auth when VITE_BYPASS_AUTH is set to 'true'
-  if (import.meta.env.VITE_BYPASS_AUTH === 'true') {
-    // Set mock user data for QA testing
-    if (!authStore.hasUserData) {
-      const mockUser: SuccessAuthLoginUser = {
-        id: 'qa-test-user',
-        email: 'qa@test.com',
-        fullName: 'QA Test User',
-        tenantId: 'qa-tenant',
-        active: true,
-        connectorId: '',
-        data: {},
-        insertInstant: Date.now(),
-        lastLoginInstant: Date.now(),
-        lastUpdateInstant: Date.now(),
-        memberships: [],
-        passwordChangeRequired: false,
-        passwordLastUpdateInstant: Date.now(),
-        preferredLanguages: ['en'],
-        registrations: [
-          {
-            applicationId: 'qa-app',
-            data: {},
-            id: 'qa-registration',
-            insertInstant: Date.now(),
-            lastLoginInstant: Date.now(),
-            lastUpdateInstant: Date.now(),
-            preferredLanguages: ['en'],
-            roles: ['super-admin'],
-            tokens: {},
-            usernameStatus: 'ACTIVE',
-            verified: true,
-            verifiedInstant: Date.now()
-          }
-        ],
-        twoFactor: {
-          methods: [],
-          recoveryCodes: []
-        },
-        usernameStatus: 'ACTIVE',
-        verified: true,
-        verifiedInstant: Date.now()
-      };
-
-      authStore.setUserInfo(
-        {
-          accessToken: 'qa-testing-token',
-          tokenExpirationInstant: Date.now() + 86400000, // 24 hours from now
-          audits: 'qa-testing'
-        },
-        mockUser
-      );
-    }
-    next();
-    return;
-  }
 
   if (!routeRequiresAuth(to)) {
     next();
