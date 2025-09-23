@@ -3,12 +3,12 @@
     <img src="../../../assets/logos/kriptome-logo.svg" alt="" class="logo" />
     <div class="col-6">
       <q-card class="card-selection" @click="vulnerabilityHandler">
-        <q-card-title> Kriptome Tools </q-card-title>
+        <q-card-title> Vulnerability Scanner </q-card-title>
       </q-card>
     </div>
     <div class="col-6">
       <q-card class="card-selection border" @click="auditsHandler">
-        <q-card-title> Auditorías </q-card-title>
+        <q-card-title> Cybersecurity Framework Assessment </q-card-title>
       </q-card>
     </div>
   </div>
