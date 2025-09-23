@@ -15,9 +15,7 @@
               @click="selectAnalyst(analyst.id)"
               :active="analyst.id == pickedAnalyst"
             >
-              <q-item-section>
-                {{ analyst.display_name }} Auditorias</q-item-section
-              >
+              <q-item-section> {{ analyst.display_name }} Auditorias</q-item-section>
             </q-item>
           </template>
         </q-list>
@@ -66,7 +64,7 @@
     } catch (err) {
       errorQuasarNotify(String(err));
     } finally {
-      $q.loading(hide());
+      $q.loading.hide();
     }
   }
 </script>

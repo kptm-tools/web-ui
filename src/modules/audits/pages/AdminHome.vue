@@ -250,7 +250,7 @@
     try {
       loading.value = true;
       await AdminService.putUnassignAnalystAudit(id);
-      successQuasarNotify('Analista Desasinado');
+      successQuasarNotify('Analista Desasignado');
     } catch (err) {
       errorQuasarNotify(String(err));
     } finally {
@@ -274,8 +274,11 @@
         component: DialogSelectAnalyst,
         componentProps: {
           analysts: availableAnalyst.value,
-          audit,id
+          audit,
+          id
         }
+      }).onOk(() => {
+        successQuasarNotify('Analista Asignado');
       });
     } catch (err) {
       errorQuasarNotify(String(err));
