@@ -29,7 +29,9 @@
                   dense
                   flat
                   @click="() => handlerEmitter(action, props.row)"
-                />
+                >
+                  <q-tooltip>{{ getTooltip(action) }}</q-tooltip>
+                </q-btn>
               </template>
             </q-td>
           </template>
@@ -75,15 +77,42 @@
       case TableActions.DELETE:
         return 'fas fa-trash-can';
       case TableActions.INSIGHT:
-        return 'fas fa-chart-simple';
+        return 'fas fa-microscope';
       case TableActions.SEARCH:
         return 'fas fa-magnifying-glass';
+      case TableActions.VIEW_ASSETS:
+        return 'fas fa-shield-halved';
       case TableActions.DETAIL:
         return 'fas fa-eye';
+      case TableActions.POLAR_REPORT:
+        return 'fas fa-chart-pie';
       case TableActions.INFORMATION:
-        return 'fas fa-info';
+        return 'fas fa-info-circle';
       default:
         return 'fas fa-eye';
+    }
+  }
+
+  function getTooltip(action: tableActions): string {
+    switch (action) {
+      case TableActions.EDIT:
+        return 'Edit';
+      case TableActions.DELETE:
+        return 'Delete';
+      case TableActions.INSIGHT:
+        return 'View vulnerability analysis summary';
+      case TableActions.SEARCH:
+        return 'Search';
+      case TableActions.VIEW_ASSETS:
+        return 'View assets and vulnerabilities';
+      case TableActions.DETAIL:
+        return 'View details';
+      case TableActions.POLAR_REPORT:
+        return 'View Polar Graph Report';
+      case TableActions.INFORMATION:
+        return 'View host information (DNS, WHOIS, emails)';
+      default:
+        return 'View';
     }
   }
 
