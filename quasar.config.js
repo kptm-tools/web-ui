@@ -106,21 +106,7 @@ export default defineConfig(ctx => {
     devServer: {
       // https: true,
       open: true, // opens browser window automatically,
-      port: 5173,
-
-      // Proxy configuration for Prism mock server testing
-      proxy: process.env.VITE_PRISM_MODE === 'true' ? {
-        '/api/audits': {
-          target: 'http://localhost:4010',
-          changeOrigin: true,
-          rewrite: path => path.replace('/api/audits', '')
-        },
-        '/api/core': {
-          target: 'http://localhost:4011', // If running separate Prism for core service
-          changeOrigin: true,
-          rewrite: path => path.replace('/api/core', '')
-        }
-      } : undefined
+      port: 5173
     },
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#framework
