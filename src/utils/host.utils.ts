@@ -1,12 +1,14 @@
 import type { Host, Rapporteur } from 'vulnerability/models/hosts';
 import { HostService } from 'vulnerability/services/host';
 import { useHostStore } from 'vulnerability/stores/host';
+import { formatHostDate } from './date.utils';
 
 export function formatHostForTable(hosts: Host[]): Host[] {
   return hosts.map(host => ({
     ...host,
     hostName: host.name,
-    creationDate: host.created_at,
+    creationDate: formatHostDate(host.created_at),
+    originalCreationDate: host.created_at,
     email: getPrincipalRapporteur(host.rapporteurs)
   })) as Host[];
 }
