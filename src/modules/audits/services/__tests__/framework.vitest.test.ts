@@ -21,6 +21,18 @@ vi.mock('src/boot/axios', () => {
   return { gatewayApi };
 });
 
+// Mock the api-path utility to make tests environment-independent
+vi.mock('src/utils/api-path.utils', () => ({
+  buildApiPath: vi.fn((basePath: string, ...segments: string[]) => {
+    // Return the original gateway path for consistent testing
+    if (segments.length === 0) {
+      return basePath;
+    }
+    const joinedSegments = segments.join('/');
+    return `${basePath}/${joinedSegments}`;
+  })
+}));
+
 // Import the mocked axios instance
 // The import is handled by the mock above, but this line is good for type safety
 // import { gatewayApi } from 'src/boot/axios';
