@@ -2,9 +2,6 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { getApiPath, buildApiPath } from '../api-path.utils';
 
 describe('api-path utilities', () => {
-  // Store original env values to restore after tests
-  const originalEnv = import.meta.env.VITE_PRISM_MODE;
-
   afterEach(() => {
     // Restore original environment
     vi.unstubAllEnvs();

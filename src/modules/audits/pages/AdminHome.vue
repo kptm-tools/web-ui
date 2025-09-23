@@ -287,15 +287,17 @@
     }
   }
 
-  async function unassignAnalystDialog(analyst: string, id: string): Promise<void> {
+  function unassignAnalystDialog(analyst: string, id: string): void {
     $q.dialog({
       title: `Desasignar auditoria`,
       message: `¿Estás seguro de que quieres desasignar a ${analyst} de esta auditoría?`,
       cancel: true,
       persistent: true
-    }).onOk(async () => {
-      await unassignAnalyst(id);
-      await setData();
+    }).onOk(() => {
+      void (async () => {
+        await unassignAnalyst(id);
+        await setData();
+      })();
     });
   }
 
