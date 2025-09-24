@@ -1,5 +1,5 @@
 <template>
-  <q-dialog ref="dialogRef" @hide="onDialogHide">
+  <q-dialog ref="dialogRef" @hide="onDialogHide" class="dialog-select-analyst">
     <q-card class="q-dialog-plugin">
       <q-card-section>
         <div class="text-h5">Asignar Analista a {{ audit }}</div>
@@ -7,15 +7,19 @@
 
       <q-card-section>
         <p>Seleccionar Analista</p>
-        <q-list bordered separator style="max-height: 200px; overflow-y: auto">
+        <q-list bordered separator class="list-container">
           <template v-for="analyst in analysts" :key="analyst.id">
             <q-item
+              class="analyst-item"
               clickable
               v-ripple
               @click="selectAnalyst(analyst.id)"
               :active="analyst.id == pickedAnalyst"
             >
-              <q-item-section> {{ analyst.display_name }} Auditorias</q-item-section>
+              <q-item-section>
+                {{ analyst.display_name }} (
+                {{ analyst.workload.active_audits }} Auditorias)</q-item-section
+              >
             </q-item>
           </template>
         </q-list>
@@ -28,31 +32,33 @@
   </q-dialog>
 </template>
 
-<script setup>
+<script setup lang="ts">
   import { useDialogPluginComponent, useQuasar } from 'quasar';
-  import { ref } from 'vue';
-  import { AdminService } from '../../services/admin';
+  import { type PropType, type Ref, ref } from 'vue';
+  import { AdminService } from 'audits/services/admin';
   import { errorQuasarNotify } from 'src/utils';
+  import type { AvailableAnalyst } from 'audits/models/admin';
 
   const props = defineProps({
     audit: {
       type: String
     },
     id: {
-      type: String
+      type: String,
+      required: true
     },
     analysts: {
-      type: Array
+      type: Array as PropType<AvailableAnalyst[]>
     }
   });
 
   defineEmits([...useDialogPluginComponent.emits]);
 
   const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginComponent();
-  const pickedAnalyst = ref(0);
+  const pickedAnalyst: Ref<string> = ref('');
   const $q = useQuasar();
 
-  function selectAnalyst(id) {
+  function selectAnalyst(id: string) {
     pickedAnalyst.value = id;
   }
 
@@ -68,3 +74,12 @@
     }
   }
 </script>
+
+<style lang="scss">
+  .dialog-select-analyst {
+    .list-container {
+      max-height: 200px;
+      overflow-y: auto;
+    }
+  }
+</style>
