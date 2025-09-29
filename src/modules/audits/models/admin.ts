@@ -20,7 +20,7 @@ export interface UnassignedAuditsResponse {
 }
 
 export interface AuditsResponse {
-  data: AuditRow[];
+  audits: AuditRow[];
   pagination: {
     page: number;
     page_size: number;

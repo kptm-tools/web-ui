@@ -35,9 +35,9 @@
 <script setup lang="ts">
   import { useDialogPluginComponent, useQuasar } from 'quasar';
   import { type PropType, type Ref, ref } from 'vue';
-  import { AdminService } from 'audits/services/admin';
+  import { AdminService } from '../../services/admin';
   import { errorQuasarNotify } from 'src/utils';
-  import type { AvailableAnalyst } from 'audits/models/admin';
+  import type { AvailableAnalyst } from '../../models/admin';
 
   const props = defineProps({
     audit: {
