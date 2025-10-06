@@ -1,6 +1,11 @@
 import { defineStore } from 'pinia';
 import { FrameworkService } from '../services/framework';
-import type { StructureCategory, StructureFunction, StructureResponse } from '../models/framework';
+import type {
+  StructureCategory,
+  StructureFunction,
+  StructureResponse,
+  SubCategoryDetail
+} from '../models/framework';
 import type { AxiosError } from 'axios';
 import { Loading } from 'quasar';
 import { toRaw } from 'vue';
@@ -11,6 +16,7 @@ interface FrameworkStore {
   error: string | null;
   pickedFunctionIndex: number;
   pickedCategoryIndex: number;
+  subcategoryDetail: null | SubCategoryDetail;
 }
 
 export const useFrameworkStore = defineStore('framework', {
@@ -19,7 +25,8 @@ export const useFrameworkStore = defineStore('framework', {
     structure: null,
     error: null,
     pickedFunctionIndex: 0,
-    pickedCategoryIndex: 0
+    pickedCategoryIndex: 0,
+    subcategoryDetail: null
   }),
   getters: {
     isStructureLoaded: state => state.structure !== null,
@@ -96,6 +103,17 @@ export const useFrameworkStore = defineStore('framework', {
 
     pickCategoryIndex(index: number): void {
       this.pickedCategoryIndex = index;
+    },
+
+    async setSubCategoryDetailData(id: string): Promise<SubCategoryDetail> {
+      let data = {} as SubCategoryDetail;
+      if (this.subcategoryDetail?.code === id) {
+        data = this.subcategoryDetail;
+      } else {
+        data = (await FrameworkService.getSubcategoryByCode(id)).data;
+        this.subcategoryDetail = data;
+      }
+      return data;
     }
   }
 });

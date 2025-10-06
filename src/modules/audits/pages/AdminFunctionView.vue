@@ -61,6 +61,7 @@
           v-for="row in subCategoryRows"
           :key="row.code"
           class="row q-pa-md table-function-card q-my-md bg-grey-2 cursor-pointer"
+          @click="openSubCategoryDetailDialog(row.code)"
         >
           <div class="col-3 flex items-center">{{ row.id }}</div>
           <div class="col-3 flex items-center">{{ row.code }}</div>
@@ -84,7 +85,9 @@
 <script setup lang="ts">
   import { computed, onMounted, ref, type Ref } from 'vue';
   import { useFrameworkStore } from '../stores/framework';
+  import { useQuasar } from 'quasar';
   import AuditsTabs from '../components/tabs/AuditsTabs.vue';
+  import DialogSubCategory from '../components/dialog/DialogSubCategory.vue';
 
   enum ViewOptions {
     FUNCTION = 'function',
@@ -93,6 +96,7 @@
   }
 
   const frameworkStore = useFrameworkStore();
+  const $q = useQuasar();
   const pickedView: Ref<ViewOptions> = ref(ViewOptions.FUNCTION);
   const functionsRows = computed(() => frameworkStore.currentStructureFunctions);
   const categoryRows = computed(() => frameworkStore.currentStructureCategories);
@@ -112,6 +116,16 @@
   function selectSubCategoryView(index: number): void {
     frameworkStore.pickCategoryIndex(index);
     pickedView.value = ViewOptions.SUBCATEGORY;
+  }
+
+  async function openSubCategoryDetailDialog(id: string): Promise<void> {
+    const subCategoryDetail = await frameworkStore.setSubCategoryDetailData(id);
+    $q.dialog({
+      component: DialogSubCategory,
+      componentProps: {
+        subCategoryDetail
+      }
+    });
   }
 
   onMounted(async () => {
