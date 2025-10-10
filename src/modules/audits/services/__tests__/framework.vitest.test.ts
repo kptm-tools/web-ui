@@ -110,7 +110,7 @@ describe('FrameworkService', () => {
     };
     (gatewayApi.get as vi.Mock).mockResolvedValue(mockAxiosResponse(mockData));
 
-    const response = await FrameworkService.getSubcategoryById(mockId);
+    const response = await FrameworkService.getSubcategoryByCode(mockId);
 
     // Assert that the API was called with the correct dynamic URL
     expect(gatewayApi.get).toHaveBeenCalledWith(`api/audits/framework/subcategories/${mockId}`);

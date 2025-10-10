@@ -3,6 +3,10 @@ export const AUDITS_ROUTES = {
     name: 'AuditsHome',
     path: ''
   },
+  functions: {
+    name: 'AuditFunctions',
+    path: 'audit-functions'
+  },
   dashboard: {
     name: 'AdminHome',
     path: 'admin'

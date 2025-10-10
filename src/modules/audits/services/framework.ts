@@ -23,9 +23,9 @@ export class FrameworkService {
     return await gatewayApi.get(buildApiPath(this.GATEWAY_PATH, 'structure'));
   }
 
-  static async getSubcategoryById(
-    subcategoryId: string
+  static async getSubcategoryByCode(
+    subcategoryCode: string
   ): Promise<AxiosResponse<SubCategoryDetail>> {
-    return await gatewayApi.get(buildApiPath(this.GATEWAY_PATH, 'subcategories', subcategoryId));
+    return await gatewayApi.get(buildApiPath(this.GATEWAY_PATH, 'subcategories', subcategoryCode));
   }
 }

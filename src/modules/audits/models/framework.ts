@@ -54,7 +54,7 @@ export interface StructureFunction {
 export interface SubCategoryDetail {
   code: string;
   description: string;
-  evidence_examples: string[];
+  evidence_examples: { name: string; detail: string }[];
   implementation_details: string[];
   name: string;
 }
