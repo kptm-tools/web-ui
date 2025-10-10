@@ -6,21 +6,16 @@
   <q-page>
     <template v-if="isFirstAudit">
       <div class="q-px-xl text-center">
-        <template v-if="!showForm">
-          <h5 class="text-weight-medium text-center">PROCESO DE AUDITORIA</h5>
-          <p class="q-px-xl text-justify">
-            "Al iniciar el proceso de auditoría se solicitará información de su organización, tanto
-            administrativa como tecnológica, por lo que es necesario tenga toda la información a la
-            mano para completar un formulario de alcance que se le presentará a continuación si
-            inicia el proceso de auditoría. Además, deberá también adjuntar un NDA para que Kriptome
-            y su organización estén protegidos legalmente en cualquier caso de fuga de información"
-          </p>
+        <h5 class="text-weight-medium text-center">PROCESO DE AUDITORIA</h5>
+        <p class="q-px-xl text-justify">
+          "Al iniciar el proceso de auditoría se solicitará información de su organización, tanto
+          administrativa como tecnológica, por lo que es necesario tenga toda la información a la
+          mano para completar un formulario de alcance que se le presentará a continuación si inicia
+          el proceso de auditoría. Además, deberá también adjuntar un NDA para que Kriptome y su
+          organización estén protegidos legalmente en cualquier caso de fuga de información"
+        </p>
 
-          <q-btn color="primary" no-caps label="Iniciar Auditoría" @click="showForm = true"></q-btn>
-        </template>
-        <template v-else>
-          <ScopeQuestions />
-        </template>
+        <q-btn color="primary" no-caps label="Iniciar Auditoría" @click="showCreateAudit"></q-btn>
       </div>
     </template>
 
@@ -35,62 +30,68 @@
           </q-icon>
         </div>
 
-        <q-table :rows="rows" :columns="columns" row-key="organizacion" />
+        <q-table :rows="auditsList" :columns="AUDITS_COLUMNS" row-key="organizacion" />
       </div>
     </template>
   </q-page>
 </template>
 
-<script setup>
+<script setup lang="ts">
+  import { computed, onMounted, ref, type Ref } from 'vue';
+  import { useQuasar } from 'quasar';
+  import { type AxiosError } from 'axios';
+  import { AuditService } from 'audits/services/audits';
+  import { type AuditGeneralResponse } from 'audits/models/audits';
+  import { AUDITS_COLUMNS } from 'audits/constants/table';
   import { HEADER_ID } from 'src/constants/idHtmlReference.constants';
-  import { onMounted, ref } from 'vue';
-  import ScopeQuestions from '../components/form/ScopeQuestions.vue';
+  import { errorQuasarNotify } from 'src/utils';
+  import { useRouter } from 'vue-router';
+  import { AUDITS_ROUTES } from '../routes/route-names';
 
   const isMounted = ref(false);
-  const isFirstAudit = ref(true);
-  const showForm = ref(false);
+  const isFirstAudit = computed(() => auditsList.value.length === 0);
+  const auditsList: Ref<AuditGeneralResponse[]> = ref([]);
+  const $q = useQuasar();
+  const router = useRouter();
 
-  const columns = [
-    {
-      name: 'organizacion',
-      required: true,
-      label: 'ORGANIZACION',
-      align: 'left',
-      field: 'organizacion',
-      sortable: true
-    },
-    {
-      name: 'area_auditada',
-      align: 'center',
-      label: 'AREA AUDITADA',
-      field: 'area_auditada',
-      sortable: true
-    },
-    {
-      name: 'alcance_temporal',
-      label: 'ALCANCE TEMPORAL',
-      field: 'alcance_temporal',
-      sortable: true
-    },
-    { name: 'estado', label: 'ESTADO', field: 'estado' },
-    { name: 'actions', label: '', field: 'actions' }
-  ];
-
-  const rows = [
-    {
-      name: 'Frozen Yogurt',
-      calories: 159,
-      fat: 6.0,
-      carbs: 24,
-      protein: 4.0,
-      sodium: 87,
-      calcium: '14%',
-      iron: '1%'
+  async function fetchAuditsData(): Promise<void> {
+    try {
+      $q.loading.show();
+      auditsList.value = (await AuditService.getAudits()).data;
+      auditsList.value = [];
+    } catch (err) {
+      const error = err as AxiosError;
+      errorQuasarNotify(error.message);
+    } finally {
+      $q.loading.hide();
     }
-  ];
+  }
 
-  onMounted(() => {
+  async function createAudit(name: string): Promise<void> {
+    await router.push({
+      name: AUDITS_ROUTES.auditScopeForm.name,
+      params: { id: (await AuditService.postAudit({ name })).data.id }
+    });
+  }
+
+  function showCreateAudit(): void {
+    $q.dialog({
+      title: 'Iniciar Auditoria',
+      message: 'Elige el nombre de tu auditoria',
+      prompt: {
+        model: '',
+        type: 'text'
+      },
+      cancel: true,
+      persistent: true
+    }).onOk(data => {
+      void createAudit(data);
+    });
+  }
+
+  onMounted(async () => {
     isMounted.value = true;
+    await fetchAuditsData();
   });
 </script>
 

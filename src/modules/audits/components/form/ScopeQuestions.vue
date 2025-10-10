@@ -12,7 +12,8 @@
           v-model="answers[question.code]"
           :label="question.label"
           :maxlength="question.validation_rules?.max_length"
-        />
+          :hint="'Observacion: ' + comments[question.code]"
+        ></q-input>
       </template>
 
       <template v-if="question.question_type === QuestionType.NUMBER">
@@ -30,6 +31,7 @@
               val <= (question.validation_rules?.max || Number.MAX_VALUE) ||
               `Valor max es de ${question.validation_rules?.max || 0}`
           ]"
+          :hint="'Observacion: ' + comments[question.code]"
         />
       </template>
 
@@ -47,6 +49,7 @@
           :label="question.label"
           :multiple="Boolean((question.validation_rules?.max_files || 0) > 1)"
           :accept="'.' + question.validation_rules?.file_type"
+          :hint="'Observacion: ' + comments[question.code]"
         />
       </template>
 
@@ -59,6 +62,7 @@
               v-model="auxInputText"
               type="text"
               :maxlength="question.validation_rules?.max_length_per_item"
+              :hint="'Observacion: ' + comments[question.code]"
             />
           </div>
           <div class="col-2 text-center">
@@ -87,16 +91,26 @@
 </template>
 
 <script setup lang="ts">
-  import { onMounted, ref } from 'vue';
+  import type { PropType } from 'vue';
+  import { computed, onMounted, ref, watch } from 'vue';
   import { FrameworkService } from '../../services/framework';
   import { type ScopeQuestion, QuestionType } from '../../models/framework';
+  import type { ScopeEvaluationFormResponse } from '../../models/scopeEvaluation';
 
   const scopeQuestions = ref([] as ScopeQuestion[]);
   const answers = ref({} as { [key: string]: string });
+  const comments = ref({} as { [key: string]: string });
   const files = ref({} as { [key: string]: File });
   const multiText = ref({} as { [key: string]: string[] });
   const auxInputText = ref('');
   const indexBeforeSelectFunction = 17;
+
+  const props = defineProps({
+    scopeEvaluation: {
+      type: Object as PropType<ScopeEvaluationFormResponse>,
+      required: true
+    }
+  });
 
   function handlerMultiText(code: string) {
     if (!multiText.value[code]) {
@@ -105,6 +119,15 @@
     multiText.value[code]?.push(auxInputText.value);
     auxInputText.value = '';
   }
+
+  const responseAnswers = computed(() => props.scopeEvaluation.answers);
+
+  watch(responseAnswers, () => {
+    responseAnswers.value.forEach(val => {
+      answers.value[val.question_code.toLowerCase()] = val.value;
+      comments.value[val.question_code.toLowerCase()] = val.analyst_observation;
+    });
+  });
 
   onMounted(async () => {
     scopeQuestions.value = (await FrameworkService.getScopeQuestions()).data.questions;
