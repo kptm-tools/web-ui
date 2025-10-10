@@ -3,6 +3,7 @@ import { mount } from '@vue/test-utils';
 import { installQuasarPlugin } from '@quasar/quasar-app-extension-testing-unit-vitest';
 import { nextTick } from 'vue';
 import { QuestionType } from '../../models/framework';
+import type { ScopeEvaluationFormResponse } from '../../models/scopeEvaluation';
 
 vi.mock('../../services/framework', () => ({
   FrameworkService: {
@@ -63,7 +64,9 @@ describe('FormularioAlcance.vue', () => {
 
   beforeEach(async () => {
     const FormularioAlcance = (await import('../form/ScopeQuestions.vue')).default;
-    wrapper = mount(FormularioAlcance);
+    wrapper = mount(FormularioAlcance, {
+      props: { scopeEvaluation: {} as ScopeEvaluationFormResponse }
+    });
     await nextTick();
   });
 
