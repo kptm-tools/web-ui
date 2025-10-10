@@ -98,7 +98,8 @@ export default defineConfig(ctx => {
       alias: {
         vulnerability: resolve(__dirname, './src/modules/vulnerability'),
         auth: resolve(__dirname, './src/modules/auth'),
-        shared: resolve(__dirname, './src/modules/shared')
+        shared: resolve(__dirname, './src/modules/shared'),
+        audits: resolve(__dirname, './src/modules/audits')
       }
     },
 
@@ -109,18 +110,21 @@ export default defineConfig(ctx => {
       port: 5173,
 
       // Proxy configuration for Prism mock server testing
-      proxy: process.env.VITE_PRISM_MODE === 'true' ? {
-        '/api/audits': {
-          target: 'http://localhost:4010',
-          changeOrigin: true,
-          rewrite: path => path.replace('/api/audits', '')
-        },
-        '/api/core': {
-          target: 'http://localhost:4011', // If running separate Prism for core service
-          changeOrigin: true,
-          rewrite: path => path.replace('/api/core', '')
-        }
-      } : undefined
+      proxy:
+        process.env.VITE_PRISM_MODE === 'true'
+          ? {
+              '/api/audits': {
+                target: 'http://localhost:4010',
+                changeOrigin: true,
+                rewrite: path => path.replace('/api/audits', '')
+              },
+              '/api/core': {
+                target: 'http://localhost:4011', // If running separate Prism for core service
+                changeOrigin: true,
+                rewrite: path => path.replace('/api/core', '')
+              }
+            }
+          : undefined
     },
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#framework
