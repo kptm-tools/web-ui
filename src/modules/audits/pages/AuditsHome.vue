@@ -58,7 +58,6 @@
     try {
       $q.loading.show();
       auditsList.value = (await AuditService.getAudits()).data;
-      auditsList.value = [];
     } catch (err) {
       const error = err as AxiosError;
       errorQuasarNotify(error.message);

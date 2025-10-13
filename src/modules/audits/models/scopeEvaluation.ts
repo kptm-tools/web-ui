@@ -50,16 +50,14 @@ export interface ScopeEvaluationFormAnswerFile {
 }
 
 export interface ScopeEvaluationFormDraftAnswerRequest {
-  analyst_observation: string;
-  file_ids: number[];
+  file_ids?: number[];
   question_code: string;
-  status: string;
   value: string;
 }
 
 export interface ScopeEvaluationFormDraftAnswerResponse
   extends ScopeEvaluationFormDraftAnswerRequest {
-  audit_id: 1;
+  audit_id: number;
   created_at: string;
   updated_at: string;
 }

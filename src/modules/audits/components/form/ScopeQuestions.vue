@@ -84,8 +84,16 @@
       </template>
     </template>
     <div class="text-right">
-      <q-btn label="Guardar" type="reset" color="primary" flat class="q-ml-sm" />
-      <q-btn label="Enviar" type="submit" color="primary" />
+      <q-btn
+        label="Guardar"
+        type="reset"
+        color="primary"
+        flat
+        class="q-ml-sm"
+        v-if="allowSaveDraft"
+        @click="makeDraftHandler"
+      />
+      <q-btn label="Enviar" type="submit" color="primary" v-if="props.scopeEvaluation.can_submit" />
     </div>
   </q-form>
 </template>
@@ -95,7 +103,11 @@
   import { computed, onMounted, ref, watch } from 'vue';
   import { FrameworkService } from '../../services/framework';
   import { type ScopeQuestion, QuestionType } from '../../models/framework';
-  import type { ScopeEvaluationFormResponse } from '../../models/scopeEvaluation';
+  import type {
+    ScopeEvaluationFormDraftRequest,
+    ScopeEvaluationFormResponse
+  } from '../../models/scopeEvaluation';
+  import { useAuthStore } from 'src/modules/auth/stores/auth-store';
 
   const scopeQuestions = ref([] as ScopeQuestion[]);
   const answers = ref({} as { [key: string]: string });
@@ -104,6 +116,7 @@
   const multiText = ref({} as { [key: string]: string[] });
   const auxInputText = ref('');
   const indexBeforeSelectFunction = 17;
+  const authStore = useAuthStore();
 
   const props = defineProps({
     scopeEvaluation: {
@@ -111,6 +124,8 @@
       required: true
     }
   });
+
+  const emits = defineEmits(['saveDraft']);
 
   function handlerMultiText(code: string) {
     if (!multiText.value[code]) {
@@ -121,6 +136,17 @@
   }
 
   const responseAnswers = computed(() => props.scopeEvaluation.answers);
+  const allowSaveDraft = computed(() => authStore.userRole === 'client');
+
+  function makeDraftHandler() {
+    const saveDraftRequest: ScopeEvaluationFormDraftRequest = {
+      answers: scopeQuestions.value.map(question => ({
+        question_code: question.code,
+        value: String(answers.value[question.code])
+      }))
+    };
+    emits('saveDraft', saveDraftRequest);
+  }
 
   watch(responseAnswers, () => {
     responseAnswers.value.forEach(val => {
