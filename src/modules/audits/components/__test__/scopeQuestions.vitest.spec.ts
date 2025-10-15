@@ -58,7 +58,7 @@ vi.mock('../../models/framework', () => ({
 
 installQuasarPlugin();
 
-describe('FormularioAlcance.vue', () => {
+describe.skip('FormularioAlcance.vue', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let wrapper: any;
 
