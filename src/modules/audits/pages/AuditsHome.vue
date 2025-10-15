@@ -30,7 +30,12 @@
           </q-icon>
         </div>
 
-        <q-table :rows="auditsList" :columns="AUDITS_COLUMNS" row-key="organizacion" />
+        <q-table
+          :rows="auditsList"
+          :columns="AUDITS_COLUMNS"
+          row-key="organizacion"
+          @row-click="goAudit"
+        />
       </div>
     </template>
   </q-page>
@@ -41,24 +46,24 @@
   import { useQuasar } from 'quasar';
   import { type AxiosError } from 'axios';
   import { AuditService } from 'audits/services/audits';
-  import { type AuditGeneralResponse } from 'audits/models/audits';
+  import { AdminService } from '../services/admin';
   import { AUDITS_COLUMNS } from 'audits/constants/table';
   import { HEADER_ID } from 'src/constants/idHtmlReference.constants';
   import { errorQuasarNotify } from 'src/utils';
   import { useRouter } from 'vue-router';
   import { AUDITS_ROUTES } from '../routes/route-names';
+  import type { AuditRow } from '../models/admin';
 
   const isMounted = ref(false);
   const isFirstAudit = computed(() => auditsList.value.length === 0);
-  const auditsList: Ref<AuditGeneralResponse[]> = ref([]);
+  const auditsList: Ref<AuditRow[]> = ref([]);
   const $q = useQuasar();
   const router = useRouter();
 
   async function fetchAuditsData(): Promise<void> {
     try {
       $q.loading.show();
-      auditsList.value = (await AuditService.getAudits()).data;
-      auditsList.value = [];
+      auditsList.value = (await AdminService.getAllAudits()).data.audits;
     } catch (err) {
       const error = err as AxiosError;
       errorQuasarNotify(error.message);
@@ -71,6 +76,14 @@
     await router.push({
       name: AUDITS_ROUTES.auditScopeForm.name,
       params: { id: (await AuditService.postAudit({ name })).data.id }
+    });
+  }
+
+  async function goAudit(e: Event, row: AuditRow) {
+    e.stopPropagation();
+    await router.push({
+      name: AUDITS_ROUTES.auditScopeForm.name,
+      params: { id: row.audit_id }
     });
   }
 

@@ -225,7 +225,7 @@
         v-if="allowSaveDraft"
         @click="makeDraftHandler"
       />
-      <template v-if="props.scopeEvaluation.can_submit">
+      <template v-if="props.scopeEvaluation.can_submit && allowToMakeObservation">
         <q-btn label="Enviar" type="submit" color="primary" class="q-mr-md" v-if="!canApprove" />
         <q-btn label="Aprobar" type="submit" color="primary" v-else />
       </template>

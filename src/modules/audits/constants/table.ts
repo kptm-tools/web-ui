@@ -6,7 +6,7 @@ export const AUDITS_COLUMNS: QTableColumn[] = [
     required: true,
     label: 'Nombre',
     align: 'left',
-    field: 'name',
+    field: 'audit_name',
     sortable: true
   },
   {
@@ -14,22 +14,14 @@ export const AUDITS_COLUMNS: QTableColumn[] = [
     required: true,
     label: 'ORGANIZACION',
     align: 'left',
-    field: 'organization_name',
+    field: 'tenant_name',
     sortable: true
   },
   {
-    name: 'status',
+    name: 'analista',
     align: 'center',
-    label: 'ESTADO',
-    field: 'status',
+    label: 'ANALISTA',
+    field: 'analyst_name',
     sortable: true
-  },
-  {
-    name: 'alcance_temporal',
-    label: 'ALCANCE TEMPORAL',
-    field: 'temporal_scope',
-    sortable: true
-  },
-  { name: 'step', label: 'PASO', field: 'step' },
-  { name: 'actions', label: '', field: 'actions' }
+  }
 ];
