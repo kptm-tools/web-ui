@@ -34,6 +34,7 @@
                   dense
                   outlined
                   label="Observacion"
+                  @blur="visibility[question.code] = false"
                 ></q-input>
               </template>
             </template>
@@ -168,7 +169,10 @@
         v-if="allowSaveDraft"
         @click="makeDraftHandler"
       />
-      <q-btn label="Enviar" type="submit" color="primary" v-if="props.scopeEvaluation.can_submit" />
+      <template v-if="props.scopeEvaluation.can_submit">
+        <q-btn label="Enviar" type="submit" color="primary" class="q-mr-md" v-if="!canApprove" />
+        <q-btn label="Aprobar" type="submit" color="primary" v-else />
+      </template>
     </div>
   </q-form>
 </template>
@@ -216,6 +220,9 @@
   const allowSaveDraft = computed(() => authStore.userRole === USER_ROLES.MANAGER);
   const allowToMakeObservation = computed(
     () => authStore.userRole === USER_ROLES.ANALYST || authStore.userRole === USER_ROLES.SUPER_ADMIN
+  );
+  const canApprove = computed(() =>
+    Object.values(comments.value).every(val => val === '' || val === undefined)
   );
 
   function makeDraftHandler() {
