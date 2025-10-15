@@ -24,10 +24,16 @@
             />
           </template>
           <template v-slot:hint>
-            <template v-if="!visibility[question.code]">
+            <template
+              v-if="
+                !visibility[question.code] &&
+                comments[question.code] &&
+                comments[question.code] !== ''
+              "
+            >
               {{ 'Observacion: ' + comments[question.code] }}
             </template>
-            <template v-else>
+            <template v-if="visibility[question.code]">
               <template v-if="allowToMakeObservation">
                 <q-input
                   v-model="comments[question.code]"
@@ -51,9 +57,11 @@
           stack-label
           :rules="[
             val =>
+              !val ||
               val >= (question.validation_rules?.min || 0) ||
               `Valor minimo es de ${question.validation_rules?.min || 0}`,
             val =>
+              !val ||
               val <= (question.validation_rules?.max || Number.MAX_VALUE) ||
               `Valor max es de ${question.validation_rules?.max || 0}`
           ]"
@@ -119,7 +127,7 @@
             />
           </template>
           <template v-slot:hint>
-            <template v-if="!visibility[question.code]">
+            <template v-if="!visibility[question.code] && comments[question.code]">
               {{ 'Observacion: ' + comments[question.code] }}
             </template>
             <template v-else>
