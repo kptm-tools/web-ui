@@ -104,6 +104,31 @@
             true-value="true"
             false-value="false"
           />
+          <q-btn
+            square
+            flat
+            :icon="!visibility[question.code] ? 'visibility' : 'check'"
+            @click="visibility[question.code] = !visibility[question.code]"
+            v-if="allowToMakeObservation"
+          />
+        </div>
+        <div class="row">
+          <template v-if="!visibility[question.code] && comments[question.code]">
+            <div class="text-weight-bolder col-12">Observacion</div>
+            <div>{{ comments[question.code] }}</div>
+          </template>
+          <template v-else>
+            <div class="col-12">
+              <template v-if="allowToMakeObservation">
+                <q-input
+                  v-model="comments[question.code]"
+                  dense
+                  outlined
+                  label="Observacion"
+                ></q-input>
+              </template>
+            </div>
+          </template>
         </div>
       </template>
 
@@ -144,7 +169,16 @@
       </template>
 
       <template v-if="question.question_type === QuestionType.MULTI_TEXT">
-        <div class="q-mt-sm text-weight-bold">{{ question.label }}</div>
+        <div class="q-mt-sm text-weight-bold">
+          {{ question.label }}
+          <q-btn
+            square
+            flat
+            :icon="!visibility[question.code] ? 'visibility' : 'check'"
+            @click="visibility[question.code] = !visibility[question.code]"
+            v-if="allowToMakeObservation"
+          />
+        </div>
         <div class="row items-center">
           <div class="col">
             <q-input
@@ -152,7 +186,6 @@
               v-model="auxInputText"
               type="text"
               :maxlength="question.validation_rules?.max_length_per_item"
-              :hint="'Observacion: ' + comments[question.code]"
             />
           </div>
           <div class="col-2 text-center">
@@ -171,6 +204,15 @@
             </li>
           </ul>
         </div>
+        <template v-if="!visibility[question.code] && comments[question.code]">
+          <div class="text-weight-bolder">Observacion</div>
+          <div>{{ comments[question.code] }}</div>
+        </template>
+        <template v-else>
+          <template v-if="allowToMakeObservation">
+            <q-input v-model="comments[question.code]" dense outlined label="Observacion"></q-input>
+          </template>
+        </template>
       </template>
     </template>
     <div class="text-right">
