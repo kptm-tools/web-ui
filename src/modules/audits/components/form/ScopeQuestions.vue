@@ -89,7 +89,13 @@
 
       <template v-if="question.question_type === QuestionType.CHECKBOX">
         <div class="row">
-          <q-checkbox left-label v-model="answers[question.code]" :label="question.label" />
+          <q-checkbox
+            left-label
+            v-model="answers[question.code]"
+            :label="question.label"
+            true-value="true"
+            false-value="false"
+          />
         </div>
       </template>
 
