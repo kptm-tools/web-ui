@@ -12,8 +12,33 @@
           v-model="answers[question.code]"
           :label="question.label"
           :maxlength="question.validation_rules?.max_length"
-          :hint="'Observacion: ' + comments[question.code]"
-        ></q-input>
+          bottom-slots
+        >
+          <template v-slot:append>
+            <q-btn
+              square
+              flat
+              :icon="!visibility[question.code] ? 'visibility' : 'check'"
+              @click="visibility[question.code] = !visibility[question.code]"
+              v-if="allowToMakeObservation"
+            />
+          </template>
+          <template v-slot:hint>
+            <template v-if="!visibility[question.code]">
+              {{ 'Observacion: ' + comments[question.code] }}
+            </template>
+            <template v-else>
+              <template v-if="allowToMakeObservation">
+                <q-input
+                  v-model="comments[question.code]"
+                  dense
+                  outlined
+                  label="Observacion"
+                ></q-input>
+              </template>
+            </template>
+          </template>
+        </q-input>
       </template>
 
       <template v-if="question.question_type === QuestionType.NUMBER">
@@ -32,7 +57,33 @@
               `Valor max es de ${question.validation_rules?.max || 0}`
           ]"
           :hint="'Observacion: ' + comments[question.code]"
-        />
+          bottom-slots
+        >
+          <template v-slot:append>
+            <q-btn
+              square
+              flat
+              :icon="!visibility[question.code] ? 'visibility' : 'check'"
+              @click="visibility[question.code] = !visibility[question.code]"
+              v-if="allowToMakeObservation"
+            />
+          </template>
+          <template v-slot:hint>
+            <template v-if="!visibility[question.code]">
+              {{ 'Observacion: ' + comments[question.code] }}
+            </template>
+            <template v-else>
+              <template v-if="allowToMakeObservation">
+                <q-input
+                  v-model="comments[question.code]"
+                  dense
+                  outlined
+                  label="Observacion"
+                ></q-input>
+              </template>
+            </template>
+          </template>
+        </q-input>
       </template>
 
       <template v-if="question.question_type === QuestionType.CHECKBOX">
@@ -50,7 +101,31 @@
           :multiple="Boolean((question.validation_rules?.max_files || 0) > 1)"
           :accept="'.' + question.validation_rules?.file_type"
           :hint="'Observacion: ' + comments[question.code]"
-        />
+        >
+          <template v-slot:append>
+            <q-btn
+              square
+              flat
+              :icon="!visibility[question.code] ? 'visibility' : 'check'"
+              @click="visibility[question.code] = !visibility[question.code]"
+              v-if="allowToMakeObservation"
+            />
+          </template>
+          <template v-slot:hint>
+            <template v-if="!visibility[question.code]">
+              {{ 'Observacion: ' + comments[question.code] }}
+            </template>
+            <template v-else>
+              <template v-if="allowToMakeObservation">
+                <q-input
+                  v-model="comments[question.code]"
+                  dense
+                  outlined
+                  label="Observacion"
+                ></q-input>
+              </template>
+            </template> </template
+        ></q-file>
       </template>
 
       <template v-if="question.question_type === QuestionType.MULTI_TEXT">
@@ -108,10 +183,12 @@
     ScopeEvaluationFormResponse
   } from '../../models/scopeEvaluation';
   import { useAuthStore } from 'src/modules/auth/stores/auth-store';
+  import { USER_ROLES } from 'src/constants/deny-actions.constants';
 
   const scopeQuestions = ref([] as ScopeQuestion[]);
   const answers = ref({} as { [key: string]: string });
   const comments = ref({} as { [key: string]: string });
+  const visibility = ref({} as { [key: string]: boolean });
   const files = ref({} as { [key: string]: File });
   const multiText = ref({} as { [key: string]: string[] });
   const auxInputText = ref('');
@@ -136,7 +213,10 @@
   }
 
   const responseAnswers = computed(() => props.scopeEvaluation.answers);
-  const allowSaveDraft = computed(() => authStore.userRole === 'client');
+  const allowSaveDraft = computed(() => authStore.userRole === USER_ROLES.MANAGER);
+  const allowToMakeObservation = computed(
+    () => authStore.userRole === USER_ROLES.ANALYST || authStore.userRole === USER_ROLES.SUPER_ADMIN
+  );
 
   function makeDraftHandler() {
     const saveDraftRequest: ScopeEvaluationFormDraftRequest = {
