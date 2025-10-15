@@ -4,7 +4,7 @@ import { buildApiPath } from 'src/utils/api-path.utils';
 import type { AuditGeneralResponse, AuditRequest, AuditResponse } from '../models/audits';
 
 export class AuditService {
-  private static readonly GATEWAY_PATH = '/audits';
+  private static readonly GATEWAY_PATH = '/api/audits/audits';
 
   static async getAudits(): Promise<AxiosResponse<AuditGeneralResponse[]>> {
     return await gatewayApi.get(buildApiPath(this.GATEWAY_PATH));
