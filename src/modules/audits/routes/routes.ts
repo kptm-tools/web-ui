@@ -15,6 +15,14 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../pages/AuditsHome.vue')
       },
       {
+        path: AUDITS_ROUTES.functions.path,
+        name: AUDITS_ROUTES.functions.name,
+        meta: {
+          title: 'Audits Functions'
+        },
+        component: () => import('../pages/AdminFunctionView.vue')
+      },
+      {
         path: AUDITS_ROUTES.dashboard.path,
         name: AUDITS_ROUTES.dashboard.name,
         meta: {

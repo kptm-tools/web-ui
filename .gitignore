@@ -38,3 +38,7 @@ yarn-error.log*
 
 # local .env files
 .env.local*
+
+
+#Ignore vscode AI rules
+.github\instructions\codacy.instructions.md

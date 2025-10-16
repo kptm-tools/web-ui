@@ -28,7 +28,8 @@
       ],
       "shared/*": ["./src/modules/shared/*"],
       "auth/*": ["./src/modules/auth/*"],
-      "vulnerability/*": ["./src/modules/vulnerability/*"]
+      "vulnerability/*": ["./src/modules/vulnerability/*"],
+      "audits/*": ["./src/modules/audits/*"]
     }
   }
 }
