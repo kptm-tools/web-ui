@@ -1,27 +1,26 @@
 import type { QTableColumn } from 'quasar';
-
 export const AUDITS_COLUMNS: QTableColumn[] = [
   {
     name: 'name',
     required: true,
     label: 'Nombre',
     align: 'left',
-    field: 'audit_name',
+    field: 'name',
     sortable: true
   },
   {
-    name: 'organizacion',
+    name: 'status',
     required: true,
     label: 'ORGANIZACION',
     align: 'left',
-    field: 'tenant_name',
+    field: 'overall_status',
     sortable: true
   },
   {
-    name: 'analista',
+    name: 'PASO',
     align: 'center',
-    label: 'ANALISTA',
-    field: 'analyst_name',
+    label: 'PASO',
+    field: 'step',
     sortable: true
   }
 ];
