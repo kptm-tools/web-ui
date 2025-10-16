@@ -1,5 +1,5 @@
 <template>
-  <q-form class="q-pa-md q-px-xl q-col-gutter-md">
+  <q-form class="q-pa-md q-px-xl q-col-gutter-md" @submit.prevent="sendObservations">
     <h4 class="text-center text-weight-bold">Formulario de Alcance</h4>
     <template v-for="(question, index) in scopeQuestions" :key="question.code">
       <div v-if="index === indexBeforeSelectFunction" class="q-mt-sm text-weight-bold">
@@ -216,18 +216,34 @@
       </template>
     </template>
     <div class="text-right">
-      <q-btn
-        label="Guardar"
-        type="reset"
-        color="primary"
-        flat
-        class="q-ml-sm"
-        v-if="allowSaveDraft"
-        @click="makeDraftHandler"
-      />
       <template v-if="allowToMakeObservation">
-        <q-btn label="Enviar" type="submit" color="primary" class="q-mr-md" v-if="!canApprove" />
+        <q-btn
+          label="Observacion"
+          type="submit"
+          color="primary"
+          class="q-mr-md"
+          v-if="!canApprove"
+        />
         <q-btn label="Aprobar" type="submit" color="primary" v-else />
+      </template>
+      <template v-else>
+        <q-btn
+          label="Guardar"
+          type="reset"
+          color="primary"
+          flat
+          class="q-ml-sm"
+          @click="makeDraftHandler"
+        />
+        <q-btn
+          label="Enviar"
+          type="reset"
+          color="primary"
+          flat
+          class="q-ml-sm"
+          @click="makeDraftHandler"
+          v-if="scopeEvaluation.can_submit"
+        />
       </template>
     </div>
   </q-form>
@@ -239,11 +255,14 @@
   import { FrameworkService } from '../../services/framework';
   import { type ScopeQuestion, QuestionType } from '../../models/framework';
   import type {
+    ScopeEvaluationFormAnswerReviewRequest,
     ScopeEvaluationFormDraftRequest,
-    ScopeEvaluationFormResponse
+    ScopeEvaluationFormResponse,
+    ScopeEvaluationFormReviewRequest
   } from '../../models/scopeEvaluation';
   import { useAuthStore } from 'src/modules/auth/stores/auth-store';
   import { USER_ROLES } from 'src/constants/deny-actions.constants';
+  import { ScopeFormActions } from '../../enums/audits';
 
   const scopeQuestions = ref([] as ScopeQuestion[]);
   const answers = ref({} as { [key: string]: string });
@@ -262,7 +281,7 @@
     }
   });
 
-  const emits = defineEmits(['saveDraft']);
+  const emits = defineEmits(['saveDraft', 'sendObservation']);
 
   function handlerMultiText(code: string) {
     if (!multiText.value[code]) {
@@ -273,7 +292,6 @@
   }
 
   const responseAnswers = computed(() => props.scopeEvaluation.answers);
-  const allowSaveDraft = computed(() => authStore.userRole === USER_ROLES.MANAGER);
   const allowToMakeObservation = computed(
     () => authStore.userRole === USER_ROLES.ANALYST || authStore.userRole === USER_ROLES.SUPER_ADMIN
   );
@@ -289,6 +307,35 @@
       }))
     };
     emits('saveDraft', saveDraftRequest);
+  }
+
+  function sendObservations() {
+    const answerReviews: ScopeEvaluationFormAnswerReviewRequest[] = scopeQuestions.value
+      .filter(question => {
+        const observation = comments.value?.[question.code] ?? '';
+        return observation.trim() !== '';
+      })
+      .map(question => {
+        const observation = comments.value[question.code];
+
+        return {
+          observation: observation ?? '',
+          question_code: question.code,
+          status: ScopeFormActions.NEEDS_REVISION
+        } as ScopeEvaluationFormAnswerReviewRequest;
+      });
+
+    if (answerReviews.length === 0) {
+      console.log('No valid observations to send.');
+      return;
+    }
+
+    const observationsRequest: ScopeEvaluationFormReviewRequest = {
+      action: ScopeFormActions.NEEDS_REVISION,
+      answer_reviews: answerReviews
+    };
+
+    emits('sendObservation', observationsRequest);
   }
 
   watch(responseAnswers, () => {

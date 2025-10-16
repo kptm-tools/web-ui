@@ -1,3 +1,4 @@
+import type { ScopeFormActions } from '../enums/audits';
 import type { AuditResponse } from './audits';
 
 export interface ScopeEvaluationFormResponse {
@@ -16,9 +17,9 @@ export interface ScopeEvaluationFormDraftResponse {
 }
 
 export interface ScopeEvaluationFormReviewRequest {
-  action: string;
+  action: ScopeFormActions;
   answer_reviews: ScopeEvaluationFormAnswerReviewRequest[];
-  overall_feedback: string;
+  overall_feedback?: string;
 }
 
 export interface ScopeEvaluationFormReviewResponse {
