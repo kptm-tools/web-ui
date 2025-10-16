@@ -326,7 +326,6 @@
       });
 
     if (answerReviews.length === 0) {
-      console.log('No valid observations to send.');
       return;
     }
 
@@ -341,7 +340,7 @@
   watch(responseAnswers, () => {
     responseAnswers.value.forEach(val => {
       answers.value[val.question_code.toLowerCase()] = val.value;
-      comments.value[val.question_code.toLowerCase()] = val.analyst_observation;
+      comments.value[val.question_code.toLowerCase()] = val.analyst_observation || '';
     });
   });
 

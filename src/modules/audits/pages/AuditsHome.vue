@@ -46,24 +46,23 @@
   import { useQuasar } from 'quasar';
   import { type AxiosError } from 'axios';
   import { AuditService } from 'audits/services/audits';
-  import { AdminService } from '../services/admin';
   import { AUDITS_COLUMNS } from 'audits/constants/table';
   import { HEADER_ID } from 'src/constants/idHtmlReference.constants';
   import { errorQuasarNotify } from 'src/utils';
   import { useRouter } from 'vue-router';
   import { AUDITS_ROUTES } from '../routes/route-names';
-  import type { AuditRow } from '../models/admin';
+  import type { AuditResponse } from '../models/audits';
 
   const isMounted = ref(false);
   const isFirstAudit = computed(() => auditsList.value.length === 0);
-  const auditsList: Ref<AuditRow[]> = ref([]);
+  const auditsList: Ref<AuditResponse[]> = ref([]);
   const $q = useQuasar();
   const router = useRouter();
 
   async function fetchAuditsData(): Promise<void> {
     try {
       $q.loading.show();
-      auditsList.value = (await AdminService.getAllAudits()).data.audits;
+      auditsList.value = (await AuditService.getAudits()).data.audits;
     } catch (err) {
       const error = err as AxiosError;
       errorQuasarNotify(error.message);
@@ -79,11 +78,11 @@
     });
   }
 
-  async function goAudit(e: Event, row: AuditRow) {
+  async function goAudit(e: Event, row: AuditResponse) {
     e.stopPropagation();
     await router.push({
       name: AUDITS_ROUTES.auditScopeForm.name,
-      params: { id: row.audit_id }
+      params: { id: row.id }
     });
   }
 
@@ -93,7 +92,8 @@
       message: 'Elige el nombre de tu auditoria',
       prompt: {
         model: '',
-        type: 'text'
+        type: 'text',
+        isValid: val => val.trim() != ''
       },
       cancel: true,
       persistent: true

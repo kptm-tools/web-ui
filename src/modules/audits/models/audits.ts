@@ -14,13 +14,15 @@ export interface AuditResponse {
 }
 
 export interface AuditGeneralResponse {
-  id: number;
-  name: string;
-  organization_name: string;
-  start_date: string;
-  status: string;
-  step: AudiSteps;
-  temporal_scope: string;
+  audits: AuditResponse[];
+  pagination: {
+    has_next: true;
+    has_prev: false;
+    page: 1;
+    page_size: 20;
+    total: 100;
+    total_pages: 5;
+  };
 }
 
 export interface AuditRequest {
