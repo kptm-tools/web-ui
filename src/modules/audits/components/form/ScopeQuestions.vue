@@ -13,6 +13,7 @@
           :label="question.label"
           :maxlength="question.validation_rules?.max_length"
           bottom-slots
+          :readonly="!canEdit"
         >
           <template v-slot:append>
             <q-btn
@@ -67,6 +68,7 @@
           ]"
           class="q-mb-md"
           bottom-slots
+          :readonly="!canEdit"
         >
           <template v-slot:append>
             <q-btn
@@ -104,6 +106,7 @@
             :label="question.label"
             true-value="true"
             false-value="false"
+            :disable="!canEdit"
           />
           <q-btn
             square
@@ -142,6 +145,7 @@
           :multiple="Boolean((question.validation_rules?.max_files || 0) > 1)"
           :accept="'.' + question.validation_rules?.file_type"
           bottom-slots
+          :readonly="!canEdit"
         >
           <template v-slot:append>
             <q-btn
@@ -181,7 +185,7 @@
             v-if="allowToMakeObservation"
           />
         </div>
-        <div class="row items-center">
+        <div class="row items-center" v-if="canEdit">
           <div class="col">
             <q-input
               outlined
@@ -265,6 +269,7 @@
   import { useAuthStore } from 'src/modules/auth/stores/auth-store';
   import { USER_ROLES } from 'src/constants/deny-actions.constants';
   import { ScopeFormActions } from '../../enums/audits';
+  import { FrameworkService } from '../../services/framework';
 
   const scopeQuestions = ref([] as ScopeQuestion[]);
   const answers = ref({} as { [key: string]: string });
@@ -300,6 +305,7 @@
   const canApprove = computed(() =>
     Object.values(comments.value).every(val => val === '' || val === undefined)
   );
+  const canEdit = computed(() => authStore.userRole === USER_ROLES.MANAGER);
 
   function makeDraftHandler() {
     const saveDraftRequest: ScopeEvaluationFormDraftRequest = {
@@ -346,223 +352,7 @@
     });
   });
 
-  onMounted(() => {
-    const data = {
-      questions: [
-        {
-          code: 'nombre_organizacion',
-          label: 'Nombre de la organización',
-          question_type: 'text',
-          validation_rules: {
-            max_length: 30
-          }
-        },
-        {
-          code: 'sector',
-          label: 'Sector',
-          question_type: 'text',
-          validation_rules: {
-            max_length: 30
-          }
-        },
-        {
-          code: 'numero_empleados',
-          label: 'Número de Empleados',
-          question_type: 'number',
-          validation_rules: {
-            min: 1
-          }
-        },
-        {
-          code: 'lugares_fisicos',
-          label: 'Lugares Físicos',
-          question_type: 'number',
-          validation_rules: {
-            max: 99,
-            min: 1
-          }
-        },
-        {
-          code: 'ubicacion_pais',
-          label: 'Ubicación (País donde opera)',
-          question_type: 'text',
-          validation_rules: {
-            max_length: 30
-          }
-        },
-        {
-          code: 'areas_auditadas',
-          label: 'Áreas auditadas',
-          question_type: 'multi-text',
-          validation_rules: {
-            max_length_per_item: 30
-          }
-        },
-        {
-          code: 'hardware',
-          label:
-            'Hardware (Servidores, estaciones de trabajo, laptops, dispositivos móviles, firewalls, switches, routers, etc.)',
-          question_type: 'text',
-          validation_rules: {
-            max_length: 1000
-          }
-        },
-        {
-          code: 'software',
-          label:
-            'Software (Sistemas operativos, aplicaciones de negocio, ERP, CRM, antivirus, herramientas de gestión de seguridad, etc.)',
-          question_type: 'text',
-          validation_rules: {
-            max_length: 1000
-          }
-        },
-        {
-          code: 'cloud',
-          label:
-            'Cloud (Servicios y recursos en nubes públicas, cómo instancias EC2, Bases de datos, M365, Google Workspace, etc.)',
-          question_type: 'text',
-          validation_rules: {
-            max_length: 1000
-          }
-        },
-        {
-          code: 'outsourcing_ti',
-          label: 'Outsorcing TI (Soporte Técnico, desarrollo, monitoreo, etc.)',
-          question_type: 'text',
-          validation_rules: {
-            max_length: 1000
-          }
-        },
-        {
-          code: 'ambientes_segregados',
-          label: 'Ambientes Segregados (Si tuviesen producción, desarrollo, pruebas, etc.)',
-          question_type: 'text',
-          validation_rules: {
-            max_length: 1000
-          }
-        },
-        {
-          code: 'topologia_de_red',
-          label: 'Topología de red (Diagrama lógico, segmentación de redes, conexiones, etc.)',
-          question_type: 'file',
-          validation_rules: {
-            file_type: 'jpg',
-            max_files: 10
-          }
-        },
-        {
-          code: 'accesos_remotos',
-          label: 'Accesos remotos (VPN, RDP, etc.)',
-          question_type: 'text',
-          validation_rules: {
-            max_length: 1000
-          }
-        },
-        {
-          code: 'herramientas_de_monitoreo',
-          label:
-            'Herramientas de monitoreo (SIEM, EDR, NDR, herramientas de análisis de logs, etc.)',
-          question_type: 'text',
-          validation_rules: {
-            max_length: 1000
-          }
-        },
-        {
-          code: 'sistemas_de_respaldo_y_recuperacion',
-          label: 'Sistemas de respaldo y recuperación',
-          question_type: 'text',
-          validation_rules: {
-            max_length: 1000
-          }
-        },
-        {
-          code: 'controles_de_acceso_tecnologicos',
-          label: 'Controles de acceso tecnológicos (SSO, MFA, IAM, gestión de privilegios, etc.)',
-          question_type: 'text',
-          validation_rules: {
-            max_length: 1000
-          }
-        },
-        {
-          code: 'puntos_de_integracion_o_apis',
-          label: 'Puntos de integración o APIS',
-          question_type: 'text',
-          validation_rules: {
-            max_length: 1000
-          }
-        },
-        {
-          code: 'alcance_funcional_gobernar',
-          label: 'Gobernar',
-          question_type: 'checkbox'
-        },
-        {
-          code: 'alcance_funcional_identificar',
-          label: 'Identificar',
-          question_type: 'checkbox'
-        },
-        {
-          code: 'alcance_funcional_proteger',
-          label: 'Proteger',
-          question_type: 'checkbox'
-        },
-        {
-          code: 'alcance_funcional_detectar',
-          label: 'Detectar',
-          question_type: 'checkbox'
-        },
-        {
-          code: 'alcance_funcional_responder',
-          label: 'Responder',
-          question_type: 'checkbox'
-        },
-        {
-          code: 'alcance_funcional_recuperar',
-          label: 'Recuperar',
-          question_type: 'checkbox'
-        },
-        {
-          code: 'alcance_temporal_auditoria_puntual',
-          label:
-            'Auditoría Puntual: Se realiza la auditoría y termina con un reporte de mejoras y un detalle de tareas por realizar por la organización.',
-          question_type: 'checkbox'
-        },
-        {
-          code: 'alcance_temporal_auditoria_continua',
-          label:
-            'Auditoría Continua: La auditoría contempla un seguimiento de consultoría en la realización de las tareas.',
-          question_type: 'checkbox'
-        },
-        {
-          code: 'duracion_estimada_dias',
-          label:
-            'Duración estimada (días que le tomará completar la autoevaluación aproximadamente)',
-          question_type: 'number',
-          validation_rules: {
-            max: 30
-          }
-        },
-        {
-          code: 'exclusiones',
-          label:
-            'Exclusiones (áreas, activos, recursos o funciones que no serán evaluados) y la justificación.',
-          question_type: 'text',
-          validation_rules: {
-            max_length: 1000
-          }
-        },
-        {
-          code: 'nda_firmado_por_kriptome',
-          label: 'NDA (Para ser firmado por parte de Kriptome)',
-          question_type: 'file',
-          validation_rules: {
-            file_type: 'pdf',
-            max_files: 1
-          }
-        }
-      ]
-    };
-    // scopeQuestions.value = (await FrameworkService.getScopeQuestions()).data.questions;
-    scopeQuestions.value = data.questions as ScopeQuestion[];
+  onMounted(async () => {
+    scopeQuestions.value = (await FrameworkService.getScopeQuestions()).data.questions;
   });
 </script>
