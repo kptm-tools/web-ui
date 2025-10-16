@@ -11,6 +11,12 @@ export const TABLE_ACTIONS_COLUMN: QTableColumn = {
 export const HOST_TABLE_ACTIONS: tableActions[] = [TableActions.EDIT, TableActions.DELETE];
 export const HOST_TABLE_COLUMNS: QTableColumn[] = [
   {
+    name: 'Host Name',
+    label: 'HostName',
+    align: 'left',
+    field: 'hostName'
+  },
+  {
     name: 'Domain',
     label: 'Domain',
     align: 'left',
@@ -21,12 +27,6 @@ export const HOST_TABLE_COLUMNS: QTableColumn[] = [
     label: 'Ip',
     align: 'left',
     field: 'ip'
-  },
-  {
-    name: 'Host Name',
-    label: 'HostName',
-    align: 'left',
-    field: 'hostName'
   },
   {
     name: 'Creation Date',
