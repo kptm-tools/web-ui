@@ -65,7 +65,7 @@
               val <= (question.validation_rules?.max || Number.MAX_VALUE) ||
               `Valor max es de ${question.validation_rules?.max || 0}`
           ]"
-          :hint="'Observacion: ' + comments[question.code]"
+          class="q-mb-md"
           bottom-slots
         >
           <template v-slot:append>
@@ -78,18 +78,19 @@
             />
           </template>
           <template v-slot:hint>
-            <template v-if="!visibility[question.code]">
-              {{ 'Observacion: ' + comments[question.code] }}
-            </template>
-            <template v-else>
+            <template v-if="visibility[question.code]">
               <template v-if="allowToMakeObservation">
                 <q-input
                   v-model="comments[question.code]"
                   dense
                   outlined
                   label="Observacion"
+                  borderless
                 ></q-input>
               </template>
+            </template>
+            <template v-else-if="comments[question.code]">
+              {{ 'Observacion:' + comments[question.code] }}
             </template>
           </template>
         </q-input>
@@ -113,11 +114,7 @@
           />
         </div>
         <div class="row">
-          <template v-if="!visibility[question.code] && comments[question.code]">
-            <div class="text-weight-bolder col-12">Observacion</div>
-            <div>{{ comments[question.code] }}</div>
-          </template>
-          <template v-else>
+          <template v-if="visibility[question.code]">
             <div class="col-12">
               <template v-if="allowToMakeObservation">
                 <q-input
@@ -128,6 +125,10 @@
                 ></q-input>
               </template>
             </div>
+          </template>
+          <template v-else-if="comments[question.code]">
+            <div class="text-weight-bolder col-12">Observacion</div>
+            <div>{{ comments[question.code] }}</div>
           </template>
         </div>
       </template>
@@ -140,7 +141,7 @@
           :label="question.label"
           :multiple="Boolean((question.validation_rules?.max_files || 0) > 1)"
           :accept="'.' + question.validation_rules?.file_type"
-          :hint="'Observacion: ' + comments[question.code]"
+          bottom-slots
         >
           <template v-slot:append>
             <q-btn
@@ -152,10 +153,7 @@
             />
           </template>
           <template v-slot:hint>
-            <template v-if="!visibility[question.code] && comments[question.code]">
-              {{ 'Observacion: ' + comments[question.code] }}
-            </template>
-            <template v-else>
+            <template v-if="visibility[question.code]">
               <template v-if="allowToMakeObservation">
                 <q-input
                   v-model="comments[question.code]"
@@ -164,8 +162,12 @@
                   label="Observacion"
                 ></q-input>
               </template>
-            </template> </template
-        ></q-file>
+            </template>
+            <template v-else-if="comments[question.code]">
+              {{ 'Observacion: ' + comments[question.code] }}assa
+            </template>
+          </template></q-file
+        >
       </template>
 
       <template v-if="question.question_type === QuestionType.MULTI_TEXT">
@@ -204,14 +206,14 @@
             </li>
           </ul>
         </div>
-        <template v-if="!visibility[question.code] && comments[question.code]">
-          <div class="text-weight-bolder">Observacion</div>
-          <div>{{ comments[question.code] }}</div>
-        </template>
-        <template v-else>
+        <template v-if="visibility[question.code]">
           <template v-if="allowToMakeObservation">
             <q-input v-model="comments[question.code]" dense outlined label="Observacion"></q-input>
           </template>
+        </template>
+        <template v-if="comments[question.code]">
+          <div class="text-weight-bolder">Observacion</div>
+          <div>{{ comments[question.code] }}</div>
         </template>
       </template>
     </template>
@@ -252,7 +254,7 @@
 <script setup lang="ts">
   import type { PropType } from 'vue';
   import { computed, onMounted, ref, watch } from 'vue';
-  import { FrameworkService } from '../../services/framework';
+  // import { FrameworkService } from '../../services/framework';
   import { type ScopeQuestion, QuestionType } from '../../models/framework';
   import type {
     ScopeEvaluationFormAnswerReviewRequest,
@@ -344,7 +346,223 @@
     });
   });
 
-  onMounted(async () => {
-    scopeQuestions.value = (await FrameworkService.getScopeQuestions()).data.questions;
+  onMounted(() => {
+    const data = {
+      questions: [
+        {
+          code: 'nombre_organizacion',
+          label: 'Nombre de la organización',
+          question_type: 'text',
+          validation_rules: {
+            max_length: 30
+          }
+        },
+        {
+          code: 'sector',
+          label: 'Sector',
+          question_type: 'text',
+          validation_rules: {
+            max_length: 30
+          }
+        },
+        {
+          code: 'numero_empleados',
+          label: 'Número de Empleados',
+          question_type: 'number',
+          validation_rules: {
+            min: 1
+          }
+        },
+        {
+          code: 'lugares_fisicos',
+          label: 'Lugares Físicos',
+          question_type: 'number',
+          validation_rules: {
+            max: 99,
+            min: 1
+          }
+        },
+        {
+          code: 'ubicacion_pais',
+          label: 'Ubicación (País donde opera)',
+          question_type: 'text',
+          validation_rules: {
+            max_length: 30
+          }
+        },
+        {
+          code: 'areas_auditadas',
+          label: 'Áreas auditadas',
+          question_type: 'multi-text',
+          validation_rules: {
+            max_length_per_item: 30
+          }
+        },
+        {
+          code: 'hardware',
+          label:
+            'Hardware (Servidores, estaciones de trabajo, laptops, dispositivos móviles, firewalls, switches, routers, etc.)',
+          question_type: 'text',
+          validation_rules: {
+            max_length: 1000
+          }
+        },
+        {
+          code: 'software',
+          label:
+            'Software (Sistemas operativos, aplicaciones de negocio, ERP, CRM, antivirus, herramientas de gestión de seguridad, etc.)',
+          question_type: 'text',
+          validation_rules: {
+            max_length: 1000
+          }
+        },
+        {
+          code: 'cloud',
+          label:
+            'Cloud (Servicios y recursos en nubes públicas, cómo instancias EC2, Bases de datos, M365, Google Workspace, etc.)',
+          question_type: 'text',
+          validation_rules: {
+            max_length: 1000
+          }
+        },
+        {
+          code: 'outsourcing_ti',
+          label: 'Outsorcing TI (Soporte Técnico, desarrollo, monitoreo, etc.)',
+          question_type: 'text',
+          validation_rules: {
+            max_length: 1000
+          }
+        },
+        {
+          code: 'ambientes_segregados',
+          label: 'Ambientes Segregados (Si tuviesen producción, desarrollo, pruebas, etc.)',
+          question_type: 'text',
+          validation_rules: {
+            max_length: 1000
+          }
+        },
+        {
+          code: 'topologia_de_red',
+          label: 'Topología de red (Diagrama lógico, segmentación de redes, conexiones, etc.)',
+          question_type: 'file',
+          validation_rules: {
+            file_type: 'jpg',
+            max_files: 10
+          }
+        },
+        {
+          code: 'accesos_remotos',
+          label: 'Accesos remotos (VPN, RDP, etc.)',
+          question_type: 'text',
+          validation_rules: {
+            max_length: 1000
+          }
+        },
+        {
+          code: 'herramientas_de_monitoreo',
+          label:
+            'Herramientas de monitoreo (SIEM, EDR, NDR, herramientas de análisis de logs, etc.)',
+          question_type: 'text',
+          validation_rules: {
+            max_length: 1000
+          }
+        },
+        {
+          code: 'sistemas_de_respaldo_y_recuperacion',
+          label: 'Sistemas de respaldo y recuperación',
+          question_type: 'text',
+          validation_rules: {
+            max_length: 1000
+          }
+        },
+        {
+          code: 'controles_de_acceso_tecnologicos',
+          label: 'Controles de acceso tecnológicos (SSO, MFA, IAM, gestión de privilegios, etc.)',
+          question_type: 'text',
+          validation_rules: {
+            max_length: 1000
+          }
+        },
+        {
+          code: 'puntos_de_integracion_o_apis',
+          label: 'Puntos de integración o APIS',
+          question_type: 'text',
+          validation_rules: {
+            max_length: 1000
+          }
+        },
+        {
+          code: 'alcance_funcional_gobernar',
+          label: 'Gobernar',
+          question_type: 'checkbox'
+        },
+        {
+          code: 'alcance_funcional_identificar',
+          label: 'Identificar',
+          question_type: 'checkbox'
+        },
+        {
+          code: 'alcance_funcional_proteger',
+          label: 'Proteger',
+          question_type: 'checkbox'
+        },
+        {
+          code: 'alcance_funcional_detectar',
+          label: 'Detectar',
+          question_type: 'checkbox'
+        },
+        {
+          code: 'alcance_funcional_responder',
+          label: 'Responder',
+          question_type: 'checkbox'
+        },
+        {
+          code: 'alcance_funcional_recuperar',
+          label: 'Recuperar',
+          question_type: 'checkbox'
+        },
+        {
+          code: 'alcance_temporal_auditoria_puntual',
+          label:
+            'Auditoría Puntual: Se realiza la auditoría y termina con un reporte de mejoras y un detalle de tareas por realizar por la organización.',
+          question_type: 'checkbox'
+        },
+        {
+          code: 'alcance_temporal_auditoria_continua',
+          label:
+            'Auditoría Continua: La auditoría contempla un seguimiento de consultoría en la realización de las tareas.',
+          question_type: 'checkbox'
+        },
+        {
+          code: 'duracion_estimada_dias',
+          label:
+            'Duración estimada (días que le tomará completar la autoevaluación aproximadamente)',
+          question_type: 'number',
+          validation_rules: {
+            max: 30
+          }
+        },
+        {
+          code: 'exclusiones',
+          label:
+            'Exclusiones (áreas, activos, recursos o funciones que no serán evaluados) y la justificación.',
+          question_type: 'text',
+          validation_rules: {
+            max_length: 1000
+          }
+        },
+        {
+          code: 'nda_firmado_por_kriptome',
+          label: 'NDA (Para ser firmado por parte de Kriptome)',
+          question_type: 'file',
+          validation_rules: {
+            file_type: 'pdf',
+            max_files: 1
+          }
+        }
+      ]
+    };
+    // scopeQuestions.value = (await FrameworkService.getScopeQuestions()).data.questions;
+    scopeQuestions.value = data.questions as ScopeQuestion[];
   });
 </script>
