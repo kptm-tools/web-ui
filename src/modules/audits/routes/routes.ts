@@ -5,6 +5,9 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/audits',
     component: () => import('../AuditsModule.vue'),
+    meta: {
+      requiresAuth: true
+    },
     children: [
       {
         path: AUDITS_ROUTES.home.path,

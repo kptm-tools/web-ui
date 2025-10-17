@@ -22,12 +22,12 @@
     <template v-else>
       <div class="q-pa-md">
         <div class="row items-center q-mb-md">
-          <q-btn disable label="Iniciar Auditoria" color="grey-5" text-color="black"></q-btn>
-          <q-icon size="md" name="info" color="grey-5" v-ripple class="info-icon">
+          <q-btn label="Iniciar Auditoria" color="primary" @click="showCreateAudit"></q-btn>
+          <!-- <q-icon size="md" name="info" color="grey-5" v-ripple class="info-icon">
             <q-tooltip class="bg-white text-black" style="width: 180px; font-size: 0.8em">
               Para iniciar una auditoria debes contactarte a : <a>ejemplo@kriptome.com</a>
             </q-tooltip>
-          </q-icon>
+          </q-icon> -->
         </div>
 
         <q-table
