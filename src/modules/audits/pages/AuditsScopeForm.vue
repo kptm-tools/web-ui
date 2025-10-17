@@ -3,13 +3,14 @@
     :scopeEvaluation="scopeEvaluationForm"
     @save-draft="saveDraft"
     @send-observation="sendObservation"
+    @approve="approveAudit"
   />
 </template>
 <script setup lang="ts">
   import ScopeQuestions from 'audits/components/form/ScopeQuestions.vue';
   import { ScopeEvaluationService } from '../services/scopeEvaluation';
   import { onMounted, ref } from 'vue';
-  import { useRoute } from 'vue-router';
+  import { useRoute, useRouter } from 'vue-router';
 
   import {
     type ScopeEvaluationFormReviewRequest,
@@ -18,9 +19,11 @@
   } from '../models/scopeEvaluation';
   import type { AxiosError } from 'axios';
   import { useQuasar } from 'quasar';
-  import { errorQuasarNotify } from 'src/utils';
+  import { errorQuasarNotify, successQuasarNotify } from 'src/utils';
+  import { AUDITS_ROUTES } from '../routes/route-names';
 
   const route = useRoute();
+  const router = useRouter();
   const scopeEvaluationForm = ref({} as ScopeEvaluationFormResponse);
   const $q = useQuasar();
 
@@ -29,6 +32,7 @@
       $q.loading.show();
       await ScopeEvaluationService.putDraftScopeEvaluationForm(String(route.params.id ?? ''), body);
       await fetchData();
+      successQuasarNotify('Auditoria guardada');
     } catch (err) {
       const error = (err as AxiosError).message;
       errorQuasarNotify(error);
@@ -46,6 +50,27 @@
         body
       );
       await fetchData();
+      successQuasarNotify('Auditoria Observada');
+      await router.push({ name: AUDITS_ROUTES.home.name });
+    } catch (err) {
+      const error = (err as AxiosError).message;
+      errorQuasarNotify(error);
+      console.error(error);
+    } finally {
+      $q.loading.hide();
+    }
+  }
+
+  async function approveAudit(body: ScopeEvaluationFormReviewRequest) {
+    try {
+      $q.loading.show();
+      await ScopeEvaluationService.postScopeEvaluationFormReview(
+        String(route.params.id ?? ''),
+        body
+      );
+      await fetchData();
+      successQuasarNotify('Auditoria Aprovada');
+      await router.push({ name: AUDITS_ROUTES.home.name });
     } catch (err) {
       const error = (err as AxiosError).message;
       errorQuasarNotify(error);

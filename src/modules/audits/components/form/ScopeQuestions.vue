@@ -221,7 +221,7 @@
         </template>
       </template>
     </template>
-    <div class="text-right">
+    <div class="text-right q-mt-md">
       <template v-if="allowToMakeObservation">
         <q-btn
           label="Observacion"
@@ -230,7 +230,7 @@
           class="q-mr-md"
           v-if="!canApprove"
         />
-        <q-btn label="Aprobar" type="submit" color="primary" v-else />
+        <q-btn label="Aprobar" type="submit" color="primary" v-else @click="sendApprove" />
       </template>
       <template v-else>
         <q-btn
@@ -270,6 +270,7 @@
   import { USER_ROLES } from 'src/constants/deny-actions.constants';
   import { ScopeFormActions } from '../../enums/audits';
   import { FrameworkService } from '../../services/framework';
+  import { useQuasar } from 'quasar';
 
   const scopeQuestions = ref([] as ScopeQuestion[]);
   const answers = ref({} as { [key: string]: string });
@@ -280,6 +281,7 @@
   const auxInputText = ref('');
   const indexBeforeSelectFunction = 17;
   const authStore = useAuthStore();
+  const $q = useQuasar();
 
   const props = defineProps({
     scopeEvaluation: {
@@ -288,7 +290,7 @@
     }
   });
 
-  const emits = defineEmits(['saveDraft', 'sendObservation']);
+  const emits = defineEmits(['saveDraft', 'sendObservation', 'approve']);
 
   function handlerMultiText(code: string) {
     if (!multiText.value[code]) {
@@ -343,6 +345,27 @@
     };
 
     emits('sendObservation', observationsRequest);
+  }
+
+  function sendApprove() {
+    const approveRequest: ScopeEvaluationFormReviewRequest = {
+      action: ScopeFormActions.APPROVED,
+      answer_reviews: []
+    };
+    $q.dialog({
+      title: 'Aprobar Auditoria',
+      message: 'Comentario Final',
+      ok: 'Aprobar',
+      prompt: {
+        model: '',
+        type: 'text'
+      },
+      cancel: true,
+      persistent: true
+    }).onOk(data => {
+      approveRequest.overall_feedback = data;
+      emits('approve', approveRequest);
+    });
   }
 
   watch(responseAnswers, () => {
