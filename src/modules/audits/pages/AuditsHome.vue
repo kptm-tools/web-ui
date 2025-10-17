@@ -54,10 +54,13 @@
   import { computed, onMounted, ref } from 'vue';
   import { HEADER_ID } from 'src/constants/idHtmlReference.constants';
   import type { AuditResponse } from 'audits/models/audits';
-  import { goToScopeFormPage } from 'audits/helpers/routes';
   import { useAudits } from 'audits/composables/audits';
+  import { useRouter } from 'vue-router';
+  import { AUDITS_ROUTES } from 'audits/routes/route-names';
 
   const audits = useAudits();
+  const router = useRouter();
+
   const { auditsList, AUDITS_TABLE_COLUMNS } = audits;
 
   const isMounted = ref(false);
@@ -65,7 +68,10 @@
 
   async function goAudit(e: Event, row: AuditResponse) {
     e.stopPropagation();
-    await goToScopeFormPage(String(row.id));
+    await router.push({
+      name: AUDITS_ROUTES.auditScopeForm.name,
+      params: { id: row.id }
+    });
   }
 
   onMounted(async () => {
