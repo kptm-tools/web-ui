@@ -1,14 +1,18 @@
 <template>
-  <scope-questions
-    :scopeEvaluation="scopeEvaluationForm"
-    @save-draft="saveDraft"
-    @send-observation="sendObservation"
-    @approve="approveAudit"
-    @submit="submitAudit"
-  />
+  <q-page class="q-pt-md">
+    <audits-tabs step="form"></audits-tabs>
+    <scope-questions
+      :scopeEvaluation="scopeEvaluationForm"
+      @save-draft="saveDraft"
+      @send-observation="sendObservation"
+      @approve="approveAudit"
+      @submit="submitAudit"
+    />
+  </q-page>
 </template>
 <script setup lang="ts">
   import ScopeQuestions from 'audits/components/form/ScopeQuestions.vue';
+  import AuditsTabs from '../components/tabs/AuditsTabs.vue';
   import { ScopeEvaluationService } from '../services/scopeEvaluation';
   import { onMounted, ref } from 'vue';
   import { useRoute, useRouter } from 'vue-router';
