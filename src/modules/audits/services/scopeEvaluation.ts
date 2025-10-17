@@ -31,4 +31,10 @@ export class ScopeEvaluationService {
   ): Promise<AxiosResponse<ScopeEvaluationFormReviewResponse>> {
     return await gatewayApi.post(buildApiPath(this.GATEWAY_PATH, id, 'scope', 'review'), body);
   }
+
+  static async submitScopeEvaluationFormReview(
+    id: string
+  ): Promise<AxiosResponse<ScopeEvaluationFormReviewResponse>> {
+    return await gatewayApi.post(buildApiPath(this.GATEWAY_PATH, id, 'scope', 'submit'));
+  }
 }

@@ -247,7 +247,7 @@
           color="primary"
           flat
           class="q-ml-sm"
-          @click="makeDraftHandler"
+          @click="$emit('submit')"
           v-if="scopeEvaluation.can_submit"
         />
       </template>
@@ -290,7 +290,7 @@
     }
   });
 
-  const emits = defineEmits(['saveDraft', 'sendObservation', 'approve']);
+  const emits = defineEmits(['saveDraft', 'sendObservation', 'approve', 'submit']);
 
   function handlerMultiText(code: string) {
     if (!multiText.value[code]) {

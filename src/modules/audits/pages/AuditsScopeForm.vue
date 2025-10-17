@@ -4,6 +4,7 @@
     @save-draft="saveDraft"
     @send-observation="sendObservation"
     @approve="approveAudit"
+    @submit="submitAudit"
   />
 </template>
 <script setup lang="ts">
@@ -51,6 +52,22 @@
       );
       await fetchData();
       successQuasarNotify('Auditoria Observada');
+      await router.push({ name: AUDITS_ROUTES.home.name });
+    } catch (err) {
+      const error = (err as AxiosError).message;
+      errorQuasarNotify(error);
+      console.error(error);
+    } finally {
+      $q.loading.hide();
+    }
+  }
+
+  async function submitAudit() {
+    try {
+      $q.loading.show();
+      await ScopeEvaluationService.submitScopeEvaluationFormReview(String(route.params.id ?? ''));
+      await fetchData();
+      successQuasarNotify('Auditoria Enviada');
       await router.push({ name: AUDITS_ROUTES.home.name });
     } catch (err) {
       const error = (err as AxiosError).message;
