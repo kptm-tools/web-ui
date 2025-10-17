@@ -350,7 +350,20 @@
   function sendApprove() {
     const approveRequest: ScopeEvaluationFormReviewRequest = {
       action: ScopeFormActions.APPROVED,
-      answer_reviews: []
+      answer_reviews: scopeQuestions.value
+        .map(val => {
+          let answer: ScopeEvaluationFormAnswerReviewRequest =
+            {} as ScopeEvaluationFormAnswerReviewRequest;
+          if (answers.value[val.code]) {
+            answer = {
+              observation: '',
+              question_code: val.code,
+              status: ScopeFormActions.APPROVED
+            };
+          }
+          return answer;
+        })
+        .filter(val => val !== undefined)
     };
     $q.dialog({
       title: 'Aprobar Auditoria',
