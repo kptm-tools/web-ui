@@ -15,14 +15,23 @@
           organización estén protegidos legalmente en cualquier caso de fuga de información"
         </p>
 
-        <q-btn color="primary" no-caps label="Iniciar Auditoría" @click="showCreateAudit"></q-btn>
+        <q-btn
+          color="primary"
+          no-caps
+          label="Iniciar Auditoría"
+          @click="audits.showCreateAuditDialog"
+        ></q-btn>
       </div>
     </template>
 
     <template v-else>
       <div class="q-pa-md">
         <div class="row items-center q-mb-md">
-          <q-btn label="Iniciar Auditoria" color="primary" @click="showCreateAudit"></q-btn>
+          <q-btn
+            label="Iniciar Auditoria"
+            color="primary"
+            @click="audits.showCreateAuditDialog"
+          ></q-btn>
           <!-- <q-icon size="md" name="info" color="grey-5" v-ripple class="info-icon">
             <q-tooltip class="bg-white text-black" style="width: 180px; font-size: 0.8em">
               Para iniciar una auditoria debes contactarte a : <a>ejemplo@kriptome.com</a>
@@ -32,7 +41,7 @@
 
         <q-table
           :rows="auditsList"
-          :columns="AUDITS_COLUMNS"
+          :columns="AUDITS_TABLE_COLUMNS"
           row-key="organizacion"
           @row-click="goAudit"
         />
@@ -42,69 +51,26 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, onMounted, ref, type Ref } from 'vue';
-  import { useQuasar } from 'quasar';
-  import { type AxiosError } from 'axios';
-  import { AuditService } from 'audits/services/audits';
-  import { AUDITS_COLUMNS } from 'audits/constants/table';
+  import { computed, onMounted, ref } from 'vue';
   import { HEADER_ID } from 'src/constants/idHtmlReference.constants';
-  import { errorQuasarNotify } from 'src/utils';
-  import { useRouter } from 'vue-router';
-  import { AUDITS_ROUTES } from '../routes/route-names';
-  import type { AuditResponse } from '../models/audits';
+  import type { AuditResponse } from 'audits/models/audits';
+  import { goToScopeFormPage } from 'audits/helpers/routes';
+  import { useAudits } from 'audits/composables/audits';
+
+  const audits = useAudits();
+  const { auditsList, AUDITS_TABLE_COLUMNS } = audits;
 
   const isMounted = ref(false);
   const isFirstAudit = computed(() => auditsList.value.length === 0);
-  const auditsList: Ref<AuditResponse[]> = ref([]);
-  const $q = useQuasar();
-  const router = useRouter();
-
-  async function fetchAuditsData(): Promise<void> {
-    try {
-      $q.loading.show();
-      auditsList.value = (await AuditService.getAudits()).data.audits;
-    } catch (err) {
-      const error = err as AxiosError;
-      errorQuasarNotify(error.message);
-    } finally {
-      $q.loading.hide();
-    }
-  }
-
-  async function createAudit(name: string): Promise<void> {
-    await router.push({
-      name: AUDITS_ROUTES.auditScopeForm.name,
-      params: { id: (await AuditService.postAudit({ name })).data.id }
-    });
-  }
 
   async function goAudit(e: Event, row: AuditResponse) {
     e.stopPropagation();
-    await router.push({
-      name: AUDITS_ROUTES.auditScopeForm.name,
-      params: { id: row.id }
-    });
-  }
-
-  function showCreateAudit(): void {
-    $q.dialog({
-      title: 'Iniciar Auditoria',
-      message: 'Elige el nombre de tu auditoria',
-      prompt: {
-        model: '',
-        type: 'text',
-        isValid: val => val.trim() != ''
-      },
-      cancel: true,
-      persistent: true
-    }).onOk(data => {
-      void createAudit(data);
-    });
+    await goToScopeFormPage(String(row.id));
   }
 
   onMounted(async () => {
     isMounted.value = true;
-    await fetchAuditsData();
+    await audits.fetchAuditsData();
   });
 </script>
 
