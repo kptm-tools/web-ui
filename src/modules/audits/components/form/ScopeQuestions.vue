@@ -360,8 +360,8 @@
               question_code: val.code,
               status: ScopeFormActions.APPROVED
             };
+            return answer;
           }
-          return answer;
         })
         .filter(val => val !== undefined)
     };
