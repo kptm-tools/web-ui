@@ -248,7 +248,7 @@
           flat
           class="q-ml-sm"
           @click="confirmSubmitForm()"
-          v-if="isAllowedToSubmit"
+          :disable="!isAllowedToSubmit"
         />
       </template>
     </div>
