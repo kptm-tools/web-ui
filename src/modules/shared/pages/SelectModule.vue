@@ -24,7 +24,7 @@
 
   const $q = useQuasar();
   const router = useRouter();
-  const accessAudits = computed(() => false);
+  const accessAudits = computed(() => Boolean(process.env.FEATURE_COMPLIANCE_FRAMEWORK_ENABLED));
 
   async function vulnerabilityHandler() {
     await router.push({ name: VULNERABILITY_ROUTES.home.name });
@@ -36,8 +36,7 @@
     } else {
       $q.dialog({
         html: true,
-        message:
-          'Para acceder al módulo de auditoría debe contactarse con <a href="url">test@kriptome.com</a>',
+        message: 'Acceso no disponible en este momento. 🔒',
         ok: false
       });
     }
