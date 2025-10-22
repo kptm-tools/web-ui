@@ -18,6 +18,7 @@ import { AUTH_STATUS_CODES } from 'src/constants/fusion-auth.constants';
 import { errorQuasarNotify } from 'src/utils';
 import { type Router } from 'vue-router';
 import { SHARED_ROUTES } from 'src/modules/shared/routes/route-names';
+import { USER_ROLES } from 'src/constants/deny-actions.constants';
 
 type AuthStore = {
   userKeys: sessionStorageKeys | undefined;
@@ -46,9 +47,9 @@ export const useAuthStore = defineStore('auth-store', {
     userFullName(state): string {
       return state.userInfo?.fullName || '';
     },
-    userRole(state): string {
+    userRole(state): USER_ROLES {
       // Extract the first role from the user's registrations
-      return state.userInfo?.registrations?.[0]?.roles?.[0] || '';
+      return (state.userInfo?.registrations?.[0]?.roles?.[0] as USER_ROLES) || USER_ROLES.MANAGER;
     },
     userRoleFormatted(state): string {
       const role = state.userInfo?.registrations[0]?.roles?.[0] || '';

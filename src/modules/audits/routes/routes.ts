@@ -5,6 +5,10 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/audits',
     component: () => import('../AuditsModule.vue'),
+    meta: {
+      requiresAuth: true,
+      allowAudits: import.meta.env.VITE_FEATURE_COMPLIANCE_FRAMEWORK_ENABLED === 'true'
+    },
     children: [
       {
         path: AUDITS_ROUTES.home.path,
@@ -13,6 +17,14 @@ const routes: RouteRecordRaw[] = [
           title: 'Audits Home'
         },
         component: () => import('../pages/AuditsHome.vue')
+      },
+      {
+        path: AUDITS_ROUTES.auditScopeForm.path,
+        name: AUDITS_ROUTES.auditScopeForm.name,
+        meta: {
+          title: 'Audits Scope Form'
+        },
+        component: () => import('../pages/AuditsScopeForm.vue')
       },
       {
         path: AUDITS_ROUTES.functions.path,

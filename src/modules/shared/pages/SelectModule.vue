@@ -17,30 +17,47 @@
 <script setup lang="ts">
   import { useQuasar } from 'quasar';
   // import { AUTH_TOKEN_NAMES } from 'src/constants/fusion-auth.constants';
-  import { computed } from 'vue';
-  import { useRouter } from 'vue-router';
+  import { watch } from 'vue';
+  import { useRoute, useRouter } from 'vue-router';
   import { VULNERABILITY_ROUTES } from 'vulnerability/routes/route-names';
   import { AUDITS_ROUTES } from 'src/modules/audits/routes/route-names';
+  import { SHARED_ROUTES } from '../routes/route-names';
 
   const $q = useQuasar();
   const router = useRouter();
-  const accessAudits = computed(() => false);
+  const route = useRoute();
+
+  // Watch for query param changes to show notification when router guard blocks access
+  watch(
+    () => route.query.reason,
+    async (reason) => {
+      if (reason === 'feature-disabled') {
+        $q.notify({
+          type: 'warning',
+          message: 'Acceso no disponible',
+          caption: 'El módulo de auditoría está actualmente deshabilitado.',
+          icon: 'lock',
+          position: 'top',
+          timeout: 3000
+        });
+
+        // Clean up query param
+        await router.replace({
+          name: SHARED_ROUTES.selectModule.name,
+          query: {}
+        });
+      }
+    },
+    { immediate: true } // Run on mount as well as when query changes
+  );
 
   async function vulnerabilityHandler() {
     await router.push({ name: VULNERABILITY_ROUTES.home.name });
   }
 
   async function auditsHandler() {
-    if (!accessAudits.value) {
-      await router.push({ name: AUDITS_ROUTES.home.name });
-    } else {
-      $q.dialog({
-        html: true,
-        message:
-          'Para acceder al módulo de auditoría debe contactarse con <a href="url">test@kriptome.com</a>',
-        ok: false
-      });
-    }
+    // Always attempt navigation - router guard will block and show notify if needed
+    await router.push({ name: AUDITS_ROUTES.home.name });
   }
 </script>
 
