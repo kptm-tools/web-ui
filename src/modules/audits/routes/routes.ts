@@ -19,6 +19,14 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../pages/AuditsHome.vue')
       },
       {
+        path: AUDITS_ROUTES.auditScopeForm.path,
+        name: AUDITS_ROUTES.auditScopeForm.name,
+        meta: {
+          title: 'Audits Scope Form'
+        },
+        component: () => import('../pages/AuditsScopeForm.vue')
+      },
+      {
         path: AUDITS_ROUTES.functions.path,
         name: AUDITS_ROUTES.functions.name,
         meta: {

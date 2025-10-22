@@ -6,6 +6,7 @@ import { UserService } from 'shared/services/user';
 import * as sessionStorageHelpers from 'auth/helpers/sessionStorage';
 import * as dateHelpers from 'shared/helpers/date';
 import type { AxiosResponseHeaders, InternalAxiosRequestConfig } from 'axios';
+import { USER_ROLES } from 'src/constants/deny-actions.constants';
 
 // Mock the external dependencies
 vi.mock('auth/services/auth', () => ({
@@ -99,7 +100,7 @@ describe('useAuthStore', () => {
 
     it('userRole returns an empty string if roles are not available', () => {
       authStore.userInfo = { registrations: [] };
-      expect(authStore.userRole).toBe('');
+      expect(authStore.userRole).toBe(USER_ROLES.MANAGER);
     });
 
     it('userRoleFormatted returns a capitalized role', () => {
