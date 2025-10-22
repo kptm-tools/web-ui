@@ -56,6 +56,7 @@ RUN echo '#!/bin/sh' > /docker-entrypoint.sh && \
     echo '# Set default values if not provided' >> /docker-entrypoint.sh && \
     echo ': ${API_BASE_URL:="http://localhost:8000"}' >> /docker-entrypoint.sh && \
     echo ': ${WS_BASE_URL:="ws://localhost:8000/api/core"}' >> /docker-entrypoint.sh && \
+    echo ': ${FEATURE_COMPLIANCE_FRAMEWORK_ENABLED:="false"}' >> /docker-entrypoint.sh && \
     echo '' >> /docker-entrypoint.sh && \
     echo '# Generate runtime config from template' >> /docker-entrypoint.sh && \
     echo 'envsubst < /usr/share/nginx/html/config.js.template > /usr/share/nginx/html/config.js' >> /docker-entrypoint.sh && \

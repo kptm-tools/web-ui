@@ -83,6 +83,16 @@ export function handlerRouterAuth(
         mockUser
       );
     }
+
+    // Even with auth bypassed, still check feature flags
+    if (!allowAudits(to)) {
+      next({
+        name: SHARED_ROUTES.selectModule.name,
+        query: { reason: 'feature-disabled' }
+      });
+      return;
+    }
+
     next();
     return;
   }
@@ -125,19 +135,31 @@ function routeRequiresAuth(to: RouteLocationNormalizedGeneric): boolean {
 }
 
 function allowAudits(to: RouteLocationNormalized): boolean {
-  const requiresAuditsFlag = to.matched.some(record =>
-    Object.prototype.hasOwnProperty.call(record.meta, 'allowAudits')
+  // Check if route requires compliance framework feature flag
+  const requiresComplianceFlag = to.matched.some(record =>
+    record.meta.requiresFeatureFlag === 'compliance-framework'
   );
-  if (!requiresAuditsFlag) {
-    return true;
+
+  console.log('[DEBUG] allowAudits called for route:', to.path);
+  console.log('[DEBUG] requiresComplianceFlag:', requiresComplianceFlag);
+  console.log('[DEBUG] window.APP_CONFIG:', window.APP_CONFIG);
+
+  if (!requiresComplianceFlag) {
+    console.log('[DEBUG] Route does not require flag, returning true');
+    return true; // Route doesn't need the feature flag
   }
-  const routeWithFlag = to.matched.find(record =>
-    Object.prototype.hasOwnProperty.call(record.meta, 'allowAudits')
-  );
-  if (routeWithFlag) {
-    return !!routeWithFlag.meta.allowAudits;
+
+  // Check runtime config (window.APP_CONFIG) for feature flag value
+  if (typeof window !== 'undefined' && window.APP_CONFIG) {
+    const result = window.APP_CONFIG.FEATURE_COMPLIANCE_FRAMEWORK_ENABLED === 'true';
+    console.log('[DEBUG] Feature flag value:', window.APP_CONFIG.FEATURE_COMPLIANCE_FRAMEWORK_ENABLED);
+    console.log('[DEBUG] Returning:', result);
+    return result;
   }
-  return true;
+
+  // Fallback: if no runtime config, block access
+  console.log('[DEBUG] No APP_CONFIG found, blocking access');
+  return false;
 }
 
 function routeRequiresSuperAdmin(to: RouteLocationNormalizedGeneric): boolean {
