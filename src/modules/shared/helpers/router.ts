@@ -100,7 +100,7 @@ export function handlerRouterAuth(
   if (!allowAudits(to)) {
     next({
       name: SHARED_ROUTES.selectModule.name,
-      query: { reason: 'feature-disabled' },
+      query: { reason: 'feature-disabled' }
     });
     return;
   }

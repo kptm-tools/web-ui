@@ -15,7 +15,9 @@ describe('SelectModule - Feature Flag Logic', () => {
     it('should return true when env var is "true" string', () => {
       vi.stubEnv('VITE_FEATURE_COMPLIANCE_FRAMEWORK_ENABLED', 'true');
 
-      const accessAudits = computed(() => import.meta.env.VITE_FEATURE_COMPLIANCE_FRAMEWORK_ENABLED === 'true');
+      const accessAudits = computed(
+        () => import.meta.env.VITE_FEATURE_COMPLIANCE_FRAMEWORK_ENABLED === 'true'
+      );
 
       expect(accessAudits.value).toBe(true);
     });
@@ -23,7 +25,9 @@ describe('SelectModule - Feature Flag Logic', () => {
     it('should return false when env var is "false" string', () => {
       vi.stubEnv('VITE_FEATURE_COMPLIANCE_FRAMEWORK_ENABLED', 'false');
 
-      const accessAudits = computed(() => import.meta.env.VITE_FEATURE_COMPLIANCE_FRAMEWORK_ENABLED === 'true');
+      const accessAudits = computed(
+        () => import.meta.env.VITE_FEATURE_COMPLIANCE_FRAMEWORK_ENABLED === 'true'
+      );
 
       expect(accessAudits.value).toBe(false);
     });
@@ -31,7 +35,9 @@ describe('SelectModule - Feature Flag Logic', () => {
     it('should return false when env var is undefined', () => {
       vi.stubEnv('VITE_FEATURE_COMPLIANCE_FRAMEWORK_ENABLED', undefined);
 
-      const accessAudits = computed(() => import.meta.env.VITE_FEATURE_COMPLIANCE_FRAMEWORK_ENABLED === 'true');
+      const accessAudits = computed(
+        () => import.meta.env.VITE_FEATURE_COMPLIANCE_FRAMEWORK_ENABLED === 'true'
+      );
 
       expect(accessAudits.value).toBe(false);
     });
@@ -39,7 +45,9 @@ describe('SelectModule - Feature Flag Logic', () => {
     it('should return false when env var is empty string', () => {
       vi.stubEnv('VITE_FEATURE_COMPLIANCE_FRAMEWORK_ENABLED', '');
 
-      const accessAudits = computed(() => import.meta.env.VITE_FEATURE_COMPLIANCE_FRAMEWORK_ENABLED === 'true');
+      const accessAudits = computed(
+        () => import.meta.env.VITE_FEATURE_COMPLIANCE_FRAMEWORK_ENABLED === 'true'
+      );
 
       expect(accessAudits.value).toBe(false);
     });
@@ -49,11 +57,15 @@ describe('SelectModule - Feature Flag Logic', () => {
       vi.stubEnv('VITE_FEATURE_COMPLIANCE_FRAMEWORK_ENABLED', 'false');
 
       // Wrong way (bug):
-      const wrongWay = computed(() => Boolean(import.meta.env.VITE_FEATURE_COMPLIANCE_FRAMEWORK_ENABLED));
+      const wrongWay = computed(() =>
+        Boolean(import.meta.env.VITE_FEATURE_COMPLIANCE_FRAMEWORK_ENABLED)
+      );
       expect(wrongWay.value).toBe(true); // Bug: Boolean('false') = true!
 
       // Correct way (fix):
-      const correctWay = computed(() => import.meta.env.VITE_FEATURE_COMPLIANCE_FRAMEWORK_ENABLED === 'true');
+      const correctWay = computed(
+        () => import.meta.env.VITE_FEATURE_COMPLIANCE_FRAMEWORK_ENABLED === 'true'
+      );
       expect(correctWay.value).toBe(false); // Correct: 'false' === 'true' = false
     });
   });
