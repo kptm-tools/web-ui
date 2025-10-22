@@ -7,7 +7,7 @@ const routes: RouteRecordRaw[] = [
     component: () => import('../AuditsModule.vue'),
     meta: {
       requiresAuth: true,
-      allowAudits: Boolean(import.meta.env.FEATURE_COMPLIANCE_FRAMEWORK_ENABLED)
+      allowAudits: import.meta.env.VITE_FEATURE_COMPLIANCE_FRAMEWORK_ENABLED === 'true'
     },
     children: [
       {
