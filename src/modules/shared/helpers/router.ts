@@ -1,5 +1,9 @@
 import { useAuthStore } from 'auth/stores/auth-store';
-import type { NavigationGuardNext, RouteLocationNormalizedGeneric } from 'vue-router';
+import type {
+  NavigationGuardNext,
+  RouteLocationNormalized,
+  RouteLocationNormalizedGeneric
+} from 'vue-router';
 import { AUTH_ROUTES } from 'auth/routes/route-names';
 import { getSessionStorageValues } from 'auth/helpers/sessionStorage';
 import { SHARED_ROUTES } from '../routes/route-names';
@@ -93,6 +97,14 @@ export function handlerRouterAuth(
     return;
   }
 
+  if (!allowAudits(to)) {
+    next({
+      name: SHARED_ROUTES.selectModule.name,
+      query: { reason: 'feature-disabled' }
+    });
+    return;
+  }
+
   if (!authStore.isAuthenticated || !accessToken) {
     next({ name: AUTH_ROUTES.login.name });
     return;
@@ -110,6 +122,22 @@ export function handlerRouterAuth(
 
 function routeRequiresAuth(to: RouteLocationNormalizedGeneric): boolean {
   return to.matched.some(record => record.meta.requiresAuth);
+}
+
+function allowAudits(to: RouteLocationNormalized): boolean {
+  const requiresAuditsFlag = to.matched.some(record =>
+    Object.prototype.hasOwnProperty.call(record.meta, 'allowAudits')
+  );
+  if (!requiresAuditsFlag) {
+    return true;
+  }
+  const routeWithFlag = to.matched.find(record =>
+    Object.prototype.hasOwnProperty.call(record.meta, 'allowAudits')
+  );
+  if (routeWithFlag) {
+    return !!routeWithFlag.meta.allowAudits;
+  }
+  return true;
 }
 
 function routeRequiresSuperAdmin(to: RouteLocationNormalizedGeneric): boolean {
