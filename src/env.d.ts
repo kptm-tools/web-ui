@@ -5,11 +5,12 @@ declare namespace NodeJS {
     VUE_ROUTER_BASE: string | undefined;
   }
 }
+
 interface ImportMetaEnv {
-  readonly VITE_FEATURE_COMPLIANCE_FRAMEWORK_ENABLED?: string;
   readonly VITE_PRISM_MODE?: string;
   readonly VITE_BYPASS_AUTH?: string;
 }
+
 interface ImportMeta {
   readonly env: ImportMetaEnv;
 }
