@@ -10,7 +10,7 @@ import type {
 } from '../models/scopeEvaluation';
 
 export class ScopeEvaluationService {
-  private static readonly GATEWAY_PATH = 'api/audits/audits';
+  private static readonly GATEWAY_PATH = 'services/audits';
 
   static async getScopeEvaluationForm(
     id: string

@@ -13,6 +13,12 @@ export interface AuditResponse {
   updated_at: string;
 }
 
+export interface AuditSubmitFileResponse {
+  expiration: string;
+  file_id: number;
+  upload_url: string;
+}
+
 export interface AuditGeneralResponse {
   audits: AuditResponse[];
   pagination: {

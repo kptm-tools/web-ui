@@ -146,6 +146,7 @@
           :accept="'.' + question.validation_rules?.file_type"
           bottom-slots
           :readonly="!canEdit"
+          @update:model-value="updateFile($event, question.code)"
         >
           <template v-slot:append>
             <q-btn
@@ -271,6 +272,9 @@
   import { ScopeFormActions } from '../../enums/audits';
   import { FrameworkService } from '../../services/framework';
   import { useQuasar } from 'quasar';
+  import { AuditService } from '../../services/audits';
+  import type { AxiosError } from 'axios';
+  import { errorQuasarNotify } from 'src/utils';
 
   const scopeQuestions = ref([] as ScopeQuestion[]);
   const answers = ref({} as { [key: string]: string });
@@ -392,6 +396,22 @@
     }).onOk(() => {
       emits('submit');
     });
+  }
+
+  async function updateFile(data: unknown, questionCode: string) {
+    try {
+      $q.loading.show();
+      const response = await AuditService.postUploadFileRequest(
+        String(props.scopeEvaluation.audit.id),
+        data as File
+      );
+      answers.value[questionCode] = [response.data.file_id].toString();
+    } catch (err) {
+      const errorMessage = err as AxiosError;
+      errorQuasarNotify(errorMessage.message);
+    } finally {
+      $q.loading.hide();
+    }
   }
 
   watch(responseAnswers, () => {
