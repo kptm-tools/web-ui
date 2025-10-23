@@ -230,7 +230,7 @@
           class="q-mr-md"
           v-if="!canApprove"
         />
-        <q-btn label="Aprobar" type="submit" color="primary" v-else @click="sendApprove" />
+        <q-btn label="Aprobar" type="submit" color="primary" @click="sendApprove" />
       </template>
       <template v-else>
         <q-btn
@@ -247,8 +247,8 @@
           color="primary"
           flat
           class="q-ml-sm"
-          @click="$emit('submit')"
-          v-if="scopeEvaluation.can_submit"
+          @click="confirmSubmitForm()"
+          :disable="!isAllowedToSubmit"
         />
       </template>
     </div>
@@ -301,6 +301,7 @@
   }
 
   const responseAnswers = computed(() => props.scopeEvaluation.answers);
+  const isAllowedToSubmit = computed(() => props.scopeEvaluation.can_submit);
   const allowToMakeObservation = computed(
     () => authStore.userRole === USER_ROLES.ANALYST || authStore.userRole === USER_ROLES.SUPER_ADMIN
   );
@@ -378,6 +379,18 @@
     }).onOk(data => {
       approveRequest.overall_feedback = data;
       emits('approve', approveRequest);
+    });
+  }
+
+  function confirmSubmitForm(): void {
+    $q.dialog({
+      title: 'Enviar Formulario de Alcance',
+      message: '¿Seguro que desea enviar el formulario de alcance?',
+      ok: 'Enviar',
+      cancel: true,
+      persistent: true
+    }).onOk(() => {
+      emits('submit');
     });
   }
 

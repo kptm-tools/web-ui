@@ -8,6 +8,7 @@ import { AUTH_ROUTES } from 'auth/routes/route-names';
 import { getSessionStorageValues } from 'auth/helpers/sessionStorage';
 import { SHARED_ROUTES } from '../routes/route-names';
 import type { SuccessAuthLoginUser } from 'auth/models/fusion-auth.models';
+import { isFeatureFlagEnabled, routeRequiresFeatureFlag } from './featureFlags';
 
 /**
  * @function handlerRouterAuth
@@ -83,6 +84,16 @@ export function handlerRouterAuth(
         mockUser
       );
     }
+
+    // Even with auth bypassed, still check feature flags
+    if (!allowAudits(to)) {
+      next({
+        name: SHARED_ROUTES.selectModule.name,
+        query: { reason: 'feature-disabled' }
+      });
+      return;
+    }
+
     next();
     return;
   }
@@ -125,19 +136,18 @@ function routeRequiresAuth(to: RouteLocationNormalizedGeneric): boolean {
 }
 
 function allowAudits(to: RouteLocationNormalized): boolean {
-  const requiresAuditsFlag = to.matched.some(record =>
-    Object.prototype.hasOwnProperty.call(record.meta, 'allowAudits')
-  );
-  if (!requiresAuditsFlag) {
-    return true;
+  // Check if route requires compliance framework feature flag
+  if (!routeRequiresFeatureFlag(to, 'compliance-framework')) {
+    return true
   }
-  const routeWithFlag = to.matched.find(record =>
-    Object.prototype.hasOwnProperty.call(record.meta, 'allowAudits')
-  );
-  if (routeWithFlag) {
-    return !!routeWithFlag.meta.allowAudits;
+
+  // Check runtime config (window.APP_CONFIG) for feature flag value
+  if (typeof window !== 'undefined' && window.APP_CONFIG) {
+    return isFeatureFlagEnabled(window.APP_CONFIG.FEATURE_COMPLIANCE_FRAMEWORK_ENABLED);
   }
-  return true;
+
+  // Block access if config is missing as a fail-safe
+  return false;
 }
 
 function routeRequiresSuperAdmin(to: RouteLocationNormalizedGeneric): boolean {
