@@ -1,5 +1,5 @@
 <template>
-  <q-form class="q-pa-md q-px-xl q-col-gutter-md" @submit.prevent="sendObservations">
+  <q-form class="q-pa-md q-px-xl q-col-gutter-md">
     <h4 class="text-center text-weight-bold">Formulario de Alcance</h4>
     <template v-for="(question, index) in scopeQuestions" :key="question.code">
       <div v-if="index === indexBeforeSelectFunction" class="q-mt-sm text-weight-bold">
@@ -225,25 +225,17 @@
       <template v-if="allowToMakeObservation">
         <q-btn
           label="Observacion"
-          type="submit"
           color="primary"
           class="q-mr-md"
+          @click="sendObservations"
           v-if="!canApprove"
         />
-        <q-btn label="Aprobar" type="submit" color="primary" @click="sendApprove" />
+        <q-btn label="Aprobar" color="primary" @click="sendApprove" />
       </template>
       <template v-else>
-        <q-btn
-          label="Guardar"
-          type="reset"
-          color="primary"
-          flat
-          class="q-ml-sm"
-          @click="makeDraftHandler"
-        />
+        <q-btn label="Guardar" color="primary" flat class="q-ml-sm" @click="makeDraftHandler" />
         <q-btn
           label="Enviar"
-          type="reset"
           color="primary"
           flat
           class="q-ml-sm"
@@ -275,6 +267,7 @@
   const scopeQuestions = ref([] as ScopeQuestion[]);
   const answers = ref({} as { [key: string]: string });
   const comments = ref({} as { [key: string]: string });
+  const answerStatus = ref({} as { [key: string]: string });
   const visibility = ref({} as { [key: string]: boolean });
   const files = ref({} as { [key: string]: File });
   const multiText = ref({} as { [key: string]: string[] });
@@ -312,11 +305,21 @@
 
   function makeDraftHandler() {
     const saveDraftRequest: ScopeEvaluationFormDraftRequest = {
-      answers: scopeQuestions.value.map(question => ({
-        question_code: question.code,
-        value: String(answers.value[question.code])
-      }))
+      answers: scopeQuestions.value
+        .map(question => {
+          const answerValue = answers.value[question.code];
+          if (answerValue !== undefined && answerValue !== null) {
+            return {
+              question_code: question.code,
+              value: String(answerValue)
+            };
+          }
+          return null;
+        })
+        .filter(item => item !== null)
     };
+
+    //SI ALGUNA DE LAS PREGUNTAS ESTA DE ESTADO OBSERVADO Y EL SCOPE FORM ESTA LEVANTADO OBSERVACIONES SOLO SE ENVIA ESTAS RESPUETSAS
     emits('saveDraft', saveDraftRequest);
   }
 
@@ -345,7 +348,15 @@
       answer_reviews: answerReviews
     };
 
-    emits('sendObservation', observationsRequest);
+    $q.dialog({
+      title: 'Enviar Observaciones',
+      message: '¿Seguro que desea enviar las observaciones?',
+      ok: 'Enviar',
+      cancel: true,
+      persistent: true
+    }).onOk(() => {
+      emits('sendObservation', observationsRequest);
+    });
   }
 
   function sendApprove() {
@@ -398,6 +409,7 @@
     responseAnswers.value.forEach(val => {
       answers.value[val.question_code.toLowerCase()] = val.value;
       comments.value[val.question_code.toLowerCase()] = val.analyst_observation || '';
+      answerStatus.value[val.question_code.toLowerCase()] = val.status;
     });
   });
 
