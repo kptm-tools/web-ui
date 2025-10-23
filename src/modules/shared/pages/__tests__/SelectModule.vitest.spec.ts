@@ -1,98 +1,67 @@
-import { describe, it, expect, vi, afterEach } from 'vitest';
-import { computed } from 'vue';
+import type { AppConfig } from 'src/types/window';
+import { describe, vi, it, afterEach, beforeEach, expect } from 'vitest';
 
 // Mock i18n
 vi.mock('src/boot/i18n.ts', () => ({
-  default: () => {}
+  default: () => { }
 }));
 
 describe('SelectModule - Feature Flag Logic', () => {
+  let originalAppConfig: AppConfig | undefined;
+
+  beforeEach(() => {
+    originalAppConfig = window.APP_CONFIG;
+  });
+
   afterEach(() => {
-    vi.unstubAllEnvs(); // Clean up environment variable stubs after each test
+    // @ts-expect-error - For typescript type mast***** shenanigans
+    window.APP_CONFIG = originalAppConfig;
   });
 
-  describe('accessAudits computed property logic', () => {
-    it('should return true when env var is "true" string', () => {
-      vi.stubEnv('VITE_FEATURE_COMPLIANCE_FRAMEWORK_ENABLED', 'true');
 
-      const accessAudits = computed(
-        () => import.meta.env.VITE_FEATURE_COMPLIANCE_FRAMEWORK_ENABLED === 'true'
-      );
+  describe('window.APP_CONFIG feature flag behavior', () => {
+    it('should return true when feature flag is "true" string', () => {
+      window.APP_CONFIG = {
+        API_BASE_URL: 'http://localhost:8000',
+        WS_BASE_URL: 'ws://localhost:8000/api/core',
+        FEATURE_COMPLIANCE_FRAMEWORK_ENABLED: 'true'
+      };
 
-      expect(accessAudits.value).toBe(true);
+      const isEnabled = window.APP_CONFIG.FEATURE_COMPLIANCE_FRAMEWORK_ENABLED === 'true';
+      expect(isEnabled).toBe(true);
     });
 
-    it('should return false when env var is "false" string', () => {
-      vi.stubEnv('VITE_FEATURE_COMPLIANCE_FRAMEWORK_ENABLED', 'false');
+    it('should return false when feature flag is "false" string', () => {
+      window.APP_CONFIG = {
+        API_BASE_URL: 'http://localhost:8000',
+        WS_BASE_URL: 'ws://localhost:8000/api/core',
+        FEATURE_COMPLIANCE_FRAMEWORK_ENABLED: 'false'
+      };
 
-      const accessAudits = computed(
-        () => import.meta.env.VITE_FEATURE_COMPLIANCE_FRAMEWORK_ENABLED === 'true'
-      );
-
-      expect(accessAudits.value).toBe(false);
+      const isEnabled = window.APP_CONFIG.FEATURE_COMPLIANCE_FRAMEWORK_ENABLED === 'true';
+      expect(isEnabled).toBe(false);
     });
 
-    it('should return false when env var is undefined', () => {
-      vi.stubEnv('VITE_FEATURE_COMPLIANCE_FRAMEWORK_ENABLED', undefined);
+    it('should handle missing APP_CONFIG gracefully', () => {
+      delete (window as Window).APP_CONFIG;
 
-      const accessAudits = computed(
-        () => import.meta.env.VITE_FEATURE_COMPLIANCE_FRAMEWORK_ENABLED === 'true'
-      );
-
-      expect(accessAudits.value).toBe(false);
+      const isEnabled = window.APP_CONFIG?.FEATURE_COMPLIANCE_FRAMEWORK_ENABLED === 'true';
+      expect(isEnabled).toBe(false)
     });
 
-    it('should return false when env var is empty string', () => {
-      vi.stubEnv('VITE_FEATURE_COMPLIANCE_FRAMEWORK_ENABLED', '');
+    it('should return false when feature flag is empty string', () => {
+      window.APP_CONFIG = {
+        API_BASE_URL: 'http://localhost:8000',
+        WS_BASE_URL: 'ws://localhost:8000/api/core',
+        FEATURE_COMPLIANCE_FRAMEWORK_ENABLED: ''
+      };
 
-      const accessAudits = computed(
-        () => import.meta.env.VITE_FEATURE_COMPLIANCE_FRAMEWORK_ENABLED === 'true'
-      );
+      const isEnabled = window.APP_CONFIG.FEATURE_COMPLIANCE_FRAMEWORK_ENABLED === 'true';
+      expect(isEnabled).toBe(false);
 
-      expect(accessAudits.value).toBe(false);
-    });
+    })
 
-    it('should NOT use Boolean() which would convert "false" string to true', () => {
-      // This test documents the bug we fixed
-      vi.stubEnv('VITE_FEATURE_COMPLIANCE_FRAMEWORK_ENABLED', 'false');
+  })
 
-      // Wrong way (bug):
-      const wrongWay = computed(() =>
-        Boolean(import.meta.env.VITE_FEATURE_COMPLIANCE_FRAMEWORK_ENABLED)
-      );
-      expect(wrongWay.value).toBe(true); // Bug: Boolean('false') = true!
 
-      // Correct way (fix):
-      const correctWay = computed(
-        () => import.meta.env.VITE_FEATURE_COMPLIANCE_FRAMEWORK_ENABLED === 'true'
-      );
-      expect(correctWay.value).toBe(false); // Correct: 'false' === 'true' = false
-    });
-  });
-
-  describe('route meta allowAudits logic', () => {
-    it('should evaluate to true when env var is "true" string', () => {
-      vi.stubEnv('VITE_FEATURE_COMPLIANCE_FRAMEWORK_ENABLED', 'true');
-
-      const allowAudits = import.meta.env.VITE_FEATURE_COMPLIANCE_FRAMEWORK_ENABLED === 'true';
-
-      expect(allowAudits).toBe(true);
-    });
-
-    it('should evaluate to false when env var is "false" string', () => {
-      vi.stubEnv('VITE_FEATURE_COMPLIANCE_FRAMEWORK_ENABLED', 'false');
-
-      const allowAudits = import.meta.env.VITE_FEATURE_COMPLIANCE_FRAMEWORK_ENABLED === 'true';
-
-      expect(allowAudits).toBe(false);
-    });
-
-    it('should evaluate to false when env var is undefined', () => {
-      vi.stubEnv('VITE_FEATURE_COMPLIANCE_FRAMEWORK_ENABLED', undefined);
-
-      const allowAudits = import.meta.env.VITE_FEATURE_COMPLIANCE_FRAMEWORK_ENABLED === 'true';
-
-      expect(allowAudits).toBe(false);
-    });
-  });
 });
