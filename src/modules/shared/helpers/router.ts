@@ -8,6 +8,7 @@ import { AUTH_ROUTES } from 'auth/routes/route-names';
 import { getSessionStorageValues } from 'auth/helpers/sessionStorage';
 import { SHARED_ROUTES } from '../routes/route-names';
 import type { SuccessAuthLoginUser } from 'auth/models/fusion-auth.models';
+import { isFeatureFlagEnabled, routeRequiresFeatureFlag } from './featureFlags';
 
 /**
  * @function handlerRouterAuth
@@ -136,21 +137,16 @@ function routeRequiresAuth(to: RouteLocationNormalizedGeneric): boolean {
 
 function allowAudits(to: RouteLocationNormalized): boolean {
   // Check if route requires compliance framework feature flag
-  const requiresComplianceFlag = to.matched.some(record =>
-    record.meta.requiresFeatureFlag === 'compliance-framework'
-  );
-
-
-  if (!requiresComplianceFlag) {
-    return true; // Route doesn't need the feature flag
+  if (!routeRequiresFeatureFlag(to, 'compliance-framework')) {
+    return true
   }
 
   // Check runtime config (window.APP_CONFIG) for feature flag value
   if (typeof window !== 'undefined' && window.APP_CONFIG) {
-    const result = window.APP_CONFIG.FEATURE_COMPLIANCE_FRAMEWORK_ENABLED === 'true';
-    return result;
+    return isFeatureFlagEnabled(window.APP_CONFIG.FEATURE_COMPLIANCE_FRAMEWORK_ENABLED);
   }
 
+  // Block access if config is missing as a fail-safe
   return false;
 }
 
