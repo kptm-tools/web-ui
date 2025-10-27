@@ -319,7 +319,20 @@
         .filter(item => item !== null)
     };
 
-    //SI ALGUNA DE LAS PREGUNTAS ESTA DE ESTADO OBSERVADO Y EL SCOPE FORM ESTA LEVANTADO OBSERVACIONES SOLO SE ENVIA ESTAS RESPUETSAS
+    if (props.scopeEvaluation.scope_status === ScopeFormActions.NEEDS_REVISION) {
+      saveDraftRequest.answers = saveDraftRequest.answers
+        .map(answer => {
+          const hasObservation = comments.value[answer.question_code] !== undefined;
+          if (hasObservation) {
+            return {
+              ...answer,
+              status: ScopeFormActions.NEEDS_REVISION
+            };
+          }
+        })
+        .filter(item => item !== undefined);
+    }
+
     emits('saveDraft', saveDraftRequest);
   }
 
