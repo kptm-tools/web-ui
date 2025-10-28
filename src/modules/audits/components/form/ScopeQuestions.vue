@@ -151,7 +151,7 @@
         </div>
       </template>
 
-      <template v-if="question.question_type === QuestionType.TEXT">
+      <template v-if="question.question_type === QuestionType.FILE">
         <q-file
           outlined
           stack-label

@@ -61,7 +61,7 @@ export interface SubCategoryDetail {
 
 export enum QuestionType {
   NUMBER = 'number',
-  TEXT = 'TEXT',
+  TEXT = 'text',
   CHECKBOX = 'checkbox',
   FILE = 'file',
   MULTI_TEXT = 'multi-text'
