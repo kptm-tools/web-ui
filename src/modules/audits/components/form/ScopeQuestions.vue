@@ -151,7 +151,7 @@
         </div>
       </template>
 
-      <template v-if="question.question_type === QuestionType.FILE">
+      <template v-if="question.question_type === QuestionType.TEXT">
         <q-file
           outlined
           stack-label
@@ -166,6 +166,7 @@
             canEdit &&
             comments[question.code] == ''
           "
+          @update:model-value="uploadFile($event, question.code)"
         >
           <template v-slot:append>
             <q-btn
@@ -301,6 +302,7 @@
   import { ScopeFormActions } from '../../enums/audits';
   import { FrameworkService } from '../../services/framework';
   import { useQuasar } from 'quasar';
+  import { useScopeForm } from '../../composables/scope-form';
 
   const scopeQuestions = ref([] as ScopeQuestion[]);
   const answers = ref({} as { [key: string]: string });
@@ -312,6 +314,7 @@
   const indexBeforeSelectFunction = 17;
   const authStore = useAuthStore();
   const $q = useQuasar();
+  const scopeForm = useScopeForm();
 
   const props = defineProps({
     scopeEvaluation: {
@@ -422,6 +425,14 @@
     }).onOk(() => {
       emits('submit');
     });
+  }
+
+  async function uploadFile(file: unknown, questionCode: string) {
+    await scopeForm.uploadFileToAudit(
+      String(props.scopeEvaluation.audit.id),
+      questionCode,
+      file as File
+    );
   }
 
   watch(responseAnswers, () => {

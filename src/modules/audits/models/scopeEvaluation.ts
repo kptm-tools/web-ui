@@ -28,6 +28,19 @@ export interface ScopeEvaluationFormReviewResponse {
   status: string;
 }
 
+export interface ScopeEvaluationUploadFileRequest {
+  file_name: string;
+  file_size: number;
+  file_type: string;
+  question_code: string;
+}
+
+export interface ScopeEvaluationUploadFileResponse {
+  expiration: string;
+  file_id: number;
+  upload_url: string;
+}
+
 export interface ScopeEvaluationFormAnswer {
   analyst_observation: string;
   files: ScopeEvaluationFormAnswerFile[];
