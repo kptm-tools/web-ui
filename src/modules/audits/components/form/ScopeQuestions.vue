@@ -14,6 +14,11 @@
           :maxlength="question.validation_rules?.max_length"
           bottom-slots
           :readonly="!canEdit"
+          :disable="
+            scopeEvaluation.scope_status === ScopeFormActions.NEEDS_REVISION &&
+            canEdit &&
+            comments[question.code] == ''
+          "
         >
           <template v-slot:append>
             <q-btn
@@ -69,6 +74,11 @@
           class="q-mb-md"
           bottom-slots
           :readonly="!canEdit"
+          :disable="
+            scopeEvaluation.scope_status === ScopeFormActions.NEEDS_REVISION &&
+            canEdit &&
+            comments[question.code] == ''
+          "
         >
           <template v-slot:append>
             <q-btn
@@ -106,7 +116,12 @@
             :label="question.label"
             true-value="true"
             false-value="false"
-            :disable="!canEdit"
+            :disable="
+              !canEdit ||
+              (scopeEvaluation.scope_status === ScopeFormActions.NEEDS_REVISION &&
+                canEdit &&
+                comments[question.code] == '')
+            "
           />
           <q-btn
             square
@@ -136,7 +151,7 @@
         </div>
       </template>
 
-      <template v-if="question.question_type === QuestionType.FILE">
+      <template v-if="question.question_type === QuestionType.TEXT">
         <q-file
           outlined
           stack-label
@@ -146,6 +161,12 @@
           :accept="'.' + question.validation_rules?.file_type"
           bottom-slots
           :readonly="!canEdit"
+          :disable="
+            scopeEvaluation.scope_status === ScopeFormActions.NEEDS_REVISION &&
+            canEdit &&
+            comments[question.code] == ''
+          "
+          @update:model-value="uploadFile($event, question.code)"
         >
           <template v-slot:append>
             <q-btn
@@ -185,7 +206,17 @@
             v-if="allowToMakeObservation"
           />
         </div>
-        <div class="row items-center" v-if="canEdit">
+        <div
+          class="row items-center"
+          v-if="
+            canEdit ||
+            !(
+              scopeEvaluation.scope_status === ScopeFormActions.NEEDS_REVISION &&
+              canEdit &&
+              comments[question.code] == ''
+            )
+          "
+        >
           <div class="col">
             <q-input
               outlined
@@ -263,6 +294,7 @@
   import { ScopeFormActions } from '../../enums/audits';
   import { FrameworkService } from '../../services/framework';
   import { useQuasar } from 'quasar';
+  import { useScopeForm } from '../../composables/scope-form';
 
   const scopeQuestions = ref([] as ScopeQuestion[]);
   const answers = ref({} as { [key: string]: string });
@@ -275,6 +307,7 @@
   const indexBeforeSelectFunction = 17;
   const authStore = useAuthStore();
   const $q = useQuasar();
+  const scopeForm = useScopeForm();
 
   const props = defineProps({
     scopeEvaluation: {
@@ -416,6 +449,14 @@
     }).onOk(() => {
       emits('submit');
     });
+  }
+
+  async function uploadFile(file: unknown, questionCode: string) {
+    await scopeForm.uploadFileToAudit(
+      String(props.scopeEvaluation.audit.id),
+      questionCode,
+      file as File
+    );
   }
 
   watch(responseAnswers, () => {

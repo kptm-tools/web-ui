@@ -6,7 +6,9 @@ import type {
   ScopeEvaluationFormDraftResponse,
   ScopeEvaluationFormResponse,
   ScopeEvaluationFormReviewRequest,
-  ScopeEvaluationFormReviewResponse
+  ScopeEvaluationFormReviewResponse,
+  ScopeEvaluationUploadFileRequest,
+  ScopeEvaluationUploadFileResponse
 } from '../models/scopeEvaluation';
 
 export class ScopeEvaluationService {
@@ -36,5 +38,24 @@ export class ScopeEvaluationService {
     id: string
   ): Promise<AxiosResponse<ScopeEvaluationFormReviewResponse>> {
     return await gatewayApi.post(buildApiPath(this.GATEWAY_PATH, id, 'scope', 'submit'));
+  }
+
+  static async postUploadFileRequest(
+    id: string,
+    body: ScopeEvaluationUploadFileRequest
+  ): Promise<AxiosResponse<ScopeEvaluationUploadFileResponse>> {
+    return await gatewayApi.post(
+      buildApiPath(this.GATEWAY_PATH, id, 'scope', 'files', 'upload-request'),
+      body
+    );
+  }
+
+  static async postConfirmFileUpload(
+    id: string,
+    fileId: string
+  ): Promise<AxiosResponse<ScopeEvaluationUploadFileResponse>> {
+    return await gatewayApi.post(
+      buildApiPath(this.GATEWAY_PATH, id, 'scope', 'files', fileId, 'confirm')
+    );
   }
 }

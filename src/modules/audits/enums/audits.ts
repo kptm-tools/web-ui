@@ -6,6 +6,9 @@ export enum AudiSteps {
 }
 
 export enum ScopeFormActions {
+  PENDING = 'PENDING',
+  IN_PROGRESS = 'IN_PROGRESS',
+  IN_REVIEW = 'IN_REVIEW',
   NEEDS_REVISION = 'NEEDS_REVISION',
   APPROVED = 'APPROVED'
 }
