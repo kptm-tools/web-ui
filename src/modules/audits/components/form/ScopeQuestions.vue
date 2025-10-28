@@ -14,6 +14,11 @@
           :maxlength="question.validation_rules?.max_length"
           bottom-slots
           :readonly="!canEdit"
+          :disable="
+            scopeEvaluation.scope_status === ScopeFormActions.NEEDS_REVISION &&
+            canEdit &&
+            comments[question.code] == ''
+          "
         >
           <template v-slot:append>
             <q-btn
@@ -69,6 +74,11 @@
           class="q-mb-md"
           bottom-slots
           :readonly="!canEdit"
+          :disable="
+            scopeEvaluation.scope_status === ScopeFormActions.NEEDS_REVISION &&
+            canEdit &&
+            comments[question.code] == ''
+          "
         >
           <template v-slot:append>
             <q-btn
@@ -106,7 +116,12 @@
             :label="question.label"
             true-value="true"
             false-value="false"
-            :disable="!canEdit"
+            :disable="
+              !canEdit ||
+              (scopeEvaluation.scope_status === ScopeFormActions.NEEDS_REVISION &&
+                canEdit &&
+                comments[question.code] == '')
+            "
           />
           <q-btn
             square
@@ -146,6 +161,11 @@
           :accept="'.' + question.validation_rules?.file_type"
           bottom-slots
           :readonly="!canEdit"
+          :disable="
+            scopeEvaluation.scope_status === ScopeFormActions.NEEDS_REVISION &&
+            canEdit &&
+            comments[question.code] == ''
+          "
         >
           <template v-slot:append>
             <q-btn
@@ -185,7 +205,17 @@
             v-if="allowToMakeObservation"
           />
         </div>
-        <div class="row items-center" v-if="canEdit">
+        <div
+          class="row items-center"
+          v-if="
+            canEdit ||
+            !(
+              scopeEvaluation.scope_status === ScopeFormActions.NEEDS_REVISION &&
+              canEdit &&
+              comments[question.code] == ''
+            )
+          "
+        >
           <div class="col">
             <q-input
               outlined

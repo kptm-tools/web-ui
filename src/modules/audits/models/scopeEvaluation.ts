@@ -5,7 +5,7 @@ export interface ScopeEvaluationFormResponse {
   answers: ScopeEvaluationFormAnswer[];
   audit: AuditResponse;
   can_submit: boolean;
-  scope_status: string;
+  scope_status: ScopeFormActions;
 }
 
 export interface ScopeEvaluationFormDraftRequest {
