@@ -302,7 +302,7 @@
   const answerStatus = ref({} as { [key: string]: string });
   const visibility = ref({} as { [key: string]: boolean });
   const files = ref({} as { [key: string]: File });
-  const fileReference = ref({} as { [key: string]: string[] });
+  const fileReference = ref({} as { [key: string]: number[] });
   const multiText = ref({} as { [key: string]: string[] });
   const auxInputText = ref('');
   const indexBeforeSelectFunction = 17;
@@ -463,7 +463,7 @@
     if (!fileReference.value[questionCode]) {
       fileReference.value[questionCode] = [];
     }
-    fileReference.value[questionCode].push(fileId.toString());
+    fileReference.value[questionCode].push(Number(fileId));
   }
 
   watch(responseAnswers, () => {

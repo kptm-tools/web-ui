@@ -64,7 +64,7 @@ export interface ScopeEvaluationFormAnswerFile {
 }
 
 export interface ScopeEvaluationFormDraftAnswerRequest {
-  file_ids?: string[] | undefined;
+  file_ids?: number[] | undefined;
   question_code: string;
   value: string;
 }
