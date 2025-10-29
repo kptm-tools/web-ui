@@ -157,7 +157,6 @@
           stack-label
           v-model="files[question.code]"
           :label="question.label"
-          :multiple="Boolean((question.validation_rules?.max_files || 0) > 1)"
           :accept="'.' + question.validation_rules?.file_type"
           bottom-slots
           :readonly="!canEdit"
@@ -189,7 +188,7 @@
               </template>
             </template>
             <template v-else-if="comments[question.code]">
-              {{ 'Observacion: ' + comments[question.code] }}assa
+              {{ 'Observacion: ' + comments[question.code] }}
             </template>
           </template></q-file
         >
@@ -452,11 +451,13 @@
   }
 
   async function uploadFile(file: unknown, questionCode: string) {
-    await scopeForm.uploadFileToAudit(
+    const fileId = await scopeForm.uploadFileToAudit(
       String(props.scopeEvaluation.audit.id),
       questionCode,
       file as File
     );
+    answers.value[questionCode] = [fileId].toString();
+    console.log('answers', answers.value);
   }
 
   watch(responseAnswers, () => {

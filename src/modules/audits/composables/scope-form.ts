@@ -3,13 +3,13 @@ import { ScopeEvaluationService } from '../services/scopeEvaluation';
 import type { ScopeEvaluationUploadFileRequest } from '../models/scopeEvaluation';
 
 export function useScopeForm(): {
-  uploadFileToAudit: (auditId: string, questionCode: string, file: File) => Promise<void>;
+  uploadFileToAudit: (auditId: string, questionCode: string, file: File) => Promise<string>;
 } {
   async function uploadFileToAudit(
     auditId: string,
     questionCode: string,
     file: File
-  ): Promise<void> {
+  ): Promise<string> {
     try {
       const uploadRequestBody: ScopeEvaluationUploadFileRequest = {
         file_name: file.name,
@@ -32,6 +32,8 @@ export function useScopeForm(): {
       await UploadFileService.uploadEvidence(presignedUrl, file, file.type);
 
       console.log(`Successfully uploaded file: ${file.name} for question: ${questionCode}`);
+
+      return uploadRequestResponse.data.file_id.toString();
     } catch (error) {
       console.error(
         `Error uploading file to audit ${auditId} for question ${questionCode}:`,
