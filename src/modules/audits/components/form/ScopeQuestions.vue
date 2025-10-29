@@ -456,7 +456,7 @@
       questionCode,
       file as File
     );
-    answers.value[questionCode] = fileId.toString();
+    answers.value[questionCode] = `[${fileId.toString()}]`;
     console.log('answers', answers.value);
   }
 
