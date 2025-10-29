@@ -221,6 +221,12 @@
               outlined
               v-model="auxInputText"
               type="text"
+              :readonly="!canEdit"
+              :disable="
+                scopeEvaluation.scope_status === ScopeFormActions.NEEDS_REVISION &&
+                canEdit &&
+                comments[question.code] == ''
+              "
               :maxlength="question.validation_rules?.max_length_per_item"
             />
           </div>
@@ -229,6 +235,12 @@
               color="primary"
               square
               icon="add"
+              :disable="
+                (scopeEvaluation.scope_status === ScopeFormActions.NEEDS_REVISION &&
+                  canEdit &&
+                  comments[question.code] == '') ||
+                !canEdit
+              "
               @click="handlerMultiText(question.code)"
             ></q-btn>
           </div>
@@ -324,6 +336,7 @@
       multiText.value[code] = [];
     }
     multiText.value[code]?.push(auxInputText.value);
+    answers.value[code] = multiText.value[code].join(',');
     auxInputText.value = '';
   }
 
