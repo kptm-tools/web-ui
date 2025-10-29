@@ -286,7 +286,8 @@
     ScopeEvaluationFormAnswerReviewRequest,
     ScopeEvaluationFormDraftRequest,
     ScopeEvaluationFormResponse,
-    ScopeEvaluationFormReviewRequest
+    ScopeEvaluationFormReviewRequest,
+    ScopeEvaluationFormDraftAnswerRequest
   } from '../../models/scopeEvaluation';
   import { useAuthStore } from 'src/modules/auth/stores/auth-store';
   import { USER_ROLES } from 'src/constants/deny-actions.constants';
@@ -301,6 +302,7 @@
   const answerStatus = ref({} as { [key: string]: string });
   const visibility = ref({} as { [key: string]: boolean });
   const files = ref({} as { [key: string]: File });
+  const fileReference = ref({} as { [key: string]: string[] });
   const multiText = ref({} as { [key: string]: string[] });
   const auxInputText = ref('');
   const indexBeforeSelectFunction = 17;
@@ -341,10 +343,12 @@
         .map(question => {
           const answerValue = answers.value[question.code];
           if (answerValue !== undefined && answerValue !== null) {
-            return {
+            const data: ScopeEvaluationFormDraftAnswerRequest = {
               question_code: question.code,
-              value: String(answerValue)
+              value: fileReference.value[question.code] ? '' : String(answerValue),
+              file_ids: fileReference.value[question.code] || undefined
             };
+            return data;
           }
           return null;
         })
@@ -456,8 +460,10 @@
       questionCode,
       file as File
     );
-    answers.value[questionCode] = `[${fileId.toString()}]`;
-    console.log('answers', answers.value);
+    if (!fileReference.value[questionCode]) {
+      fileReference.value[questionCode] = [];
+    }
+    fileReference.value[questionCode].push(fileId.toString());
   }
 
   watch(responseAnswers, () => {
