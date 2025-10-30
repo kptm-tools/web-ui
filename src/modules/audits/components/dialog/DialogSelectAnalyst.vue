@@ -16,10 +16,7 @@
               @click="selectAnalyst(analyst.id)"
               :active="analyst.id == pickedAnalyst"
             >
-              <q-item-section>
-                {{ analyst.display_name }} (
-                {{ analyst.workload.active_audits }} Auditorias)</q-item-section
-              >
+              <q-item-section> {{ analyst.display_name }}</q-item-section>
             </q-item>
           </template>
         </q-list>

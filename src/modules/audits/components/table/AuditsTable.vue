@@ -16,7 +16,9 @@
             dense
             color="primary"
             style="font-size: 0.8em"
-            @click="$emit('unsetAnalyst', props.row.analyst_name, props.row.audit_id)"
+            @click="
+              $emit('unsetAnalyst', { analyst: props.row.analyst_name, id: props.row.audit_id })
+            "
           ></q-btn>
         </template>
         <template v-else>

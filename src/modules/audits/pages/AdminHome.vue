@@ -98,11 +98,10 @@
           audit: audit,
           id: id
         }
-      }).onOk(() => {
-        void (async () => {
-          successQuasarNotify('Analista Asignado');
-          await fetchData();
-        });
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+      }).onOk(async () => {
+        successQuasarNotify('Analista Asignado');
+        await fetchData();
       });
     } catch (err) {
       errorQuasarNotify(String(err));
@@ -117,19 +116,18 @@
       message: `¿Estás seguro de que quieres desasignar a ${audit.analyst} de esta auditoría?`,
       cancel: true,
       persistent: true
-    }).onOk(() => {
-      void (async () => {
-        try {
-          loading.value = true;
-          await AdminService.putUnassignAnalystAudit(audit.id);
-          successQuasarNotify('Analista Desasignado');
-          await fetchData();
-        } catch (err) {
-          errorQuasarNotify(String(err));
-        } finally {
-          loading.value = false;
-        }
-      });
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    }).onOk(async () => {
+      try {
+        loading.value = true;
+        await AdminService.putUnassignAnalystAudit(audit.id);
+        successQuasarNotify('Analista Desasignado');
+        await fetchData();
+      } catch (err) {
+        errorQuasarNotify(String(err));
+      } finally {
+        loading.value = false;
+      }
     });
   }
 
