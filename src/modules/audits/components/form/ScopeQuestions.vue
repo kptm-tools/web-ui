@@ -192,6 +192,27 @@
             </template>
           </template></q-file
         >
+
+        <q-table
+          :rows="fileUrl[question.code] || []"
+          flat
+          :columns="[
+            { name: 'file', label: 'File', align: 'left', field: 'name' },
+            { name: 'action', label: 'Action', align: 'center', field: 'action' }
+          ]"
+        >
+          <template v-slot:body-cell-action="props">
+            <q-td :props="props">
+              <q-btn
+                icon="visibility"
+                color="primary"
+                dense
+                @click="openFileUrl($event, props.row)"
+              ></q-btn>
+              <q-btn icon="delete" color="primary" dense class="q-ml-md"></q-btn>
+            </q-td>
+          </template>
+        </q-table>
       </template>
 
       <template v-if="question.question_type === QuestionType.MULTI_TEXT">
@@ -316,6 +337,7 @@
   const files = ref({} as { [key: string]: File });
   const fileReference = ref({} as { [key: string]: number[] });
   const multiText = ref({} as { [key: string]: string[] });
+  const fileUrl = ref({} as { [key: string]: { url: string; name: string }[] });
   const auxInputText = ref('');
   const indexBeforeSelectFunction = 17;
   const authStore = useAuthStore();
@@ -479,11 +501,23 @@
     fileReference.value[questionCode].push(Number(fileId));
   }
 
+  function openFileUrl(event: Event, row: unknown) {
+    event.preventDefault();
+    const stringUrl = (row as { url: string }).url;
+    window.open(stringUrl, '_blank');
+  }
+
   watch(responseAnswers, () => {
     responseAnswers.value.forEach(val => {
       answers.value[val.question_code.toLowerCase()] = val.value;
       comments.value[val.question_code.toLowerCase()] = val.analyst_observation || '';
       answerStatus.value[val.question_code.toLowerCase()] = val.status;
+      if (val.files?.length > 0) {
+        fileUrl.value[val.question_code.toLowerCase()] = val.files.map(file => ({
+          name: file.file_name,
+          url: `${process.env.AUDITS_SERVER_URL}/api/v1/buckets/evidence/object/download?preview=true&prefix=${file.s3_key}`
+        }));
+      }
     });
   });
 
