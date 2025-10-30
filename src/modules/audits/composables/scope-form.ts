@@ -33,7 +33,11 @@ export function useScopeForm(): {
 
       console.log(`Successfully uploaded file: ${file.name} for question: ${questionCode}`);
 
-      return uploadRequestResponse.data.file_id.toString();
+      const fileId = uploadRequestResponse.data.file_id.toString();
+
+      await ScopeEvaluationService.postConfirmFileUpload(auditId, fileId);
+
+      return fileId;
     } catch (error) {
       console.error(
         `Error uploading file to audit ${auditId} for question ${questionCode}:`,
