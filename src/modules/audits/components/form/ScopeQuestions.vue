@@ -515,7 +515,7 @@
       if (val.files?.length > 0) {
         fileUrl.value[val.question_code.toLowerCase()] = val.files.map(file => ({
           name: file.file_name,
-          url: `${process.env.MINIO_SERVER_URL}/api/v1/buckets/evidence/object/download?preview=true&prefix=${file.s3_key}`
+          url: `${process.env.MINIO_SERVER_URL}/api/v1/buckets/evidence/object/download?preview=true&prefix=${encodeURIComponent(file.s3_key)}`
         }));
       }
     });
