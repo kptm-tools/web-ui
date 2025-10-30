@@ -20,6 +20,7 @@ export interface ScopeEvaluationFormReviewRequest {
   action: ScopeFormActions;
   answer_reviews: ScopeEvaluationFormAnswerReviewRequest[];
   overall_feedback?: string;
+  function_scopes?: string[];
 }
 
 export interface ScopeEvaluationFormReviewResponse {

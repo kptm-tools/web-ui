@@ -328,6 +328,7 @@
   import { FrameworkService } from '../../services/framework';
   import { useQuasar } from 'quasar';
   import { useScopeForm } from '../../composables/scope-form';
+  import DialogApproveScope from '../dialog/DialogApproveScope.vue';
 
   const scopeQuestions = ref([] as ScopeQuestion[]);
   const answers = ref({} as { [key: string]: string });
@@ -462,17 +463,12 @@
         .filter(val => val !== undefined)
     };
     $q.dialog({
-      title: 'Aprobar Auditoria',
-      message: 'Comentario Final',
-      ok: 'Aprobar',
-      prompt: {
-        model: '',
-        type: 'text'
-      },
-      cancel: true,
-      persistent: true
+      component: DialogApproveScope,
+      componentProps: {
+        audit: props.scopeEvaluation.audit.name
+      }
     }).onOk(data => {
-      approveRequest.overall_feedback = data;
+      approveRequest.function_scopes = data;
       emits('approve', approveRequest);
     });
   }
