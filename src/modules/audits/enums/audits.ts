@@ -6,6 +6,9 @@ export enum AudiSteps {
 }
 
 export enum ScopeFormActions {
+  PENDING = 'PENDING',
+  IN_PROGRESS = 'IN_PROGRESS',
+  IN_REVIEW = 'IN_REVIEW',
   NEEDS_REVISION = 'NEEDS_REVISION',
   APPROVED = 'APPROVED'
 }
@@ -18,4 +21,13 @@ export enum OverallAuditStatus {
   PENDING_MANAGER_ANSWER_INPUT = 'PENDING_MANAGER_ANSWER_INPUT',
   PENDING_ANALYST_REPORT = 'PENDING_ANALYST_REPORT',
   FINALIZED = 'FINALIZED'
+}
+
+export enum AuditFunction {
+  ALCANCE_FUNCIONAL_GOBERNAR = 'alcance_funcional_gobernar',
+  ALCANCE_FUNCIONAL_IDENTIFICAR = 'alcance_funcional_identificar',
+  ALCANCE_FUNCIONAL_PROTEGER = 'alcance_funcional_proteger',
+  ALCANCE_FUNCIONAL_DETECTAR = 'alcance_funcional_detectar',
+  ALCANCE_FUNCIONAL_RESPONDER = 'alcance_funcional_responder',
+  ALCANCE_FUNCIONAL_RECUPERAR = 'alcance_funcional_recuperar'
 }

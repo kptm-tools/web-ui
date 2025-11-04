@@ -1,5 +1,5 @@
 <template>
-  <q-form class="q-pa-md q-px-xl q-col-gutter-md" @submit.prevent="sendObservations">
+  <q-form class="q-pa-md q-px-xl q-col-gutter-md">
     <h4 class="text-center text-weight-bold">Formulario de Alcance</h4>
     <template v-for="(question, index) in scopeQuestions" :key="question.code">
       <div v-if="index === indexBeforeSelectFunction" class="q-mt-sm text-weight-bold">
@@ -14,6 +14,11 @@
           :maxlength="question.validation_rules?.max_length"
           bottom-slots
           :readonly="!canEdit"
+          :disable="
+            scopeEvaluation.scope_status === ScopeFormActions.NEEDS_REVISION &&
+            canEdit &&
+            comments[question.code] == ''
+          "
         >
           <template v-slot:append>
             <q-btn
@@ -69,6 +74,11 @@
           class="q-mb-md"
           bottom-slots
           :readonly="!canEdit"
+          :disable="
+            scopeEvaluation.scope_status === ScopeFormActions.NEEDS_REVISION &&
+            canEdit &&
+            comments[question.code] == ''
+          "
         >
           <template v-slot:append>
             <q-btn
@@ -106,7 +116,12 @@
             :label="question.label"
             true-value="true"
             false-value="false"
-            :disable="!canEdit"
+            :disable="
+              !canEdit ||
+              (scopeEvaluation.scope_status === ScopeFormActions.NEEDS_REVISION &&
+                canEdit &&
+                comments[question.code] == '')
+            "
           />
           <q-btn
             square
@@ -142,10 +157,15 @@
           stack-label
           v-model="files[question.code]"
           :label="question.label"
-          :multiple="Boolean((question.validation_rules?.max_files || 0) > 1)"
           :accept="'.' + question.validation_rules?.file_type"
           bottom-slots
           :readonly="!canEdit"
+          :disable="
+            scopeEvaluation.scope_status === ScopeFormActions.NEEDS_REVISION &&
+            canEdit &&
+            comments[question.code] == ''
+          "
+          @update:model-value="uploadFile($event, question.code)"
         >
           <template v-slot:append>
             <q-btn
@@ -168,10 +188,31 @@
               </template>
             </template>
             <template v-else-if="comments[question.code]">
-              {{ 'Observacion: ' + comments[question.code] }}assa
+              {{ 'Observacion: ' + comments[question.code] }}
             </template>
           </template></q-file
         >
+
+        <q-table
+          :rows="fileUrl[question.code] || []"
+          flat
+          :columns="[
+            { name: 'file', label: 'File', align: 'left', field: 'name' },
+            { name: 'action', label: 'Action', align: 'center', field: 'action' }
+          ]"
+        >
+          <template v-slot:body-cell-action="props">
+            <q-td :props="props">
+              <q-btn
+                icon="visibility"
+                color="primary"
+                dense
+                @click="openFileUrl($event, props.row)"
+              ></q-btn>
+              <q-btn icon="delete" color="primary" dense class="q-ml-md"></q-btn>
+            </q-td>
+          </template>
+        </q-table>
       </template>
 
       <template v-if="question.question_type === QuestionType.MULTI_TEXT">
@@ -185,12 +226,28 @@
             v-if="allowToMakeObservation"
           />
         </div>
-        <div class="row items-center" v-if="canEdit">
+        <div
+          class="row items-center"
+          v-if="
+            canEdit ||
+            !(
+              scopeEvaluation.scope_status === ScopeFormActions.NEEDS_REVISION &&
+              canEdit &&
+              comments[question.code] == ''
+            )
+          "
+        >
           <div class="col">
             <q-input
               outlined
               v-model="auxInputText"
               type="text"
+              :readonly="!canEdit"
+              :disable="
+                scopeEvaluation.scope_status === ScopeFormActions.NEEDS_REVISION &&
+                canEdit &&
+                comments[question.code] == ''
+              "
               :maxlength="question.validation_rules?.max_length_per_item"
             />
           </div>
@@ -199,6 +256,12 @@
               color="primary"
               square
               icon="add"
+              :disable="
+                (scopeEvaluation.scope_status === ScopeFormActions.NEEDS_REVISION &&
+                  canEdit &&
+                  comments[question.code] == '') ||
+                !canEdit
+              "
               @click="handlerMultiText(question.code)"
             ></q-btn>
           </div>
@@ -225,25 +288,17 @@
       <template v-if="allowToMakeObservation">
         <q-btn
           label="Observacion"
-          type="submit"
           color="primary"
           class="q-mr-md"
+          @click="sendObservations"
           v-if="!canApprove"
         />
-        <q-btn label="Aprobar" type="submit" color="primary" @click="sendApprove" />
+        <q-btn label="Aprobar" color="primary" @click="sendApprove" />
       </template>
       <template v-else>
-        <q-btn
-          label="Guardar"
-          type="reset"
-          color="primary"
-          flat
-          class="q-ml-sm"
-          @click="makeDraftHandler"
-        />
+        <q-btn label="Guardar" color="primary" flat class="q-ml-sm" @click="makeDraftHandler" />
         <q-btn
           label="Enviar"
-          type="reset"
           color="primary"
           flat
           class="q-ml-sm"
@@ -264,24 +319,31 @@
     ScopeEvaluationFormAnswerReviewRequest,
     ScopeEvaluationFormDraftRequest,
     ScopeEvaluationFormResponse,
-    ScopeEvaluationFormReviewRequest
+    ScopeEvaluationFormReviewRequest,
+    ScopeEvaluationFormDraftAnswerRequest
   } from '../../models/scopeEvaluation';
   import { useAuthStore } from 'src/modules/auth/stores/auth-store';
   import { USER_ROLES } from 'src/constants/deny-actions.constants';
   import { ScopeFormActions } from '../../enums/audits';
   import { FrameworkService } from '../../services/framework';
   import { useQuasar } from 'quasar';
+  import { useScopeForm } from '../../composables/scope-form';
+  import DialogApproveScope from '../dialog/DialogApproveScope.vue';
 
   const scopeQuestions = ref([] as ScopeQuestion[]);
   const answers = ref({} as { [key: string]: string });
   const comments = ref({} as { [key: string]: string });
+  const answerStatus = ref({} as { [key: string]: string });
   const visibility = ref({} as { [key: string]: boolean });
   const files = ref({} as { [key: string]: File });
+  const fileReference = ref({} as { [key: string]: number[] });
   const multiText = ref({} as { [key: string]: string[] });
+  const fileUrl = ref({} as { [key: string]: { url: string; name: string }[] });
   const auxInputText = ref('');
   const indexBeforeSelectFunction = 17;
   const authStore = useAuthStore();
   const $q = useQuasar();
+  const scopeForm = useScopeForm();
 
   const props = defineProps({
     scopeEvaluation: {
@@ -297,6 +359,7 @@
       multiText.value[code] = [];
     }
     multiText.value[code]?.push(auxInputText.value);
+    answers.value[code] = multiText.value[code].join(',');
     auxInputText.value = '';
   }
 
@@ -312,11 +375,36 @@
 
   function makeDraftHandler() {
     const saveDraftRequest: ScopeEvaluationFormDraftRequest = {
-      answers: scopeQuestions.value.map(question => ({
-        question_code: question.code,
-        value: String(answers.value[question.code])
-      }))
+      answers: scopeQuestions.value
+        .map(question => {
+          const answerValue = answers.value[question.code];
+          if (answerValue !== undefined && answerValue !== null) {
+            const data: ScopeEvaluationFormDraftAnswerRequest = {
+              question_code: question.code,
+              value: fileReference.value[question.code] ? '' : String(answerValue),
+              file_ids: fileReference.value[question.code] || undefined
+            };
+            return data;
+          }
+          return null;
+        })
+        .filter(item => item !== null)
     };
+
+    if (props.scopeEvaluation.scope_status === ScopeFormActions.NEEDS_REVISION) {
+      saveDraftRequest.answers = saveDraftRequest.answers
+        .map(answer => {
+          const hasObservation = comments.value[answer.question_code] !== undefined;
+          if (hasObservation) {
+            return {
+              ...answer,
+              status: ScopeFormActions.NEEDS_REVISION
+            };
+          }
+        })
+        .filter(item => item !== undefined);
+    }
+
     emits('saveDraft', saveDraftRequest);
   }
 
@@ -345,7 +433,15 @@
       answer_reviews: answerReviews
     };
 
-    emits('sendObservation', observationsRequest);
+    $q.dialog({
+      title: 'Enviar Observaciones',
+      message: '¿Seguro que desea enviar las observaciones?',
+      ok: 'Enviar',
+      cancel: true,
+      persistent: true
+    }).onOk(() => {
+      emits('sendObservation', observationsRequest);
+    });
   }
 
   function sendApprove() {
@@ -367,17 +463,12 @@
         .filter(val => val !== undefined)
     };
     $q.dialog({
-      title: 'Aprobar Auditoria',
-      message: 'Comentario Final',
-      ok: 'Aprobar',
-      prompt: {
-        model: '',
-        type: 'text'
-      },
-      cancel: true,
-      persistent: true
+      component: DialogApproveScope,
+      componentProps: {
+        audit: props.scopeEvaluation.audit.name
+      }
     }).onOk(data => {
-      approveRequest.overall_feedback = data;
+      approveRequest.function_scopes = data;
       emits('approve', approveRequest);
     });
   }
@@ -394,10 +485,35 @@
     });
   }
 
+  async function uploadFile(file: unknown, questionCode: string) {
+    const fileId = await scopeForm.uploadFileToAudit(
+      String(props.scopeEvaluation.audit.id),
+      questionCode,
+      file as File
+    );
+    if (!fileReference.value[questionCode]) {
+      fileReference.value[questionCode] = [];
+    }
+    fileReference.value[questionCode].push(Number(fileId));
+  }
+
+  function openFileUrl(event: Event, row: unknown) {
+    event.preventDefault();
+    const stringUrl = (row as { url: string }).url;
+    window.open(stringUrl, '_blank');
+  }
+
   watch(responseAnswers, () => {
     responseAnswers.value.forEach(val => {
       answers.value[val.question_code.toLowerCase()] = val.value;
       comments.value[val.question_code.toLowerCase()] = val.analyst_observation || '';
+      answerStatus.value[val.question_code.toLowerCase()] = val.status;
+      if (val.files?.length > 0) {
+        fileUrl.value[val.question_code.toLowerCase()] = val.files.map(file => ({
+          name: file.file_name,
+          url: `${process.env.MINIO_SERVER_URL}/api/v1/buckets/evidence/object/download?preview=true&prefix=${encodeURIComponent(file.s3_key)}&version_id=null`
+        }));
+      }
     });
   });
 

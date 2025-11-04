@@ -5,7 +5,7 @@ export interface ScopeEvaluationFormResponse {
   answers: ScopeEvaluationFormAnswer[];
   audit: AuditResponse;
   can_submit: boolean;
-  scope_status: string;
+  scope_status: ScopeFormActions;
 }
 
 export interface ScopeEvaluationFormDraftRequest {
@@ -20,12 +20,26 @@ export interface ScopeEvaluationFormReviewRequest {
   action: ScopeFormActions;
   answer_reviews: ScopeEvaluationFormAnswerReviewRequest[];
   overall_feedback?: string;
+  function_scopes?: string[];
 }
 
 export interface ScopeEvaluationFormReviewResponse {
   message: string;
   reviewed_at: string;
   status: string;
+}
+
+export interface ScopeEvaluationUploadFileRequest {
+  file_name: string;
+  file_size: number;
+  file_type: string;
+  question_code: string;
+}
+
+export interface ScopeEvaluationUploadFileResponse {
+  expiration: string;
+  file_id: number;
+  upload_url: string;
 }
 
 export interface ScopeEvaluationFormAnswer {
@@ -51,7 +65,7 @@ export interface ScopeEvaluationFormAnswerFile {
 }
 
 export interface ScopeEvaluationFormDraftAnswerRequest {
-  file_ids?: number[];
+  file_ids?: number[] | undefined;
   question_code: string;
   value: string;
 }

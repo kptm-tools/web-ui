@@ -57,6 +57,7 @@
   import { useAudits } from 'audits/composables/audits';
   import { useRouter } from 'vue-router';
   import { AUDITS_ROUTES } from 'audits/routes/route-names';
+  import { AudiSteps } from '../enums/audits';
 
   const audits = useAudits();
   const router = useRouter();
@@ -68,8 +69,12 @@
 
   async function goAudit(e: Event, row: AuditResponse) {
     e.stopPropagation();
+    let routeName = AUDITS_ROUTES.auditScopeForm.name;
+    if (row.step == AudiSteps.FUNCTION_EVALUATION) {
+      routeName = AUDITS_ROUTES.functions.name;
+    }
     await router.push({
-      name: AUDITS_ROUTES.auditScopeForm.name,
+      name: routeName,
       params: { id: row.id }
     });
   }
